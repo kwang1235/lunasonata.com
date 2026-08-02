@@ -1,63 +1,123 @@
 ---
-import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
+// src/pages/about.astro
 import Layout from '../layouts/BlogPost.astro';
+import aboutImg from '../assets/blog-placeholder-about.jpg';
+import '../styles/global.css';
 ---
 
 <Layout
-	title="About Me"
-	description="Lorem ipsum dolor sit amet"
-	pubDate={new Date('August 08 2021')}
-	heroImage={AboutHeroImage}
+	title="소개 (About)"
+	description="루나소나타 블로그 및 작성자 소개 페이지입니다."
+	pubDate={new Date('2026-08-02')}
+	heroImage={aboutImg}
 >
-	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-		labore et dolore magna aliqua. Vitae ultricies leo integer malesuada nunc vel risus commodo
-		viverra. Adipiscing enim eu turpis egestas pretium. Euismod elementum nisi quis eleifend quam
-		adipiscing. In hac habitasse platea dictumst vestibulum. Sagittis purus sit amet volutpat. Netus
-		et malesuada fames ac turpis egestas. Eget magna fermentum iaculis eu non diam phasellus
-		vestibulum lorem. Varius sit amet mattis vulputate enim. Habitasse platea dictumst quisque
-		sagittis. Integer quis auctor elit sed vulputate mi. Dictumst quisque sagittis purus sit amet.
-	</p>
+	<div class="about-container">
+		<blockquote class="about-quote">
+			"기술과 일상을 기록하며, 나만의 고성능 프라이빗 공간을 만들어 나갑니다."
+		</blockquote>
 
-	<p>
-		Morbi tristique senectus et netus. Id semper risus in hendrerit gravida rutrum quisque non
-		tellus. Habitasse platea dictumst quisque sagittis purus sit amet. Tellus molestie nunc non
-		blandit massa. Cursus vitae congue mauris rhoncus. Accumsan tortor posuere ac ut. Fringilla urna
-		porttitor rhoncus dolor. Elit ullamcorper dignissim cras tincidunt lobortis. In cursus turpis
-		massa tincidunt dui ut ornare lectus. Integer feugiat scelerisque varius morbi enim nunc.
-		Bibendum neque egestas congue quisque egestas diam. Cras ornare arcu dui vivamus arcu felis
-		bibendum. Dignissim suspendisse in est ante in nibh mauris. Sed tempus urna et pharetra pharetra
-		massa massa ultricies mi.
-	</p>
+		<h2>👋 안녕하세요, 세광입니다!</h2>
+		<p>
+			<strong>루나소나타 블로그</strong>에 오신 것을 환영합니다. 이곳은 시놀로지 NAS와 Astro 프레임워크를 기반으로 직접 구축한 개인 블로그 공간입니다.
+		</p>
 
-	<p>
-		Mollis nunc sed id semper risus in. Convallis a cras semper auctor neque. Diam sit amet nisl
-		suscipit. Lacus viverra vitae congue eu consequat ac felis donec. Egestas integer eget aliquet
-		nibh praesent tristique magna sit amet. Eget magna fermentum iaculis eu non diam. In vitae
-		turpis massa sed elementum. Tristique et egestas quis ipsum suspendisse ultrices. Eget lorem
-		dolor sed viverra ipsum. Vel turpis nunc eget lorem dolor sed viverra. Posuere ac ut consequat
-		semper viverra nam. Laoreet suspendisse interdum consectetur libero id faucibus. Diam phasellus
-		vestibulum lorem sed risus ultricies tristique. Rhoncus dolor purus non enim praesent elementum
-		facilisis. Ultrices tincidunt arcu non sodales neque. Tempus egestas sed sed risus pretium quam
-		vulputate. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Fringilla
-		urna porttitor rhoncus dolor purus non. Amet dictum sit amet justo donec enim.
-	</p>
+		<hr />
 
-	<p>
-		Mattis ullamcorper velit sed ullamcorper morbi tincidunt. Tortor posuere ac ut consequat semper
-		viverra. Tellus mauris a diam maecenas sed enim ut sem viverra. Venenatis urna cursus eget nunc
-		scelerisque viverra mauris in. Arcu ac tortor dignissim convallis aenean et tortor at. Curabitur
-		gravida arcu ac tortor dignissim convallis aenean et tortor. Egestas tellus rutrum tellus
-		pellentesque eu. Fusce ut placerat orci nulla pellentesque dignissim enim sit amet. Ut enim
-		blandit volutpat maecenas volutpat blandit aliquam etiam. Id donec ultrices tincidunt arcu. Id
-		cursus metus aliquam eleifend mi.
-	</p>
+		<h3>🚀 블로그의 주요 관심사</h3>
+		<ul class="about-list">
+			<li>💻 <strong>기술 & 웹 구축:</strong> Astro, Docker, Synology NAS, 워드프레스 이관 및 웹 자동화</li>
+			<li>📝 <strong>생각 & 일상 기록:</strong> 개인적인 소회, 지속적인 성장 경험, 아이디어 정리</li>
+			<li>🛠️ <strong>나만의 인프라:</strong> 프라이빗 홈서버 구축 및 데이터 관리 시스템</li>
+		</ul>
 
-	<p>
-		Tempus quam pellentesque nec nam aliquam sem. Risus at ultrices mi tempus imperdiet. Id porta
-		nibh venenatis cras sed felis eget velit. Ipsum a arcu cursus vitae. Facilisis magna etiam
-		tempor orci eu lobortis elementum. Tincidunt dui ut ornare lectus sit. Quisque non tellus orci
-		ac. Blandit libero volutpat sed cras. Nec tincidunt praesent semper feugiat nibh sed pulvinar
-		proin gravida. Egestas integer eget aliquet nibh praesent tristique magna.
-	</p>
+		<hr />
+
+		<h3>🛠️ 블로그 인프라 & 기술 스택</h3>
+		<div class="tech-stack-grid">
+			<div class="tech-card">
+				<h4>Framework</h4>
+				<p>Astro (Node.js SSR)</p>
+			</div>
+			<div class="tech-card">
+				<h4>Server & Hosting</h4>
+				<p>Synology NAS (Docker Container Manager)</p>
+			</div>
+			<div class="tech-card">
+				<h4>Database & Auth</h4>
+				<p>MariaDB / Prisma & Auth.js</p>
+			</div>
+		</div>
+	</div>
 </Layout>
+
+<style>
+	.about-container {
+		font-family: var(--font-body, sans-serif);
+		line-height: 1.8;
+		color: var(--text-primary, #0f172a);
+	}
+
+	.about-quote {
+		font-family: var(--font-quote, serif);
+		font-size: 1.2rem;
+		background: #f1f5f9;
+		border-left: 4px solid var(--accent-color, #6366f1);
+		padding: 1.25rem 1.5rem;
+		margin: 1.5rem 0 2.5rem 0;
+		border-radius: 0 8px 8px 0;
+		color: #334155;
+	}
+
+	h2, h3 {
+		font-family: var(--font-heading, sans-serif);
+		color: var(--text-primary, #0f172a);
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+	}
+
+	hr {
+		border: none;
+		border-top: 1px solid var(--border-color, #e2e8f0);
+		margin: 2.5rem 0;
+	}
+
+	.about-list {
+		list-style: none;
+		padding: 0;
+	}
+
+	.about-list li {
+		padding: 0.5rem 0;
+		font-size: 1.05rem;
+	}
+
+	.tech-stack-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.tech-card {
+		background: #ffffff;
+		border: 1px solid var(--border-color, #e2e8f0);
+		border-radius: 10px;
+		padding: 1.25rem;
+		text-align: center;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+	}
+
+	.tech-card h4 {
+		font-family: var(--font-heading, sans-serif);
+		font-size: 0.95rem;
+		color: #6366f1;
+		margin-bottom: 0.5rem;
+	}
+
+	.tech-card p {
+		margin: 0;
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: #334155;
+	}
+</style>

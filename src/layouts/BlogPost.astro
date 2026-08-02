@@ -1,40 +1,50 @@
 ---
-import { Image } from 'astro:assets';
+// src/layouts/BlogPost.astro
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+
+// heroImage가 Astro 메타데이터 객체일 경우 .src 경로를 추출하고, 문자열일 경우 그대로 사용합니다.
+const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in heroImage 
+	? heroImage.src 
+	: heroImage;
 ---
 
-<html lang="en">
+<html lang="ko">
 	<head>
 		<BaseHead title={title} description={description} />
 		<style>
 			main {
 				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
+				max-width: 720px;
+				margin: 0 auto;
+				padding: 3em 1em;
 			}
 			.hero-image {
 				width: 100%;
+				margin-bottom: 2rem;
 			}
 			.hero-image img {
 				display: block;
 				margin: 0 auto;
 				border-radius: 12px;
-				box-shadow: var(--box-shadow);
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+				max-height: 400px;
+				object-fit: cover;
+				width: 100%;
 			}
 			.prose {
 				width: 720px;
 				max-width: calc(100% - 2em);
 				margin: auto;
 				padding: 1em;
-				color: rgb(var(--gray-dark));
+				color: var(--text-primary, #0f172a);
 			}
 			.title {
 				margin-bottom: 1em;
@@ -44,10 +54,11 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			}
 			.title h1 {
 				margin: 0 0 0.5em 0;
+				font-family: var(--font-heading, sans-serif);
 			}
 			.date {
 				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
+				color: var(--text-muted, #94a3b8);
 			}
 			.last-updated-on {
 				font-style: italic;
@@ -60,7 +71,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<main>
 			<article>
 				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
+					{imageSrc && <img src={imageSrc} alt={title} />}
 				</div>
 				<div class="prose">
 					<div class="title">
