@@ -1,0 +1,32 @@
+---
+// src/components/LetterCard.astro
+interface Props {
+  to?: string;
+  from?: string;
+}
+
+const { to = "은지에게", from = "세광이가" } = Astro.props;
+---
+
+<div style="max-width: 580px; margin: 30px auto; background-color: #fcfbf9; border: 1px solid #e8e2d5; border-radius: 12px; padding: 28px 24px; box-shadow: 0 8px 20px rgba(141, 110, 99, 0.08); position: relative; font-family: 'MaruBuri', 'Nanum Myeongjo', serif; box-sizing: border-box;">
+  
+  {/* 우측 상단 편지봉투 스탬프 아이콘 */}
+  <div style="position: absolute; top: 18px; right: 20px; font-size: 24px; opacity: 0.7;">
+    ✉️
+  </div>
+
+  {/* 받는 사람 (To) */}
+  <div style="font-size: 1.05rem; font-weight: bold; color: #8d6e63; margin-bottom: 16px; border-bottom: 1px dashed #d7ccc8; padding-bottom: 8px;">
+    To. {to}
+  </div>
+
+  {/* 편지 본문 (슬롯으로 들어옴) */}
+  <div style="font-size: 0.98rem; line-height: 1.85; color: #4e342e; margin-bottom: 20px; word-break: keep-all;">
+    <slot />
+  </div>
+
+  {/* 보낸 사람 (From) */}
+  <div style="text-align: right; font-size: 0.95rem; font-weight: bold; color: #8d6e63; border-top: 1px dashed #d7ccc8; padding-top: 10px; margin-top: 10px;">
+    From. {from}
+  </div>
+</div>
