@@ -3,12 +3,12 @@
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig, fontProviders } from 'astro/config';
-
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.com',
+  site: 'https://blog.lunasonata.com', // 세광 님의 실제 도메인 적용
+  output: 'server',                   // 서버 사이드 랜더링(SSR) 설정
   integrations: [mdx(), sitemap()],
 
   fonts: [
