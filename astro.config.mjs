@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://blog.lunasonata.com', // 세광 님의 실제 도메인 적용
-  output: 'server',                   // 서버 사이드 랜더링(SSR) 설정
+  output: 'static',                   // 서버 사이드 랜더링(SSR) 설정
   integrations: [mdx(), sitemap()],
 
   fonts: [
