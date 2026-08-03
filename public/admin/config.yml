@@ -1,0 +1,22 @@
+backend:
+  name: gitea
+  repo: kwang1235/blog.lunasonata # 예: lunasonata/my-astro-blog
+  api_root: https://gitea.kwang1235.synology.me/api/v1 # 본인의 Gitea API 주소
+  base_url: https://gitea.kwang1235.synology.me        # 본인의 Gitea 주소
+  app_id: "c57c1e2d-b498-4e7d-a3fe-f67e17450f75"    # 2단계에서 입력
+  branch: main
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "blog"
+    label: "블로그 글"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "제목", name: "title", widget: "string" }
+      - { label: "작성일", name: "pubDate", widget: "datetime" }
+      - { label: "설명", name: "description", widget: "string" }
+      - { label: "본문", name: "body", widget: "markdown" }
