@@ -43,7 +43,7 @@ const posts = (await getCollection('blog')).sort(
 					{
 						posts.map((post) => (
 							<li class="post-card">
-								<a href={`/blog/${post.id}/`}>
+								<a href={`/${post.id}/`}>
 									{post.data.heroImage && (
 										typeof post.data.heroImage === 'string' ? (
 											<img class="post-thumbnail" src={post.data.heroImage} alt={post.data.title} />
