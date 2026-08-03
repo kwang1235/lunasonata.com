@@ -1,0 +1,41 @@
+name: Deploy Astro Blog to Synology NAS
+
+on:
+  push:
+    branches:
+      - main # 본인의 기본 브랜치 이름 (main 또는 master)
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Gitea에서 소스코드 가져오기
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Node.js 환경 세팅
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. 의존성 패키지 설치 및 정적 빌드
+      - name: Install dependencies and Build
+        run: |
+          npm ci
+          npm run build
+
+      # 4. 빌드 결과물(dist/)을 NAS 웹 폴더로 rsync 전송
+      - name: Sync dist folder to NAS Web Station
+        uses: appleboy/rsync-action@master
+        with:
+          host: ${{ secrets.NAS_HOST }}
+          port: ${{ secrets.NAS_PORT }}
+          username: ${{ secrets.NAS_USER }}
+          key: ${{ secrets.NAS_SSH_KEY }} # 비밀번호 방식일 경우 password: ${{ secrets.NAS_PASSWORD }}
+          source: "dist/*"
+          target: "/volume1/WWW/blog.lunasonata(astro)" # 실제 NAS의 Web Station 웹 폴더 경로로 변경하세요!
+          strip_components: 1  # <-- dist/ 폴더 껍데기를 벗기고 내용물만 전송해 줍니다!
+          args: "-avz --delete"
