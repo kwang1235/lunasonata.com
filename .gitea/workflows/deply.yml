@@ -42,6 +42,7 @@ jobs:
           NAS_TARGET_DIR: ${{ secrets.NAS_TARGET_DIR }}
         run: |
           mkdir -p ~/.ssh
-          printf "%b" "$SSH_KEY" > ~/.ssh/id_rsa
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          rsync -avz -e "ssh -i ~/.ssh/id_rsa -p $NAS_PORT -o StrictHostKeyChecking=no" ./dist/ "$NAS_USER@$NAS_HOST:$NAS_TARGET_DIR"
+          ssh-keyscan -p $NAS_PORT $NAS_HOST >> ~/.ssh/known_hosts 2>/dev/null || true
+          rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa -p $NAS_PORT -o StrictHostKeyChecking=no" ./dist/ "$NAS_USER@$NAS_HOST:$NAS_TARGET_DIR"
