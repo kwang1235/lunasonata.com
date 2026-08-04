@@ -3,31 +3,31 @@ name: Deploy Astro Blog to Synology NAS
 on:
   push:
     branches:
-      - main # 본인의 기본 브랜치 이름 (main 또는 master)
+      - main # 기본 브랜치 이름 (main 또는 master)
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Gitea에서 소스코드 가져오기
+      # 1. 소스코드 가져오기
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Node.js 환경 세팅
+      # 2. Node.js 세팅
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
 
-      # 3. 의존성 패키지 설치 및 정적 빌드
+      # 3. 의존성 패키지 설치 및 빌드
       - name: Install dependencies and Build
         run: |
           npm ci
           npm run build
 
-      # 4. 러너 내 rsync 및 ssh 패키지 설치
+      # 4. rsync 및 openssh 패키지 설치
       - name: Install rsync and openssh
         run: |
           sudo apt-get update && sudo apt-get install -y rsync openssh-client
@@ -36,8 +36,12 @@ jobs:
       - name: Sync dist folder to NAS Web Station
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          NAS_PORT: ${{ secrets.NAS_PORT }}
+          NAS_HOST: ${{ secrets.NAS_HOST }}
+          NAS_USER: ${{ secrets.NAS_USER }}
+          NAS_TARGET_DIR: ${{ secrets.NAS_TARGET_DIR }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          rsync -avz -e "ssh -i ~/.ssh/id_rsa -p ${{ secrets.NAS_PORT }} -o StrictHostKeyChecking=no" ./dist/ ${{ secrets.NAS_USER }}@${{ secrets.NAS_HOST }}:${{ secrets.NAS_TARGET_DIR }}
+          rsync -avz -e "ssh -i ~/.ssh/id_rsa -p $NAS_PORT -o StrictHostKeyChecking=no" ./dist/ "$NAS_USER@$NAS_HOST:$NAS_TARGET_DIR"
