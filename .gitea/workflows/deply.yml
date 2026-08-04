@@ -29,13 +29,11 @@ jobs:
 
       # 4. 빌드 결과물(dist/)을 NAS 웹 폴더로 rsync 전송
       - name: Sync dist folder to NAS Web Station
-        uses: appleboy/rsync-action@v0.1.2
-        with:
-          host: ${{ secrets.NAS_HOST }}
-          port: ${{ secrets.NAS_PORT }}
-          username: ${{ secrets.NAS_USER }}
-          key: ${{ secrets.NAS_SSH_KEY }} # 비밀번호 방식일 경우 password: ${{ secrets.NAS_PASSWORD }}
-          source: "dist/*"
-          target: "/volume1/WWW/blog.lunasonata(astro)" # 실제 NAS의 Web Station 웹 폴더 경로로 변경하세요!
-          strip_components: 1  # <-- dist/ 폴더 껍데기를 벗기고 내용물만 전송해 줍니다!
-          args: "-avz --delete"
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p ${{ secrets.NAS_PORT }} ${{ secrets.NAS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          rsync -avz -e "ssh -p ${{ secrets.NAS_PORT }} -o StrictHostKeyChecking=no" ./dist/ ${{ secrets.NAS_USER }}@${{ secrets.NAS_HOST }}:${{ secrets.NAS_TARGET_DIR }}
