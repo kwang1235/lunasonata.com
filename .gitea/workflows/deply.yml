@@ -3,7 +3,7 @@ name: Deploy Astro Blog to Synology NAS
 on:
   push:
     branches:
-      - main # 기본 브랜치 이름 (main 또는 master)
+      - main # 본인의 기본 브랜치 이름 (main 또는 master)
 
 jobs:
   build-and-deploy:
@@ -27,18 +27,17 @@ jobs:
           npm ci
           npm run build
 
-      # 4. rsync/ssh 패키지 설치 및 NAS 웹 폴더로 전송
-      - name: Sync dist folder to NAS Web Station
-        env:
-          SSH_KEY: ${{ secrets.SSH_SSH_KEY }}
+      # 4. 러너 내 rsync 및 ssh 패키지 설치
+      - name: Install rsync and openssh
         run: |
-          # 러너 도커 컨테이너 내 rsync 및 ssh 필수 패키지 설치
           sudo apt-get update && sudo apt-get install -y rsync openssh-client
 
-          # SSH 비밀키 설정
+      # 5. NAS 웹 폴더로 빌드 결과물 전송
+      - name: Sync dist folder to NAS Web Station
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-
-          # NAS로 빌드 결과물(dist/) 전송
           rsync -avz -e "ssh -i ~/.ssh/id_rsa -p ${{ secrets.NAS_PORT }} -o StrictHostKeyChecking=no" ./dist/ ${{ secrets.NAS_USER }}@${{ secrets.NAS_HOST }}:${{ secrets.NAS_TARGET_DIR }}
