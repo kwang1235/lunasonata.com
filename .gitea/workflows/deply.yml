@@ -29,7 +29,7 @@ jobs:
 
       # 4. 빌드 결과물(dist/)을 NAS 웹 폴더로 rsync 전송
       - name: Sync dist folder to NAS Web Station
-        uses: appleboy/rsync-action@master
+        uses: appleboy/rsync-action@v0.1.2
         with:
           host: ${{ secrets.NAS_HOST }}
           port: ${{ secrets.NAS_PORT }}
