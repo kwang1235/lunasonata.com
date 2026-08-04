@@ -3,7 +3,7 @@ name: Deploy Astro Blog to Synology NAS
 on:
   push:
     branches:
-      - main # 기본 브랜치 이름 (main 또는 master)
+      - main # 본인의 기본 브랜치 이름 (main 또는 master)
 
 jobs:
   build-and-deploy:
@@ -42,6 +42,6 @@ jobs:
           NAS_TARGET_DIR: ${{ secrets.NAS_TARGET_DIR }}
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          printf "%b" "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           rsync -avz -e "ssh -i ~/.ssh/id_rsa -p $NAS_PORT -o StrictHostKeyChecking=no" ./dist/ "$NAS_USER@$NAS_HOST:$NAS_TARGET_DIR"
