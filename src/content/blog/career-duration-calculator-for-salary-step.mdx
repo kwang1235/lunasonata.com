@@ -1,0 +1,317 @@
+---
+title: "엑셀보다 10배 빠른 호봉 기준 자동 경력계산기 프로그램"
+description: "네이버 날짜 계산기로 호봉 틀린 경험이 있다면 집중하세요! 입사일과 퇴사일만 넣으면 연, 월, 일 단위로 정확히 계산되는 경력 자동 산출 계산기입니다."
+pubDate: "2026-07-27"
+categories: 
+  - "episodes"
+heroImage: "../../assets/호봉-기준-경력년수-계산기.webp"
+---
+
+{/* 서두 요약 상자 */}
+<div class="sk-box-warm">
+  매번 경력증명서 발급할 때마다 손가락으로 날짜 세고 있었어? 네이버 계산기로 튕기다가 호봉 다 틀려본 경험 있다면 집중해 줘. 엑셀보다 10배 빠르고 정확한 경력 계산 프로그램을 직접 만들었거든!
+</div>
+
+## 네이버 계산기 쓰다가 호봉 틀리는 이유
+
+직장에서 경력증명서 발급 업무 해본 사람들은 알 거야. 경력 날짜 계산하는 게 진짜 여간 힘든 일이 아니거든.
+
+급하게 **네이버 날짜 계산기** 켜서 일수 계산하는 경우가 있는데, 이거 절대 쓰면 안 돼! 일반 날짜 계산기는 윤년이나 월별 일수 차이, 그리고 호봉 산정 특유의 **'월/일 환산 기준'**을 정확히 반영하지 못하거든. 잘못 산정했다가 나중에 급여 호봉 꼬이면 진짜 대참사 일어난다구.
+
+## 기존 엑셀 계산기의 뼈아픈 단점들
+
+보통 급여 담당자들 사이에서 돌아다니는 standard 엑셀 서식을 많이들 쓰잖아? 나도 매번 그거 썼거든. 근데 쓸 때마다 솔직히 너무 불편했어.
+
+수식 깨질까 봐 덜덜 떠는 것도 싫고, 입력 칸 잘못 건드렸다가 결과값 꼬이는 일도 수두룩했지. 무엇보다 외근 나가거나 다른 PC에서 급하게 계산해야 할 때 엑셀 파일 찾아서 열고 하는 과정 자체가 엄청난 번거로움이었어.
+
+<div class="sk-quote-modern">
+  "왜 매번 경력 계산할 때마다 수식이 깨질까 봐 불안해해야 하지? 그냥 간단하게 날짜만 넣으면 척척 나오는 프로그램은 없을까?"
+</div>
+
+## 직접 만든 자동 경력기간 산출 프로그램!
+
+그래서 답답한 사람이 우물 판다고, 내가 직접 웹이랑 PC 양쪽에서 모두 쓸 수 있는 **경력 자동 계산 프로그램**을 만들어버렸어!
+
+입력창에 입사일이랑 퇴사일만 쏙 쏙 넣어주면, **호봉 산정 기준에 딱 맞춰서 총 경력기간이 연, 월, 일 단위로 자동 산출**돼. 실수할 확률은 0%에 수렴하고, 작업 시간은 10분의 1로 줄어들었지.
+
+{/* 호봉 및 경력년수 계산기 (1회용 독립 컴포넌트) */}
+<div class="career-calc-wrapper sk-fade-in">
+  <div class="career-calc-title">📅 호봉 기준 경력년수 계산기</div>
+  
+  <div class="career-input-group">
+    <label for="wp-start-date">근무 시작일</label>
+    <input type="text" id="wp-start-date" placeholder="예: 20260421 또는 2026-04-21" maxLength={10} />
+  </div>
+
+  <div class="career-input-group">
+    <label for="wp-end-date">근무 종료일</label>
+    <input type="text" id="wp-end-date" placeholder="예: 20260618 또는 2026-06-18" maxLength={10} />
+  </div>
+
+  <button type="button" class="career-calc-btn" id="btn-calc-career">경력 계산하기</button>
+
+  <div class="career-result-box" id="wp-result-box">
+    <p>총 경력: <strong id="wp-result-text">0년 0개월 0일</strong></p>
+    <p class="sub-days-text">(총 근무일수: <span id="wp-result-days">0</span>일)</p>
+  </div>
+</div>
+
+## 웹 접속 vs PC 프로그램 선택 사용!
+
+사무실 내부 망이라 인터넷이 안 되거나 파일 보안이 중요한 곳에서는 **PC 다운로드용 프로그램**을 쓰고, 이동 중이거나 급하게 확인할 때는 **내 블로그**에서 바로 쓰면 돼.
+
+직접 써보면 진짜 "아, 그동안 왜 엑셀 붙잡고 낑낑거렸지?" 하고 현타 올지도 몰라. 업무 효율성 완전 대폭 상승이니까, 경력증명서나 호봉 계산 때문에 스트레스받았던 담당자라면 꼭 활용해 보길 바랄게!
+
+{/* 클릭 유도 버튼 영역 */}
+<div class="btn-download-area sk-fade-in">
+  <a href="https://blog.lunasonata.com/wp-content/uploads/2026/07/%EA%B2%BD%EB%A0%B9%EA%B3%84%EC%82%B0%EA%B8%B0.zip" class="sk-btn-main" target="_blank" rel="noopener noreferrer">👉 경력 계산기 다운로드</a>
+</div>
+
+{/* 2. 포스트 및 계산기 전용 1회용 CSS (MDX 격리 스코프) */}
+<style>{`
+  .sk-box-warm {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 5px solid #6366f1;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 20px 0;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #334155;
+  }
+
+  .sk-quote-modern {
+    border-left: 4px solid #6366f1;
+    padding: 14px 18px;
+    margin: 24px 0;
+    color: #475569;
+    background-color: #f1f5f9;
+    font-size: 1rem;
+    font-style: italic;
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* 계산기 영역 스타일 */
+  .career-calc-wrapper {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 500px;
+    margin: 30px auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .career-calc-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+
+  .career-input-group {
+    margin-bottom: 14px;
+  }
+
+  .career-input-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #475569;
+    margin-bottom: 6px;
+  }
+
+  .career-input-group input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    outline: none;
+    background-color: #ffffff;
+    color: #0f172a;
+  }
+
+  .career-input-group input[type="text"]:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  }
+
+  .career-calc-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background-color 0.2s;
+  }
+
+  .career-calc-btn:hover {
+    background-color: #1d4ed8;
+  }
+
+  .career-result-box {
+    margin-top: 18px;
+    padding: 14px;
+    background-color: #eff6ff;
+    border-left: 4px solid #2563eb;
+    border-radius: 6px;
+    display: none;
+  }
+
+  .career-result-box p {
+    margin: 0;
+    font-size: 1rem;
+    color: #1e40af;
+    line-height: 1.5;
+  }
+
+  .career-result-box strong {
+    font-weight: bold;
+    color: #1d4ed8;
+  }
+
+  .sub-days-text {
+    font-size: 0.85rem !important;
+    color: #64748b !important;
+    margin-top: 4px !important;
+  }
+
+  /* 다운로드 버튼 스타일 */
+  .btn-download-area {
+    text-align: center;
+    margin: 40px 0;
+  }
+
+  .sk-btn-main {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: #2563eb;
+    color: #ffffff !important;
+    font-size: 1.05rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 30px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .sk-btn-main:hover {
+    transform: translateY(-2px);
+    background-color: #1d4ed8;
+  }
+
+  /* 페이드인 애니메이션 */
+  .sk-fade-in {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .sk-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`}</style>
+
+{/* 3. 포스트 전용 1회용 JavaScript (MDX 이벤트 리스너 바인딩) */}
+<script>{`
+  document.addEventListener("DOMContentLoaded", function () {
+    // 1. 날짜 입력 자동 하이픈(-) 바인딩
+    const startDateInput = document.getElementById('wp-start-date');
+    const endDateInput = document.getElementById('wp-end-date');
+    const calcBtn = document.getElementById('btn-calc-career');
+
+    function autoHyphen(target) {
+      let value = target.value.replace(/[^0-9]/g, '');
+      if (value.length > 4 && value.length <= 6) {
+        target.value = value.slice(0, 4) + '-' + value.slice(4);
+      } else if (value.length > 6) {
+        target.value = value.slice(0, 4) + '-' + value.slice(4, 6) + '-' + value.slice(6, 8);
+      } else {
+        target.value = value;
+      }
+    }
+
+    if (startDateInput) {
+      startDateInput.addEventListener('input', (e) => autoHyphen(e.target));
+    }
+    if (endDateInput) {
+      endDateInput.addEventListener('input', (e) => autoHyphen(e.target));
+    }
+
+    // 2. 경력 계산 함수
+    if (calcBtn) {
+      calcBtn.addEventListener('click', function () {
+        const startVal = startDateInput.value;
+        const endVal = endDateInput.value;
+
+        if (startVal.length < 10 || endVal.length < 10) {
+          alert('시작일과 종료일을 정확히 입력해주세요. (예: 20260421)');
+          return;
+        }
+
+        const start = new Date(startVal);
+        const end = new Date(endVal);
+
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+          alert('유효한 날짜 형식이 아닙니다.');
+          return;
+        }
+
+        if (start > end) {
+          alert('종료일은 시작일보다 이후여야 합니다.');
+          return;
+        }
+
+        // 시작일과 종료일 당일 포함 (+1일)
+        let endAdjusted = new Date(end);
+        endAdjusted.setDate(endAdjusted.getDate() + 1);
+
+        let years = endAdjusted.getFullYear() - start.getFullYear();
+        let months = endAdjusted.getMonth() - start.getMonth();
+        let days = endAdjusted.getDate() - start.getDate();
+
+        if (days < 0) {
+          months -= 1;
+          const startMonthLastDay = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate();
+          days += startMonthLastDay;
+        }
+
+        if (months < 0) {
+          years -= 1;
+          months += 12;
+        }
+
+        const diffTime = Math.abs(end - start);
+        const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+        document.getElementById('wp-result-text').innerText = \`\${years}년 \${months}개월 \${days}일\`;
+        document.getElementById('wp-result-days').innerText = totalDays.toLocaleString();
+        document.getElementById('wp-result-box').style.display = 'block';
+      });
+    }
+
+    // 3. 페이드인 애니메이션
+    const fadeElements = document.querySelectorAll(".sk-fade-in");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    fadeElements.forEach(el => observer.observe(el));
+  });
+`}</script>
