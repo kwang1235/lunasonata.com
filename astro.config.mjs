@@ -11,6 +11,14 @@ export default defineConfig({
   output: 'static',                   // 서버 사이드 랜더링(SSR) 설정
   integrations: [mdx(), sitemap()],
 
+  // 💡 이미지 최적화 관련 설정 추가
+  image: {
+    // 빌드 시 포맷을 지정하지 않은 이미지들의 기본 변환 포맷 설정 (기본적으로 webp/avif로 처리됨)
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+    },
+  },
+
   fonts: [
       {
           provider: fontProviders.local(),
