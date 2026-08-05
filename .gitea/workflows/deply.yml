@@ -14,12 +14,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Node.js 세팅
+      # 2. Node.js 세팅 (Gitea 캐시 타임아웃 방지를 위해 cache 옵션 제거)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
 
       # 3. 의존성 패키지 설치 및 빌드
       - name: Install dependencies and Build
@@ -27,7 +26,7 @@ jobs:
           npm ci
           npm run build
 
-      # 4. 압축 -> NAS 전송 -> 원격 압축 해제 (단일 작업으로 고속 처리)
+      # 4. 압축 -> NAS 전송 -> 원격 압축 해제
       - name: Compress, Upload, and Extract on NAS
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -36,7 +35,7 @@ jobs:
           NAS_USER: ${{ secrets.NAS_USER }}
           NAS_TARGET_DIR: ${{ secrets.NAS_TARGET_DIR }}
         run: |
-          # 1) dist 폴더를 dist.tar.gz 단일 파일로 압축
+          # 1) dist 폴더 압축
           tar -czf dist.tar.gz -C dist .
 
           # 2) SSH 키 및 known_hosts 설정
@@ -45,9 +44,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p $NAS_PORT $NAS_HOST >> ~/.ssh/known_hosts 2>/dev/null || true
 
-          # 3) 압축 파일 1개만 NAS의 임시 경로(/tmp)로 전송
-          scp -P $NAS_PORT -o StrictHostKeyChecking=no dist.tar.gz $NAS_USER@$NAS_HOST:/tmp/dist.tar.gz
+          # 3) 압축 파일을 NAS 계정의 홈 디렉터리(~)로 전송 (/tmp 쓰기 권한 에러 해결)
+          scp -P $NAS_PORT -o StrictHostKeyChecking=no dist.tar.gz $NAS_USER@$NAS_HOST:~/dist.tar.gz
 
-          # 4) NAS에서 원격 명령 실행: 기존 타겟 디렉토리 비우기 -> 압축 해제 -> 임시 파일 삭제
+          # 4) NAS에서 원격 명령 실행: 기존 타겟 폴더 비우기 -> 압축 해제 -> 임시 파일 삭제
           ssh -p $NAS_PORT -o StrictHostKeyChecking=no $NAS_USER@$NAS_HOST \
-            "rm -rf $NAS_TARGET_DIR/* && tar -xzf /tmp/dist.tar.gz -C $NAS_TARGET_DIR && rm /tmp/dist.tar.gz"
+            "rm -rf $NAS_TARGET_DIR/* && tar -xzf ~/dist.tar.gz -C $NAS_TARGET_DIR && rm ~/dist.tar.gz"
