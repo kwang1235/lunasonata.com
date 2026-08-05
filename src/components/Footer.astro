@@ -1,52 +1,190 @@
 ---
 // src/components/Footer.astro
+import { SITE_TITLE, SITE_DESCRIPTION, SOCIAL_LINKS } from '../consts';
+
 const today = new Date();
 ---
 
 <footer class="site-footer">
-	<div class="footer-container">
-		<p class="copyright">
-			&copy; {today.getFullYear()} <strong>루나소나타 블로그</strong>. All rights reserved.
-		</p>
-		
-	</div>
+  <div class="footer-container">
+    <div class="footer-grid">
+      <!-- 사이트 브랜드 & 소개 -->
+      <div class="footer-brand">
+        <h3 class="footer-logo">{SITE_TITLE}</h3>
+        <p class="footer-desc">{SITE_DESCRIPTION}</p>
+      </div>
+
+      <!-- 빠른 링크 -->
+      <div class="footer-links">
+        <h4 class="footer-heading">Navigation</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+
+      <!-- 소셜 미디어 링크 -->
+      <div class="footer-social">
+        <h4 class="footer-heading">Connect</h4>
+        <div class="social-icons">
+          {SOCIAL_LINKS.instagram && (
+            <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+            </a>
+          )}
+          {SOCIAL_LINKS.email && (
+            <a href={SOCIAL_LINKS.email} aria-label="Email">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="copyright">
+        &copy; {today.getFullYear()} Sekwang. All rights reserved.
+      </p>
+      <button id="back-to-top" class="back-to-top" aria-label="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"></path></svg>
+      </button>
+    </div>
+  </div>
 </footer>
 
+<script>
+  // 상단 이동 버튼 동작
+  const backToTopBtn = document.getElementById('back-to-top');
+  backToTopBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
 <style>
-	/* 푸터 전체 컨테이너 */
-	.site-footer {
-		padding: 1rem;
-		background: #ffffff;
-		border-top: 1px solid #e2e8f0;
-		color: #64748b;
-		font-size: 0.9rem;
-		margin-top: auto;
-	}
+  .site-footer {
+    background-color: var(--footer-bg, #f8f9fa);
+    border-top: 1px solid var(--border-color, #e9ecef);
+    padding: 3rem 1.5rem 1.5rem;
+    margin-top: 4rem;
+    color: var(--text-color, #495057);
+    font-size: 0.95rem;
+  }
 
-	/* 푸터 내부 레이아웃 */
-	.footer-container {
-		max-width: 1080px;
-		margin: 0 auto;
-		text-align: center;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		align-items: center;
-	}
+  .footer-container {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
 
-	.copyright {
-		margin: 0;
-		color: #334155;
-	}
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
 
-	.copyright strong {
-		color: #0f172a;
-		font-family: var(--font-heading, sans-serif);
-	}
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
 
-	.footer-sub {
-		margin: 0;
-		font-size: 0.8rem;
-		color: #94a3b8;
-	}
+  .footer-logo {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: var(--heading-color, #212529);
+  }
+
+  .footer-desc {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--text-muted, #6c757d);
+  }
+
+  .footer-heading {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 1rem 0;
+    color: var(--heading-color, #212529);
+  }
+
+  .footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-links li {
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-links a {
+    color: var(--text-muted, #6c757d);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer-links a:hover {
+    color: var(--accent-color, #228be6);
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--icon-bg, #edf2f7);
+    color: var(--text-color, #495057);
+    transition: all 0.2s ease;
+  }
+
+  .social-icons a:hover {
+    background-color: var(--accent-color, #228be6);
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color, #e9ecef);
+  }
+
+  .copyright {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted, #6c757d);
+  }
+
+  .back-to-top {
+    background: var(--icon-bg, #edf2f7);
+    border: none;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-color, #495057);
+    transition: all 0.2s ease;
+  }
+
+  .back-to-top:hover {
+    background: var(--accent-color, #228be6);
+    color: #ffffff;
+  }
 </style>

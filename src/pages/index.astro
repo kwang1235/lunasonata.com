@@ -6,178 +6,322 @@ import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
+import { getImage } from 'astro:assets';
 import '../styles/global.css';
 
+// src/assets/ 내 이미지들을 동적으로 읽어오기 위한 설정
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/*.{jpeg,jpg,png,gif,webp}');
+
 const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
 const featuredPost = posts[0];
 const recentPosts = posts.slice(1, 4);
+
+// 최근 글 3개 배경 이미지 URL 추출 및 타입 안전 처리
+const processedRecentPosts = await Promise.all(
+  recentPosts.map(async (post) => {
+    let bgUrl = '/blog-placeholder-1.jpg'; // 기본 이미지
+
+    if (post.data.heroImage) {
+      const heroImg = post.data.heroImage;
+
+      if (typeof heroImg === 'object' && heroImg !== null) {
+        // 1. heroImage가 image() 도우미를 거친 ImageMetadata 객체인 경우
+        const optimized = await getImage({ src: heroImg });
+        bgUrl = optimized.src;
+      } else if (typeof heroImg === 'string') {
+        // 2. heroImage가 단순 문자열 경로인 경우
+        const imagePath = heroImg.startsWith('/src/assets/')
+          ? heroImg
+          : `/src/assets/${heroImg.replace(/^\/+/, '')}`;
+
+        if (images[imagePath]) {
+          const imageModule = await images[imagePath]();
+          const optimized = await getImage({ src: imageModule.default });
+          bgUrl = optimized.src;
+        } else {
+          bgUrl = heroImg;
+        }
+      }
+    }
+
+    return {
+      ...post,
+      bgUrl,
+    };
+  })
+);
 ---
 
 <!doctype html>
 <html lang="ko" class="index-html">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body class="index-body">
-		<Header />
-		
-		<main class="home-snap-container">
-			<!-- Section 1: Hero & Main Journal Intro -->
-			<section class="snap-section hero-section">
-				<div class="section-inner">
-					<span class="sub-label">LUNA SONATA JOURNAL</span>
-					<h1 class="hero-title">기록은 삶을 선명하게 만든다</h1>
-					<p class="hero-description">
-						생각의 깊이, 일상의 온기, 그리고 발걸음이 머문 풍경.<br/>
-						세광의 프라이빗 저널에 오신 것을 환영합니다.
-					</p>
-					{featuredPost && (
-						<a href={`/${featuredPost.id}/`} class="main-featured-link">
-							<span class="badge">LATEST</span>
-							<span class="title">{featuredPost.data.title}</span>
-						</a>
-					)}
-				</div>
-			</section>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body class="index-body">
+    <Header />
+    
+    <main class="home-snap-container">
+      <!-- Section 1: Hero & Main Journal Intro -->
+      <section class="snap-section hero-section">
+        <div class="section-inner">
+          <span class="sub-label">LUNA SONATA JOURNAL</span>
+          <h1 class="hero-title">기록은 삶을 선명하게 만든다</h1>
+          <p class="hero-description">
+            생각의 깊이, 일상의 온기, 그리고 발걸음이 머문 풍경.<br/>
+            세광의 프라이빗 저널에 오신 것을 환영합니다.
+          </p>
+          {featuredPost && (
+            <a href={`/${featuredPost.id}/`} class="main-featured-link">
+              <span class="badge">LATEST</span>
+              <span class="title">{featuredPost.data.title}</span>
+            </a>
+          )}
+        </div>
+      </section>
 
-			<!-- Section 2: Recent Posts Summary -->
-			<section class="snap-section archive-section">
-				<div class="section-inner">
-					<h2 class="section-heading">최근의 기록들</h2>
-					<div class="minimal-post-list">
-						{recentPosts.map(post => (
-							<article class="post-item">
-								<a href={`/${post.id}/`}>
-									<time><FormattedDate date={post.data.pubDate} /></time>
-									<h3>{post.data.title}</h3>
-								</a>
-							</article>
-						))}
-					</div>
-				</div>
-			</section>
-		</main>
+      <!-- Section 2: Recent Posts Summary -->
+      <section class="snap-section archive-section">
+        <div class="section-inner">
+          <h2 class="section-heading">최근의 기록들</h2>
+          <div class="recent-grid">
+            {processedRecentPosts.map(post => (
+              <article class="recent-card-blur">
+                <a href={`/${post.id}/`}>
+                  {/* 흐릿한 배경 이미지 레이어 */}
+                  <div 
+                    class="card-bg" 
+                    style={`background-image: url('${post.bgUrl}');`}
+                  ></div>
+                  {/* 가독성을 위한 어두운 오버레이 */}
+                  <div class="card-overlay"></div>
+                  
+                  {/* 실제 콘텐츠 레이어 */}
+                  <div class="card-content">
+                    <time><FormattedDate date={post.data.pubDate} /></time>
+                    <h3>{post.data.title}</h3>
+                    {post.data.description && (
+                      <p class="card-desc">{post.data.description}</p>
+                    )}
+                    <span class="read-more">Read More →</span>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
 
-		<Footer />
-	</body>
+    <Footer />
+  </body>
 </html>
 
 <style>
-	/* 데스크톱: 한 화면 원페이지 몰입형 스냅 스크롤 */
-	@media (min-width: 769px) {
-		.index-html, .index-body {
-			height: 100%;
-			overflow: hidden;
-		}
-		.home-snap-container {
-			height: calc(100vh - 120px);
-			overflow-y: mandatory;
-			scroll-snap-type: y mandatory;
-		}
-		.snap-section {
-			height: 100%;
-			scroll-snap-align: start;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-	}
+  /* 데스크톱 및 기본 반응형 레이아웃 */
+  .home-snap-container {
+    padding-top: 2rem;
+    padding-bottom: 5rem;
+  }
 
-	/* 모바일: 자연스러운 세로 스크롤 레이아웃 */
-	@media (max-width: 768px) {
-		.snap-section {
-			padding: 4rem 1.5rem;
-		}
-	}
+  .snap-section {
+    padding: 3rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-	.section-inner {
-		max-width: var(--content-width);
-		width: 100%;
-		margin: 0 auto;
-		text-align: center;
-	}
+  .section-inner {
+    max-width: var(--content-width, 1000px);
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
 
-	.sub-label {
-		font-size: 0.75rem;
-		letter-spacing: 0.25em;
-		color: var(--text-muted);
-		display: block;
-		margin-bottom: 1rem;
-	}
+  .sub-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    color: var(--text-muted, #888);
+    display: block;
+    margin-bottom: 1rem;
+  }
 
-	.hero-title {
-		margin-bottom: 1.5rem;
-	}
+  .hero-title {
+    margin-bottom: 1.5rem;
+    font-size: 2.2rem;
+    font-weight: 700;
+  }
 
-	.hero-description {
-		color: var(--text-secondary);
-		font-family: var(--font-serif);
-		font-size: 1.1rem;
-		line-height: 2;
-		margin-bottom: 2.5rem;
-	}
+  .hero-description {
+    color: var(--text-secondary, #555);
+    font-family: var(--font-serif, serif);
+    font-size: 1.1rem;
+    line-height: 2;
+    margin-bottom: 2.5rem;
+  }
 
-	.main-featured-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 0.75rem 1.25rem;
-		background: var(--bg-card);
-		border: 1px solid var(--border-color);
-		text-decoration: none;
-		color: var(--text-primary);
-		font-size: 0.9rem;
-		transition: border-color 0.2s ease;
-	}
+  .main-featured-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border-color, #eee);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-primary, #111);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
 
-	.main-featured-link:hover {
-		border-color: var(--accent-color);
-	}
+  .main-featured-link:hover {
+    border-color: var(--accent-color, #228be6);
+    transform: translateY(-2px);
+  }
 
-	.badge {
-		font-size: 0.7rem;
-		background: var(--accent-color);
-		color: #fff;
-		padding: 0.1rem 0.4rem;
-		letter-spacing: 0.05em;
-	}
+  .badge {
+    font-size: 0.7rem;
+    background: var(--accent-color, #333);
+    color: #fff;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
 
-	.section-heading {
-		border: none;
-		padding: 0;
-		text-align: center;
-		margin-bottom: 2rem;
-	}
+  .section-heading {
+    border: none;
+    padding: 0;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-size: 1.5rem;
+  }
 
-	.minimal-post-list {
-		display: flex;
-		flex-direction: column;
-		/* gap: 1.25rem; */
-		text-align: left;
-	}
+  /* 최근 글 블러 배경 카드 그리드 */
+  .recent-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    text-align: left;
+  }
 
-	.post-item a {
-		display: flex;
-		align-items: baseline;
-		gap: 1.5rem;
-		text-decoration: none;
-		color: var(--text-primary);
-		padding: 1rem 0;
-		border-bottom: 1px solid var(--border-color);
-	}
+  @media (max-width: 768px) {
+    .recent-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 
-	.post-item time {
-		font-size: 0.8rem;
-		color: var(--text-muted);
-		white-space: nowrap;
-	}
+  .recent-card-blur {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 300px;
+  }
 
-	.post-item h3 {
-		margin: 0;
-		font-size: 1.05rem;
-		font-weight: 500;
-	}
+  .recent-card-blur:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
+  }
+
+  .recent-card-blur a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    position: relative;
+  }
+
+  /* 배경 이미지 (흐림 & 확대 효과) */
+  .card-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px);
+    transform: scale(1.12);
+    transition: filter 0.4s ease, transform 0.4s ease;
+  }
+
+  .recent-card-blur:hover .card-bg {
+    filter: blur(4px);
+    transform: scale(1.18);
+  }
+
+  /* 어두운 오버레이 */
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.25) 100%
+    );
+    transition: background 0.3s ease;
+  }
+
+  .recent-card-blur:hover .card-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.15) 100%
+    );
+  }
+
+  /* 텍스트 콘텐츠 */
+  .card-content {
+    position: relative;
+    z-index: 2;
+    padding: 1.75rem 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    color: #ffffff;
+  }
+
+  .card-content time {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-family: var(--font-mono, monospace);
+    margin-bottom: 0.75rem;
+  }
+
+  .card-content h3 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #ffffff;
+    word-break: keep-all;
+  }
+
+  .card-desc {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .read-more {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin-top: auto;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .recent-card-blur:hover .read-more {
+    opacity: 1;
+    transform: translateX(4px);
+  }
 </style>
