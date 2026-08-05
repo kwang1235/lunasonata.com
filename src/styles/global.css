@@ -1,31 +1,33 @@
 /* src/styles/global.css */
 
-/* 1. 웹폰트 불러오기 (Pretendard & Gmarket Sans) */
+/* 1. 웹폰트 불러오기 */
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
-@import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff');
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap');
 @import url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_three@1.0/D2Coding.woff');
 
-/* 2. 전역 변수 설정 */
+/* 2. 전역 변수 설정 (Warm Minimal Theme) */
 :root {
   --font-body: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  --font-heading: 'GmarketSansMedium', sans-serif;
-  --font-quote: 'Nanum Myeongjo', serif;
+  --font-serif: 'Gowun Batang', serif;
   --font-code: 'D2Coding', Consolas, Monaco, monospace;
 
-  --bg-primary: #f8fafc;
+  /* 통일감 있는 메인 & 보조 테마 색상 (따뜻하고 차분한 어스톤) */
+  --bg-primary: #fcfbf9;
   --bg-card: #ffffff;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --accent-color: #6366f1;
-  --border-color: #e2e8f0;
+  --text-primary: #22252a;
+  --text-secondary: #5d6268;
+  --text-muted: #9aa0a6;
+  
+  --accent-color: #5c6255;       /* 메인 테마: 차분한 딥 올리브 그레이 */
+  --accent-light: #e8ebe4;       /* 보조 테마: 은은한 하이라이트용 톤 */
+  --accent-highlight: #d1d8cb;   /* 본문 강조 하이라이트 색상 */
+  --border-color: #ebeae6;
 
-  --max-width: 1080px;      /* 전체 페이지 최대 폭 */
-  --content-width: 768px;   /* 글 읽기 최적 폭 (PC) */
+  --max-width: 1080px;      
+  --content-width: 720px;   /* 일기장 형태 최적 폭 */
 }
 
-/* 3. 기본 리셋 및 모바일 대응 설정 */
+/* 3. 기본 리셋 및 가독성 최적화 */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -41,72 +43,114 @@ body {
   font-family: var(--font-body);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  line-height: 1.8;
-  word-break: keep-all; /* 한글 단어 단위 줄바꿈 */
+  line-height: 1.85; /* 본문 가독성을 높이는 넉넉한 자간/행간 */
+  letter-spacing: -0.01em;
+  word-break: keep-all;
   overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
 }
 
-/* 4. 본문 제목(H1~H6) 및 요소 스타일 */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
+/* 4. 헤딩 및 타이포그래피 */
+
+/* H1: 모바일과 데스크톱에서 완벽하게 유동적인 크기 조절 (Fluid Typography) */
+h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.85rem, 4vw + 1rem, 2.75rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* H2: 촌스럽지 않은 미니멀 세로 포인트 바 스타일 */
+h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 2vw + 1rem, 1.75rem);
+  font-weight: 700;
   line-height: 1.4;
   color: var(--text-primary);
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
-
-p {
+  margin-top: 3rem;
   margin-bottom: 1.25rem;
-  font-size: 1.05rem;
+  padding-left: 0.85rem;
+  border-left: 3.5px solid var(--accent-color);
 }
 
-/* 모바일 전용 글자 크기 조정 */
-@media (max-width: 768px) {
-  html {
-    font-size: 15px; /* 모바일에서 글자 약간 축소 */
-  }
-  p {
-    font-size: 1rem;
-  }
+h3 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
 }
 
-/* 이미지 모바일 대응 */
+/* 본문 글은 1rem 기준 지정 */
+p {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+/* 본문 하이라이트 (mark 태그 및 .highlight 클래스) */
+mark, .highlight {
+  background: linear-gradient(120deg, var(--accent-light) 0%, var(--accent-highlight) 100%);
+  color: var(--text-primary);
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+}
+
+/* 5. 이미지 (Radius 제거 & 기본 설정) */
 img, video {
   max-width: 100%;
   height: auto;
   display: block;
-  border-radius: 12px;
+  border-radius: 0 !important; /* 요청사항: radius 전면 제거 */
+}
+
+/* 본문 내 클릭 가능한 라이트박스 이미지 스타일 */
+.prose img {
+  cursor: zoom-in;
+  margin: 2rem 0;
+}
+
+/* 모바일 전용: 본문 속 사진 화면 양끝 꽉 차게 설정 (Full-Bleed) */
+@media (max-width: 768px) {
+  .prose img {
+    width: calc(100% + 2rem);
+    max-width: calc(100% + 2rem);
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
 }
 
 /* 인용구 스타일 */
 blockquote {
-  font-family: var(--font-quote);
-  font-size: 1.1rem;
-  color: #334155;
-  background: #f1f5f9;
-  border-left: 4px solid var(--accent-color);
-  margin: 1.5rem 0;
-  padding: 1rem 1.25rem;
-  border-radius: 0 8px 8px 0;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border-left: 2px solid var(--accent-color);
+  border-top: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  margin: 2rem 0;
+  padding: 1.25rem 1.5rem;
 }
 
-/* 코드 블록 스타일 */
+/* 코드 블록 */
 code {
   font-family: var(--font-code);
-  background-color: #e2e8f0;
-  color: #0f172a;
-  border-radius: 4px;
+  background-color: var(--accent-light);
+  color: var(--text-primary);
   padding: 0.2rem 0.4rem;
-  font-size: 0.9em;
+  font-size: 0.875em;
 }
 
 pre {
-  background-color: #0f172a !important;
+  background-color: #1a1c1e !important;
   padding: 1.25rem;
-  border-radius: 10px;
-  overflow-x: auto; /* 모바일에서 코드가 길어지면 가로 스크롤 생성 */
-  margin: 1.5rem 0;
+  border-radius: 0;
+  overflow-x: auto;
+  margin: 2rem 0;
 }
 
 pre code {

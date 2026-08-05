@@ -6,114 +6,57 @@ import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
-import { Image } from 'astro:assets';
 import '../styles/global.css';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
-const thoughtsPosts = posts.filter(post => post.data.categories?.includes('diary')).slice(0, 3);
-const episodesPosts = posts.filter(post => post.data.categories?.includes('episodes')).slice(0, 3);
-const travelPosts = posts.filter(post => post.data.categories?.includes('travel')).slice(0, 3);
-
 const featuredPost = posts[0];
-
-// 섹션 정의
-const sections = [
-  { id: 'thoughts', title: '생각', meta: 'THOUGHTS', posts: thoughtsPosts },
-  { id: 'episodes', title: '에피소드', meta: 'EPISODES', posts: episodesPosts },
-  { id: 'travel', title: '여행', meta: 'TRAVEL', posts: travelPosts },
-];
+const recentPosts = posts.slice(1, 4);
 ---
 
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="index-html">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet" />
-		<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 	</head>
-	<body>
+	<body class="index-body">
 		<Header />
 		
-		<main class="main-content">
-			<!-- Hero -->
-			<section class="hero-container animate-fade-in">
-				<span class="hero-label">LUNA SONATA JOURNAL</span>
-				<h1 class="hero-title font-serif">기록은 삶을 선명하게 만든다</h1>
-				<p class="hero-description">
-					생각의 깊이, 일상의 온기, 그리고 발걸음이 머문 풍경.<br/>
-					세광 님의 개인 아카이브, 루나소나타에 오신 것을 환영합니다.
-				</p>
-				<div class="hero-divider"></div>
+		<main class="home-snap-container">
+			<!-- Section 1: Hero & Main Journal Intro -->
+			<section class="snap-section hero-section">
+				<div class="section-inner">
+					<span class="sub-label">LUNA SONATA JOURNAL</span>
+					<h1 class="hero-title">기록은 삶을 선명하게 만든다</h1>
+					<p class="hero-description">
+						생각의 깊이, 일상의 온기, 그리고 발걸음이 머문 풍경.<br/>
+						세광의 프라이빗 저널에 오신 것을 환영합니다.
+					</p>
+					{featuredPost && (
+						<a href={`/${featuredPost.id}/`} class="main-featured-link">
+							<span class="badge">LATEST</span>
+							<span class="title">{featuredPost.data.title}</span>
+						</a>
+					)}
+				</div>
 			</section>
 
-			<!-- Featured -->
-			{featuredPost && (
-				<section class="featured-section animate-fade-in-up">
-					<div class="featured-card">
-						<a href={`/${featuredPost.id}/`} class="featured-link">
-							<div class="featured-image-wrapper">
-								{featuredPost.data.heroImage ? (
-									<Image class="featured-image" src={featuredPost.data.heroImage} alt={featuredPost.data.title} width={1200} height={600} loading="eager" />
-								) : (
-									<div class="image-placeholder font-serif">Luna Sonata</div>
-								)}
-							</div>
-							<div class="featured-content">
-								<span class="featured-category">FEATURED</span>
-								<h3 class="featured-title font-serif">{featuredPost.data.title}</h3>
-								<p class="featured-desc">{featuredPost.data.description}</p>
-								<span class="featured-date"><FormattedDate date={featuredPost.data.pubDate} /></span>
-							</div>
-						</a>
-					</div>
-				</section>
-			)}
-
-			<!-- Unified Archive Sections -->
-			{sections.map(section => section.posts.length > 0 && (
-				<section class="archive-section">
-					<div class="archive-header">
-						<span class="category-meta">{section.meta}</span>
-						<h2 class="category-title font-serif">{section.title}</h2>
-					</div>
-					<div class="archive-grid">
-						{section.posts.map(post => (
-							<article class="archive-card">
-								<a href={`/${post.id}/`} class="archive-link">
-									<div class="archive-image-wrapper">
-										{post.data.heroImage ? (
-											<Image class="archive-image" src={post.data.heroImage} alt={post.data.title} width={600} height={400} />
-										) : (
-											<div class="image-placeholder font-serif">No Image</div>
-										)}
-									</div>
-									<div class="archive-content">
-										<h3 class="archive-title font-serif">{post.data.title}</h3>
-										<p class="archive-desc">{post.data.description}</p>
-										<span class="archive-date"><FormattedDate date={post.data.pubDate} /></span>
-									</div>
+			<!-- Section 2: Recent Posts Summary -->
+			<section class="snap-section archive-section">
+				<div class="section-inner">
+					<h2 class="section-heading">최근의 기록들</h2>
+					<div class="minimal-post-list">
+						{recentPosts.map(post => (
+							<article class="post-item">
+								<a href={`/${post.id}/`}>
+									<time><FormattedDate date={post.data.pubDate} /></time>
+									<h3>{post.data.title}</h3>
 								</a>
 							</article>
 						))}
 					</div>
-				</section>
-			))}
-
-			<!-- Quote -->
-			<section class="quote-signature-section">
-				<div class="signature-card font-serif">
-					<span class="quote-mark">“</span>
-					<p class="quote-text">
-						기억은 기록되지 않으면 사라진다.<br/>
-						하지만 우리가 남겨둔 흔적은 언젠가 누군가의 쉼터가 되고,<br/>
-						길 잃은 밤을 비추는 은은한 별빛이 되어 준다.
-					</p>
-					<span class="quote-author">— 세광의 저널에서</span>
 				</div>
 			</section>
 		</main>
@@ -123,60 +66,118 @@ const sections = [
 </html>
 
 <style>
-	:root {
-		--font-serif: 'Gowun Batang', serif;
-		--font-sans: 'Pretendard', sans-serif;
-		--text-primary: #222222;
-		--text-secondary: #666666;
-		--border-color: #EAEAEA;
+	/* 데스크톱: 한 화면 원페이지 몰입형 스냅 스크롤 */
+	@media (min-width: 769px) {
+		.index-html, .index-body {
+			height: 100%;
+			overflow: hidden;
+		}
+		.home-snap-container {
+			height: calc(100vh - 120px);
+			overflow-y: mandatory;
+			scroll-snap-type: y mandatory;
+		}
+		.snap-section {
+			height: 100%;
+			scroll-snap-align: start;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 	}
 
-	body { background-color: #FFFFFF; color: var(--text-primary); font-family: var(--font-sans); margin: 0; }
-	.font-serif { font-family: var(--font-serif); }
-	.main-content { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-
-	/* Hero */
-	.hero-container { text-align: center; padding: 6rem 0; }
-	.hero-label { font-size: 0.8rem; letter-spacing: 0.3em; color: #999; }
-	.hero-title { font-size: 3rem; margin: 1.5rem 0; }
-	.hero-description { font-size: 1.2rem; color: var(--text-secondary); }
-	.hero-divider { width: 40px; height: 1px; background: #000; margin: 3rem auto 0; }
-
-	/* Featured */
-	.featured-section { margin-bottom: 6rem; }
-	.featured-card { border: 1px solid var(--border-color); }
-	.featured-link { display: grid; grid-template-columns: 1fr 1fr; text-decoration: none; color: inherit; }
-	.featured-image { width: 100%; height: 100%; object-fit: cover; }
-	.featured-content { padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
-	.featured-category { font-size: 0.75rem; letter-spacing: 0.2em; color: #8d6e63; margin-bottom: 1rem; }
-	.featured-title { font-size: 2rem; margin-bottom: 1rem; }
-	.featured-desc { color: var(--text-secondary); margin-bottom: 1.5rem; }
-
-	/* Unified Archive */
-	.archive-section { margin-bottom: 8rem; }
-	.archive-header { text-align: center; margin-bottom: 3rem; }
-	.category-meta { font-size: 0.75rem; letter-spacing: 0.3em; color: #999; }
-	.category-title { font-size: 2rem; margin-top: 0.5rem; }
-
-	.archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-	.archive-card { border: 1px solid var(--border-color); display: flex; flex-direction: column; }
-	.archive-link { text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%; }
-	.archive-image-wrapper { width: 100%; aspect-ratio: 4/3; overflow: hidden; border-bottom: 1px solid var(--border-color); }
-	.archive-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-	.archive-card:hover .archive-image { transform: scale(1.05); }
-	.archive-content { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
-	.archive-title { font-size: 1.25rem; margin-bottom: 0.75rem; line-height: 1.4; }
-	.archive-desc { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-	.archive-date { font-size: 0.75rem; color: #aaa; }
-
-	/* Quote */
-	.quote-signature-section { padding: 4rem 0 8rem; }
-	.signature-card { text-align: center; border: 1px solid var(--border-color); padding: 4rem; max-width: 700px; margin: 0 auto; }
-	.quote-text { font-size: 1.3rem; line-height: 2; margin-bottom: 2rem; }
-	.quote-author { font-size: 0.9rem; letter-spacing: 0.1em; color: #8d6e63; }
-
+	/* 모바일: 자연스러운 세로 스크롤 레이아웃 */
 	@media (max-width: 768px) {
-		.featured-link { grid-template-columns: 1fr; }
-		.archive-grid { grid-template-columns: 1fr; }
+		.snap-section {
+			padding: 4rem 1.5rem;
+		}
+	}
+
+	.section-inner {
+		max-width: var(--content-width);
+		width: 100%;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.sub-label {
+		font-size: 0.75rem;
+		letter-spacing: 0.25em;
+		color: var(--text-muted);
+		display: block;
+		margin-bottom: 1rem;
+	}
+
+	.hero-title {
+		margin-bottom: 1.5rem;
+	}
+
+	.hero-description {
+		color: var(--text-secondary);
+		font-family: var(--font-serif);
+		font-size: 1.1rem;
+		line-height: 2;
+		margin-bottom: 2.5rem;
+	}
+
+	.main-featured-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem 1.25rem;
+		background: var(--bg-card);
+		border: 1px solid var(--border-color);
+		text-decoration: none;
+		color: var(--text-primary);
+		font-size: 0.9rem;
+		transition: border-color 0.2s ease;
+	}
+
+	.main-featured-link:hover {
+		border-color: var(--accent-color);
+	}
+
+	.badge {
+		font-size: 0.7rem;
+		background: var(--accent-color);
+		color: #fff;
+		padding: 0.1rem 0.4rem;
+		letter-spacing: 0.05em;
+	}
+
+	.section-heading {
+		border: none;
+		padding: 0;
+		text-align: center;
+		margin-bottom: 2rem;
+	}
+
+	.minimal-post-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		text-align: left;
+	}
+
+	.post-item a {
+		display: flex;
+		align-items: baseline;
+		gap: 1.5rem;
+		text-decoration: none;
+		color: var(--text-primary);
+		padding: 0.75rem 0;
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.post-item time {
+		font-size: 0.8rem;
+		color: var(--text-muted);
+		white-space: nowrap;
+	}
+
+	.post-item h3 {
+		margin: 0;
+		font-size: 1.05rem;
+		font-weight: 500;
 	}
 </style>
