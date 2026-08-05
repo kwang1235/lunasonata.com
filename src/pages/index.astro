@@ -26,7 +26,6 @@ async function getOptimizedBgUrl(heroImage: any) {
     const optimized = await getImage({ src: heroImage });
     return optimized.src;
   } else if (typeof heroImage === 'string') {
-    // ../../assets/파일명.webp 이나 /src/assets/파일명.webp 모두 파일명만 추출하여 /src/assets/ 경로로 통일
     const fileName = heroImage.split('/').pop();
     const imagePath = `/src/assets/${fileName}`;
 
@@ -63,8 +62,8 @@ const processedRecentPosts = await Promise.all(
     <Header />
     
     <main class="home-snap-container">
-      <!-- Section 1: Hero & Main Journal Intro -->
-      <section class="snap-section hero-section">
+      <!-- Section 1: Hero & Main Journal Intro (fade-in 추가) -->
+      <section class="snap-section hero-section fade-in">
         <div class="section-inner">
           <span class="sub-label">LUNA SONATA JOURNAL</span>
           <h1 class="hero-title">기록은 삶을 선명하게 만든다</h1>
@@ -73,31 +72,31 @@ const processedRecentPosts = await Promise.all(
             세광의 프라이빗 저널에 오신 것을 환영합니다.
           </p>
           {featuredPost && (
-  <div class="featured-wrapper">
-    <a href={`/${featuredPost.id}/`} class="main-featured-card">
-      <div class="featured-bg" style={`background-image: url('${featuredBgUrl}');`}></div>
-      <div class="featured-overlay"></div>
-      <div class="featured-content">
-        <div class="featured-header">
-          <span class="badge">LATEST</span>
-          <time><FormattedDate date={featuredPost.data.pubDate} /></time>
-        </div>
-        <span class="featured-title">{featuredPost.data.title}</span>
-        <span class="featured-arrow">→</span>
-      </div>
-    </a>
-  </div>
-)}
+            <div class="featured-wrapper fade-in delay-1">
+              <a href={`/${featuredPost.id}/`} class="main-featured-card">
+                <div class="featured-bg" style={`background-image: url('${featuredBgUrl}');`}></div>
+                <div class="featured-overlay"></div>
+                <div class="featured-content">
+                  <div class="featured-header">
+                    <span class="badge">LATEST</span>
+                    <time><FormattedDate date={featuredPost.data.pubDate} /></time>
+                  </div>
+                  <span class="featured-title">{featuredPost.data.title}</span>
+                  <span class="featured-arrow">→</span>
+                </div>
+              </a>
+            </div>
+          )}
         </div>
       </section>
 
-      <!-- Section 2: Recent Posts Summary -->
-      <section class="snap-section archive-section">
+      <!-- Section 2: Recent Posts Summary (fade-in 및 순차 delay 추가) -->
+      <section class="snap-section archive-section fade-in delay-2">
         <div class="section-inner">
           <h2 class="section-heading">최근의 기록들</h2>
           <div class="recent-grid">
-            {processedRecentPosts.map(post => (
-              <article class="recent-card-blur">
+            {processedRecentPosts.map((post, index) => (
+              <article class={`recent-card-blur fade-in delay-${index + 1}`}>
                 <a href={`/${post.id}/`}>
                   {/* 흐릿한 배경 이미지 레이어 */}
                   <div 
@@ -178,7 +177,8 @@ const processedRecentPosts = await Promise.all(
     margin-bottom: 2.5rem;
     font-size: 1.5rem;
   }
-/* ==========================================
+
+  /* ==========================================
      1. Latest Featured Card Style (LATEST 영역)
      ========================================== */
   .featured-wrapper {
@@ -247,7 +247,7 @@ const processedRecentPosts = await Promise.all(
   .featured-content {
     position: relative;
     z-index: 2;
-    padding: 1.25rem 1.75rem; /* 카드 위아래, 좌우 여백을 충분히 부여 */
+    padding: 1.25rem 1.75rem;
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -288,7 +288,7 @@ const processedRecentPosts = await Promise.all(
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* 텍스트에 잔그림자를 주어 선명도 향상 */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   }
 
   .featured-arrow {

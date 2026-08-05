@@ -158,3 +158,34 @@ pre code {
   padding: 0;
   color: #f8fafc;
 }
+
+/* src/styles/global.css 하단에 추가 */
+
+/* Fade-in 키프레임 정의 */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* 페이드인 애니메이션 클래스 */
+.fade-in {
+	animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	opacity: 0; /* 애니메이션 시작 전 숨김 */
+}
+
+/* 순차적으로 나타나도록 딜레이 옵션 추가 */
+.delay-1 {
+	animation-delay: 0.15s;
+}
+.delay-2 {
+	animation-delay: 0.3s;
+}
+.delay-3 {
+	animation-delay: 0.45s;
+}

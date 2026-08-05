@@ -1,123 +1,222 @@
 ---
-// src/pages/about.astro
 import Layout from '../layouts/BlogPost.astro';
-import aboutImg from '../assets/blog-placeholder-about.jpg';
-import '../styles/global.css';
 ---
 
 <Layout
-	title="소개 (About)"
-	description="루나소나타 블로그 및 작성자 소개 페이지입니다."
-	pubDate={new Date('2026-08-02')}
-	heroImage={aboutImg}
+	title="About Me"
+	description="길 위에서 만난 풍경과 스쳐 지나가는 일상의 순간들을 기록하는 공간입니다."
+	pubDate={new Date('2026-08-05')}
 >
 	<div class="about-container">
-		<blockquote class="about-quote">
-			"기술과 일상을 기록하며, 나만의 고성능 프라이빗 공간을 만들어 나갑니다."
-		</blockquote>
+		<!-- 프로필 / 대표 이미지 영역 (&fit=crop 파라미터 제거) -->
+		<div class="profile-image-wrapper fade-in">
+			<img 
+				src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&q=80&w=1200" 
+				alt="길 위에서 바라본 풍경" 
+				class="profile-image"
+			/>
+		</div>
 
-		<h2>👋 안녕하세요, 세광입니다!</h2>
-		<p>
-			<strong>루나소나타 블로그</strong>에 오신 것을 환영합니다. 이곳은 시놀로지 NAS와 Astro 프레임워크를 기반으로 직접 구축한 개인 블로그 공간입니다.
-		</p>
+		<!-- 시적인 소개 글 영역 -->
+		<div class="about-content">
+			<section class="intro-section fade-in delay-1">
+				<h2>스치는 계절 속에서 문장을 건져 올립니다</h2>
+				<p class="poetic-text">
+					바람이 흘러가는 소리, 무심코 지나치던 길가의 그림자,<br />
+					그리고 낯선 도시의 밤하늘 아래서 느꼈던 작고 아득한 감정들.<br />
+					빠르게 지나가는 시간 속에서 사소하지만 소중한 찰나를 문장으로 고이 벼려냅니다.
+				</p>
+			</section>
 
-		<hr />
+			<hr class="divider fade-in delay-1" />
 
-		<h3>🚀 블로그의 주요 관심사</h3>
-		<ul class="about-list">
-			<li>💻 <strong>기술 & 웹 구축:</strong> Astro, Docker, Synology NAS, 워드프레스 이관 및 웹 자동화</li>
-			<li>📝 <strong>생각 & 일상 기록:</strong> 개인적인 소회, 지속적인 성장 경험, 아이디어 정리</li>
-			<li>🛠️ <strong>나만의 인프라:</strong> 프라이빗 홈서버 구축 및 데이터 관리 시스템</li>
-		</ul>
+			<section class="category-section fade-in delay-2">
+				<h3>
+					<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+						<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+					</svg>
+					이곳에 담기는 이야기
+				</h3>
+				
+				<div class="card-grid">
+					<div class="card">
+						<h4>
+							<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M12 20h9"></path>
+								<path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+							</svg>
+							일상과 일기
+						</h4>
+						<p>단조로운 하루의 결을 천천히 짚어보며 마음의 소리를 나지막이 기록합니다.</p>
+					</div>
 
-		<hr />
+					<div class="card">
+						<h4>
+							<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<circle cx="12" cy="12" r="10"></circle>
+								<polygon points="12 8 8 12 12 16 16 12 12 8"></polygon>
+							</svg>
+							순간의 에피소드
+						</h4>
+						<p>우연히 맞닥뜨린 사람들과 뜻밖의 해프닝, 그 속에 숨겨진 작은 여운들을 남깁니다.</p>
+					</div>
 
-		<h3>🛠️ 블로그 인프라 & 기술 스택</h3>
-		<div class="tech-stack-grid">
-			<div class="tech-card">
-				<h4>Framework</h4>
-				<p>Astro (Node.js SSR)</p>
-			</div>
-			<div class="tech-card">
-				<h4>Server & Hosting</h4>
-				<p>Synology NAS (Docker Container Manager)</p>
-			</div>
-			<div class="tech-card">
-				<h4>Database & Auth</h4>
-				<p>MariaDB / Prisma & Auth.js</p>
-			</div>
+					<div class="card">
+						<h4>
+							<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<circle cx="12" cy="12" r="10"></circle>
+								<line x1="2" y1="12" x2="22" y2="12"></line>
+								<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path>
+							</svg>
+							길 위의 여정
+						</h4>
+						<p>익숙한 정적을 떠나 낯선 바람을 맞으며 마주한 풍경과 생각을 담아냅니다.</p>
+					</div>
+				</div>
+			</section>
+
+			<hr class="divider fade-in delay-2" />
+
+			<section class="contact-section fade-in delay-3">
+				<h3>
+					<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+						<polyline points="22,6 12,13 2,6"></polyline>
+					</svg>
+					마음을 나누며
+				</h3>
+				<p>
+					남겨진 글귀들이 누군가에게 작은 온기나 한 조각 휴식이 될 수 있기를 바랍니다.<br />
+					이야기를 나누고 싶다면 언제든 머물다 가세요.
+				</p>
+			</section>
 		</div>
 	</div>
 </Layout>
 
 <style>
 	.about-container {
-		font-family: var(--font-body, sans-serif);
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
+		margin-top: 1rem;
+		width: 100%;
+	}
+
+	/* wrapper 박스가 이미지 크기 그대로 붙도록 설정 */
+	.profile-image-wrapper {
+		width: 100% !important;
+		height: fit-content !important;
+		min-height: 0 !important;
+		max-height: none !important;
+		/* border-radius: 12px; */
+		overflow: hidden;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+		margin: 0 !important;
+		padding: 0 !important;
+		line-height: 0 !important;
+		font-size: 0 !important;
+	}
+
+	/* 이미지가 잘림 없이 100% 원본 비율로 채워짐 */
+	.profile-image-wrapper img {
+		width: 100% !important;
+		height: auto !important;
+		display: block !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		border-radius: 0 !important;
+		box-shadow: none !important;
+		object-fit: fill !important;
+	}
+
+	.about-content {
+		width: 100%;
+	}
+
+	.intro-section h2 {
+		font-size: 1.75rem;
+		margin-bottom: 1.2rem;
+		color: rgb(var(--black));
+		word-break: keep-all;
+	}
+
+	.poetic-text {
+		font-size: 1.05rem;
 		line-height: 1.8;
-		color: var(--text-primary, #0f172a);
+		color: var(--gray);
+		word-break: keep-all;
 	}
 
-	.about-quote {
-		font-family: var(--font-quote, serif);
-		font-size: 1.2rem;
-		background: #f1f5f9;
-		border-left: 4px solid var(--accent-color, #6366f1);
-		padding: 1.25rem 1.5rem;
-		margin: 1.5rem 0 2.5rem 0;
-		border-radius: 0 8px 8px 0;
-		color: #334155;
-	}
-
-	h2, h3 {
-		font-family: var(--font-heading, sans-serif);
-		color: var(--text-primary, #0f172a);
-		margin-top: 2rem;
-		margin-bottom: 1rem;
-	}
-
-	hr {
-		border: none;
-		border-top: 1px solid var(--border-color, #e2e8f0);
+	.divider {
+		border: 0;
+		border-top: 1px solid rgb(var(--gray-light, 230, 230, 230));
 		margin: 2.5rem 0;
 	}
 
-	.about-list {
-		list-style: none;
-		padding: 0;
+	h3 {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 1.3rem;
+		margin-bottom: 1.2rem;
+		color: rgb(var(--black));
 	}
 
-	.about-list li {
-		padding: 0.5rem 0;
-		font-size: 1.05rem;
+	.icon {
+		width: 1.2em;
+		height: 1.2em;
+		color: var(--accent);
+		flex-shrink: 0;
 	}
 
-	.tech-stack-grid {
+	.icon-sm {
+		width: 1em;
+		height: 1em;
+		color: var(--accent);
+		flex-shrink: 0;
+	}
+
+	.card-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		grid-template-columns: 1fr;
 		gap: 1rem;
-		margin-top: 1rem;
 	}
 
-	.tech-card {
-		background: #ffffff;
-		border: 1px solid var(--border-color, #e2e8f0);
-		border-radius: 10px;
+	@media (min-width: 640px) {
+		.card-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.card {
 		padding: 1.25rem;
-		text-align: center;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+		border-radius: 8px;
+		background-color: rgba(var(--gray-light, 245, 245, 245), 0.5);
+		border: 1px solid rgba(var(--gray-light, 230, 230, 230), 0.8);
 	}
 
-	.tech-card h4 {
-		font-family: var(--font-heading, sans-serif);
-		font-size: 0.95rem;
-		color: #6366f1;
+	.card h4 {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 1.05rem;
 		margin-bottom: 0.5rem;
+		color: rgb(var(--black));
 	}
 
-	.tech-card p {
+	.card p {
+		font-size: 0.925rem;
+		line-height: 1.6;
+		color: var(--gray);
 		margin: 0;
-		font-size: 0.9rem;
-		font-weight: 600;
-		color: #334155;
+		word-break: keep-all;
+	}
+
+	.contact-section p {
+		line-height: 1.7;
+		color: var(--gray);
+		word-break: keep-all;
 	}
 </style>
