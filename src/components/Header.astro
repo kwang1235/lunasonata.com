@@ -1,71 +1,353 @@
 ---
-// src/components/Header.astro
-import HeaderLink from './HeaderLink.astro';
-import { SITE_TITLE } from '../consts';
+// 최신 Astro/Vite 스펙인 import.meta.glob을 사용하여 마크다운 글들을 불러옵니다.
+const postFiles = import.meta.glob('../pages/blog/*.{md,mdx}', { eager: true });
+const posts = Object.values(postFiles) as any[];
+
+// 수집된 글에서 카테고리를 추출하고 중복을 제거합니다.
+const allCategories = [
+  ...new Set(posts.map((post) => post.frontmatter?.category).filter(Boolean))
+];
 ---
 
 <header class="site-header">
-	<nav class="header-nav">
-		<!-- 블로그 타이틀 / 로고 -->
-		<h2 class="site-logo">
-			<a href="/">{SITE_TITLE}</a>
-		</h2>
+  <div class="header-container">
+    <!-- 블로그 이름 (클릭 시 홈으로 이동) -->
+    <a href="/" class="blog-logo">
+      세광's 블로그
+    </a>
 
-		<!-- 내비게이션 메뉴 링크 -->
-		<div class="internal-links">
-			<HeaderLink href="/">홈</HeaderLink>
-			<HeaderLink href="/blog">블로그</HeaderLink>
-			<HeaderLink href="/about">소개</HeaderLink>
-		</div>
-	</nav>
+    <!-- PC 네비게이션 -->
+    <nav class="desktop-nav">
+      <div class="nav-item dropdown">
+        <button class="dropdown-btn">블로그 <span class="arrow">▾</span></button>
+        <div class="dropdown-menu">
+          <a href="/blog">전체글</a>
+          <div class="category-subheader">카테고리</div>
+          {allCategories.length > 0 ? (
+            allCategories.map((category) => (
+              <a href={`/category/${category}`} class="category-item">
+                - {category}
+              </a>
+            ))
+          ) : (
+            <span class="no-category">카테고리 없음</span>
+          )}
+        </div>
+      </div>
+      <a href="/about" class="nav-item">소개</a>
+      <!-- 기존: <a href="/search" class="nav-item">검색</a> -->
+<!-- 변경 -->
+<a href="/search" class="nav-item search-icon-btn" aria-label="검색">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</a>
+    </nav>
+
+    <!-- 모바일 햄버거 버튼 -->
+    <button class="mobile-menu-btn" id="menuToggle" aria-label="메뉴 열기">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  </div>
+
+  <!-- 모바일 메뉴바 -->
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="/blog" class="mobile-link">전체글</a>
+    
+    <div class="mobile-category-group">
+      <span class="mobile-category-title">카테고리</span>
+      <div class="mobile-category-list">
+        {allCategories.length > 0 ? (
+          allCategories.map((category) => (
+            <a href={`/category/${category}`} class="mobile-category-item">
+              - {category}
+            </a>
+          ))
+        ) : (
+          <span class="no-category">카테고리 없음</span>
+        )}
+      </div>
+    </div>
+
+    <!-- 기존: <a href="/search" class="nav-item">검색</a> -->
+<!-- 변경 -->
+<a href="/search" class="nav-item search-icon-btn" aria-label="검색">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</a>
+    <a href="/about" class="mobile-link">소개</a>
+  </nav>
 </header>
 
+<script>
+  // 모바일 햄버거 토글 동작 스크립트
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileNav = document.getElementById('mobileNav');
+
+  menuToggle?.addEventListener('click', () => {
+    menuToggle.classList.toggle('active');
+    mobileNav?.classList.toggle('open');
+  });
+</script>
+
 <style>
-	/* 헤더 전체 컨테이너 */
-	.site-header {
-		margin: 0;
-		padding: 0 1rem;
-		background: #ffffff;
-		border-bottom: 1px solid #e2e8f0;
-		position: sticky;
-		top: 0;
-		z-index: 100;
-		backdrop-filter: blur(8px);
-		background-color: rgba(255, 255, 255, 0.9);
-	}
+  /* ==========================================
+     Header 기본 스타일 및 사용자 변수 적용
+     ========================================== */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--bg-primary, #fcfbf9);
+    border-bottom: 1px solid var(--border-color, #ebeae6);
+    backdrop-filter: blur(8px);
+  }
 
-	/* 내비게이션 레이아웃 */
-	.header-nav {
-		max-width: 1080px;
-		margin: 0 auto;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		height: 70px;
-	}
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-	/* 로고 스타일 (Gmarket Sans 폰트 활용) */
-	.site-logo {
-		margin: 0;
-		font-size: 1.35rem;
-	}
+  /* 로고 스타일 및 호버 작용 */
+  .blog-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary, #22252a);
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
 
-	.site-logo a {
-		color: #0f172a;
-		text-decoration: none;
-		font-family: var(--font-heading, sans-serif);
-		font-weight: 700;
-		transition: color 0.2s ease;
-	}
+  .blog-logo:hover {
+    color: var(--accent-color, #5c6255);
+    transform: translateY(-1px);
+  }
 
-	.site-logo a:hover {
-		color: #6366f1;
-	}
+  /* ==========================================
+     PC 네비게이션
+     ========================================== */
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
 
-	/* 메뉴 링크 그룹 */
-	.internal-links {
-		display: flex;
-		gap: 1.5rem;
-		align-items: center;
-	}
+	.nav-item.search-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .nav-item {
+    color: var(--text-secondary, #5d6268);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .nav-item:hover {
+    /* color: var(--accent-color, #5c6255); */
+    /* background-color: var(--accent-light, #e8ebe4); */
+  }
+
+  /* 드롭다운 메뉴 (PC) */
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary, #5d6268);
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-btn:hover {
+    color: var(--accent-color, #5c6255);
+    /* background-color: var(--accent-light, #e8ebe4); */
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    background-color: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #ebeae6);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    display: none;
+    flex-direction: column;
+  }
+
+  .dropdown:hover .dropdown-menu {
+    display: flex;
+  }
+
+  .dropdown-menu a {
+    padding: 0.5rem 1rem;
+    color: var(--text-secondary, #5d6268);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .dropdown-menu a:hover {
+    /* background-color: var(--accent-light, #e8ebe4); */
+    color: var(--accent-color, #5c6255);
+  }
+
+  .category-subheader {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted, #9aa0a6);
+    padding: 0.5rem 1rem 0.2rem;
+    text-transform: uppercase;
+  }
+
+  .category-item {
+    padding-left: 1.5rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .no-category {
+    font-size: 0.85rem;
+    color: var(--text-muted, #9aa0a6);
+    padding: 0.5rem 1rem;
+  }
+
+  /* ==========================================
+     모바일 네비게이션 & 햄버거 버튼
+     ========================================== */
+  .mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .bar {
+    height: 2px;
+    width: 100%;
+    background-color: var(--text-primary, #22252a);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* 햄버거 애니메이션 (열렸을 때 X 형태) */
+  .mobile-menu-btn.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+    background-color: var(--accent-color, #5c6255);
+  }
+  .mobile-menu-btn.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .mobile-menu-btn.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+    background-color: var(--accent-color, #5c6255);
+  }
+
+  .mobile-nav {
+    display: none;
+    flex-direction: column;
+    background-color: var(--bg-primary, #fcfbf9);
+    border-bottom: 1px solid var(--border-color, #ebeae6);
+    padding: 1rem 1.5rem;
+    gap: 1rem;
+  }
+
+  .mobile-nav.open {
+    display: flex;
+  }
+
+  .mobile-link {
+    color: var(--text-primary, #22252a);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .mobile-link:hover {
+    color: var(--accent-color, #5c6255);
+  }
+
+  .mobile-category-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mobile-category-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-muted, #9aa0a6);
+  }
+
+  .mobile-category-list {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1rem;
+    gap: 0.5rem;
+  }
+
+  .mobile-category-item {
+    color: var(--text-secondary, #5d6268);
+    text-decoration: none;
+  }
+
+  .mobile-category-item:hover {
+    color: var(--accent-color, #5c6255);
+  }
+
+  /* 반응형 분기점 (768px 이하 모바일) */
+  @media (max-width: 768px) {
+    .desktop-nav {
+      display: none;
+    }
+    .mobile-menu-btn {
+      display: flex;
+    }
+
+		.nav-item.search-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: left;
+    padding: 0.5rem;
+  }
+
+	/* 모바일 메뉴 안에 있는 검색 아이콘 버튼 (또는 링크) */
+.mobile-nav .search-mobile-item, 
+.mobile-menu a.search-icon-btn {
+  margin-left: auto; /* 왼쪽 여백을 자동으로 채워 오른쪽으로 밀어냅니다 */
+}
+
+.mobile-search-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 양 끝으로 정렬 */
+  width: 100%;
+}
+  }
 </style>
