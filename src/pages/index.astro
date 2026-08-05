@@ -1,5 +1,4 @@
 ---
-// src/pages/index.astro
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -9,7 +8,6 @@ import FormattedDate from '../components/FormattedDate.astro';
 import { getImage } from 'astro:assets';
 import '../styles/global.css';
 
-// src/assets/ 내 이미지들을 동적으로 읽어오기 위한 설정
 const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/*.{jpeg,jpg,png,gif,webp}');
 
 const posts = (await getCollection('blog')).sort(
@@ -19,39 +17,40 @@ const posts = (await getCollection('blog')).sort(
 const featuredPost = posts[0];
 const recentPosts = posts.slice(1, 4);
 
-// 최근 글 3개 배경 이미지 URL 추출 및 타입 안전 처리
-const processedRecentPosts = await Promise.all(
-  recentPosts.map(async (post) => {
-    let bgUrl = '/blog-placeholder-1.jpg'; // 기본 이미지
+// 공통 이미지 URL 변환 함수 (상대 경로 및 파일명 처리 보완)
+async function getOptimizedBgUrl(heroImage: any) {
+  let bgUrl = '/blog-placeholder-1.jpg';
+  if (!heroImage) return bgUrl;
 
-    if (post.data.heroImage) {
-      const heroImg = post.data.heroImage;
+  if (typeof heroImage === 'object' && heroImage !== null) {
+    const optimized = await getImage({ src: heroImage });
+    return optimized.src;
+  } else if (typeof heroImage === 'string') {
+    // ../../assets/파일명.webp 이나 /src/assets/파일명.webp 모두 파일명만 추출하여 /src/assets/ 경로로 통일
+    const fileName = heroImage.split('/').pop();
+    const imagePath = `/src/assets/${fileName}`;
 
-      if (typeof heroImg === 'object' && heroImg !== null) {
-        // 1. heroImage가 image() 도우미를 거친 ImageMetadata 객체인 경우
-        const optimized = await getImage({ src: heroImg });
-        bgUrl = optimized.src;
-      } else if (typeof heroImg === 'string') {
-        // 2. heroImage가 단순 문자열 경로인 경우
-        const imagePath = heroImg.startsWith('/src/assets/')
-          ? heroImg
-          : `/src/assets/${heroImg.replace(/^\/+/, '')}`;
-
-        if (images[imagePath]) {
-          const imageModule = await images[imagePath]();
-          const optimized = await getImage({ src: imageModule.default });
-          bgUrl = optimized.src;
-        } else {
-          bgUrl = heroImg;
-        }
-      }
+    if (images[imagePath]) {
+      const imageModule = await images[imagePath]();
+      const optimized = await getImage({ src: imageModule.default });
+      return optimized.src;
     }
+    return heroImage;
+  }
+  return bgUrl;
+}
 
-    return {
-      ...post,
-      bgUrl,
-    };
-  })
+// 1. Featured Post 배경 처리 (안전하게 전달)
+const featuredBgUrl = featuredPost 
+  ? await getOptimizedBgUrl(featuredPost.data.heroImage) 
+  : '/blog-placeholder-1.jpg';
+
+// 2. Recent Posts 배경 처리
+const processedRecentPosts = await Promise.all(
+  recentPosts.map(async (post) => ({
+    ...post,
+    bgUrl: await getOptimizedBgUrl(post.data.heroImage),
+  }))
 );
 ---
 
@@ -74,11 +73,21 @@ const processedRecentPosts = await Promise.all(
             세광의 프라이빗 저널에 오신 것을 환영합니다.
           </p>
           {featuredPost && (
-            <a href={`/${featuredPost.id}/`} class="main-featured-link">
-              <span class="badge">LATEST</span>
-              <span class="title">{featuredPost.data.title}</span>
-            </a>
-          )}
+  <div class="featured-wrapper">
+    <a href={`/${featuredPost.id}/`} class="main-featured-card">
+      <div class="featured-bg" style={`background-image: url('${featuredBgUrl}');`}></div>
+      <div class="featured-overlay"></div>
+      <div class="featured-content">
+        <div class="featured-header">
+          <span class="badge">LATEST</span>
+          <time><FormattedDate date={featuredPost.data.pubDate} /></time>
+        </div>
+        <span class="featured-title">{featuredPost.data.title}</span>
+        <span class="featured-arrow">→</span>
+      </div>
+    </a>
+  </div>
+)}
         </div>
       </section>
 
@@ -162,34 +171,6 @@ const processedRecentPosts = await Promise.all(
     margin-bottom: 2.5rem;
   }
 
-  .main-featured-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.25rem;
-    background: var(--bg-card, #fff);
-    border: 1px solid var(--border-color, #eee);
-    border-radius: 8px;
-    text-decoration: none;
-    color: var(--text-primary, #111);
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-  }
-
-  .main-featured-link:hover {
-    border-color: var(--accent-color, #228be6);
-    transform: translateY(-2px);
-  }
-
-  .badge {
-    font-size: 0.7rem;
-    background: var(--accent-color, #333);
-    color: #fff;
-    padding: 0.15rem 0.4rem;
-    border-radius: 4px;
-    letter-spacing: 0.05em;
-  }
-
   .section-heading {
     border: none;
     padding: 0;
@@ -197,8 +178,135 @@ const processedRecentPosts = await Promise.all(
     margin-bottom: 2.5rem;
     font-size: 1.5rem;
   }
+/* ==========================================
+     1. Latest Featured Card Style (LATEST 영역)
+     ========================================== */
+  .featured-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
 
-  /* 최근 글 블러 배경 카드 그리드 */
+  .main-featured-card {
+    position: relative;
+    display: block;
+    max-width: 620px;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    text-decoration: none !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .main-featured-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+  }
+
+  /* 배경 이미지 (블러 & 확대) */
+  .featured-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px);
+    transform: scale(1.15);
+    transition: filter 0.4s ease, transform 0.4s ease;
+  }
+
+  .main-featured-card:hover .featured-bg {
+    filter: blur(4px);
+    transform: scale(1.2);
+  }
+
+  /* 텍스트 가독성을 위한 어두운 오버레이 레이어 */
+  .featured-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(0, 0, 0, 0.55) 60%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+    transition: background 0.3s ease;
+  }
+
+  .main-featured-card:hover .featured-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.85) 0%,
+      rgba(0, 0, 0, 0.65) 60%,
+      rgba(0, 0, 0, 0.5) 100%
+    );
+  }
+
+  /* 내부 콘텐츠 레이어 */
+  .featured-content {
+    position: relative;
+    z-index: 2;
+    padding: 1.25rem 1.75rem; /* 카드 위아래, 좌우 여백을 충분히 부여 */
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    color: #ffffff;
+    text-align: left;
+  }
+
+  .featured-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: flex-start;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+    background: #ffffff;
+    color: #111111;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    letter-spacing: 0.08em;
+  }
+
+  .featured-header time {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: var(--font-mono, monospace);
+  }
+
+  .featured-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.4;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* 텍스트에 잔그림자를 주어 선명도 향상 */
+  }
+
+  .featured-arrow {
+    font-size: 1.2rem;
+    opacity: 0.85;
+    color: #ffffff;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .main-featured-card:hover .featured-arrow {
+    opacity: 1;
+    transform: translateX(5px);
+  }
+
+  /* ==========================================
+     2. Recent Posts Card Style (최근의 기록들)
+     ========================================== */
   .recent-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -236,7 +344,6 @@ const processedRecentPosts = await Promise.all(
     position: relative;
   }
 
-  /* 배경 이미지 (흐림 & 확대 효과) */
   .card-bg {
     position: absolute;
     inset: 0;
@@ -252,14 +359,13 @@ const processedRecentPosts = await Promise.all(
     transform: scale(1.18);
   }
 
-  /* 어두운 오버레이 */
   .card-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.25) 100%
+      rgba(0, 0, 0, 0.75) 100%
     );
     transition: background 0.3s ease;
   }
@@ -268,11 +374,10 @@ const processedRecentPosts = await Promise.all(
     background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.15) 100%
+      rgba(0, 0, 0, 0.85) 100%
     );
   }
 
-  /* 텍스트 콘텐츠 */
   .card-content {
     position: relative;
     z-index: 2;
@@ -323,5 +428,19 @@ const processedRecentPosts = await Promise.all(
   .recent-card-blur:hover .read-more {
     opacity: 1;
     transform: translateX(4px);
+  }
+
+  @media (max-width: 640px) {
+    .featured-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .featured-title {
+      white-space: normal;
+    }
+    .featured-arrow {
+      display: none;
+    }
   }
 </style>
