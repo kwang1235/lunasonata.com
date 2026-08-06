@@ -51,7 +51,8 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
           <h1 class="post-title">{title}</h1>
         </header>
 
-        {imageSrc && (
+        <!-- 대표이미지 주석처리 -->
+        <!-- {imageSrc && (
           <div class="hero-image image-hover-wrapper">
             <img src={imageSrc} alt={title} class="lightbox-trigger" />
             <div class="zoom-hint-overlay">
@@ -64,7 +65,7 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
               <span>클릭하여 확대</span>
             </div>
           </div>
-        )}
+        )} -->
 
         <!-- 본문 영역 -->
         <div class="prose" id="prose-content">
@@ -590,7 +591,7 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
 
         // src가 유효한 이미지들만 안전하게 수집
         const allImages = Array.from(
-          document.querySelectorAll<HTMLImageElement>('.hero-image img, .prose img')
+          document.querySelectorAll<HTMLImageElement>('.prose img')
         ).filter((img) => img.src && img.src.trim() !== '');
 
         let currentIndex = 0;
