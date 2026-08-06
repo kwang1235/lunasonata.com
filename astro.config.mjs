@@ -1,7 +1,7 @@
 // @ts-check
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
@@ -9,11 +9,38 @@ export default defineConfig({
   output: 'static',
   integrations: [mdx(), sitemap()],
 
+  // 💡 Astro 이미지 자동 변환 엔진
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',
     },
   },
+
+  // 💡 <Font /> 컴포넌트가 참조하는 Atkinson 폰트 설정 복구
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: 'Atkinson',
+      cssVariable: '--font-atkinson',
+      fallbacks: ['sans-serif'],
+      options: {
+        variants: [
+          {
+            src: ['./src/assets/fonts/atkinson-regular.woff'],
+            weight: 400,
+            style: 'normal',
+            display: 'swap',
+          },
+          {
+            src: ['./src/assets/fonts/atkinson-bold.woff'],
+            weight: 700,
+            style: 'normal',
+            display: 'swap',
+          },
+        ],
+      },
+    },
+  ],
 
   vite: {
     plugins: [
@@ -25,22 +52,14 @@ export default defineConfig({
         resolveId(source) {
           if (source.includes('%')) {
             try {
-              return decodeCrossRef(source);
+              return decodeURIComponent(source);
             } catch (e) {
               return null;
             }
           }
           return null;
-        }
-      }
+        },
+      },
     ],
   },
 });
-
-function decodeCrossRef(str) {
-  try {
-    return decodeURIComponent(str);
-  } catch (e) {
-    return str;
-  }
-}
