@@ -46,5 +46,13 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    // 💡 빌드 시 파일명 뒤에 해시값을 붙이지 않고 원본 파일명 그대로 출력하는 설정
+    build: {
+      rollupOptions: {
+        output: {
+          assetFileNames: '_astro/[name].[ext]',
+        },
+      },
+    },
   },
 });
