@@ -1,141 +1,526 @@
 ---
-// src/pages/blog/index.astro
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
-import { getCollection } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
-import { Image } from 'astro:assets';
-import '../../styles/global.css';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 
 const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+// 등록된 글들에서 카테고리 목록을 동적으로 추출
+const categories = [...new Set(posts.map((post) => post.data.category).filter(Boolean))];
+
+// 검색 모달 데이터
+const searchData = posts.map((post) => ({
+  id: post.id,
+  title: post.data.title,
+  description: post.data.description || '',
+  category: post.data.category || '',
+  pubDate: post.data.pubDate.toISOString().split('T')[0]
+}));
 ---
 
 <!doctype html>
 <html lang="ko">
-	<head>
-		<BaseHead title={`블로그 글 목록 - ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
-		<style>
-			.blog-container {
-				max-width: var(--max-width, 1080px);
-				margin: 0 auto;
-				padding: 3rem 1.25rem 5rem 1.25rem;
-			}
+  <head>
+    <BaseHead title={`Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <style>
+      main {
+        width: 880px;
+        max-width: calc(100% - 2em);
+        margin: 0 auto;
+        padding: 3em 1em;
+      }
 
-			.page-header {
-				text-align: center;
-				margin-bottom: 3.5rem;
-			}
+      /* 헤더 상단 영역 */
+      .blog-header {
+        margin-bottom: 2.5rem;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 1.25rem;
+      }
+      .title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+      .title-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+        letter-spacing: -0.02em;
+      }
 
-			.page-title {
-				font-size: 2.25rem;
-				font-family: var(--font-heading, sans-serif);
-				color: var(--text-primary, #0f172a);
-				margin-bottom: 0.5rem;
-			}
+      /* 스포트라이트 검색 버튼 */
+      .search-trigger-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.55rem 1rem;
+        background-color: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 20px;
+        color: #64748b;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .search-trigger-btn:hover {
+        background-color: #ffffff;
+        border-color: #5c6255;
+        color: #5c6255;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+      }
+      .search-shortcut {
+        font-size: 0.75rem;
+        padding: 0.1rem 0.4rem;
+        background-color: #e2e8f0;
+        border-radius: 6px;
+        color: #475569;
+        font-weight: 600;
+      }
 
-			.page-description {
-				color: var(--text-secondary, #475569);
-				font-size: 1.05rem;
-			}
+      /* 카테고리 내비게이션 */
+      .category-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .category-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: #64748b;
+        background-color: #f1f5f9;
+        transition: all 0.2s ease;
+      }
+      .category-btn:hover {
+        background-color: #e2e8f0;
+        color: #0f172a;
+      }
+      .category-btn.active {
+        background-color: #1e293b;
+        color: #ffffff;
+      }
 
-			.post-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-				gap: 2rem;
-				list-style: none;
-				padding: 0;
-				margin: 0;
-			}
+      /* 리스트 카드 */
+      .post-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      .post-item a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 1.5rem !important;
+        text-decoration: none !important;
+        padding: 1.25rem !important;
+        border-radius: 16px !important;
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s ease-in-out !important;
+      }
+      .post-item a:hover {
+        background-color: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08) !important;
+      }
+      .thumbnail-wrapper {
+        flex-shrink: 0;
+        width: 200px;
+        height: 125px;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #f1f5f9;
+      }
+      .thumbnail-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .post-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        min-width: 0;
+      }
+      .post-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: #64748b;
+      }
+      .post-category-tag {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #2563eb;
+        background-color: #eff6ff;
+        padding: 0.15rem 0.5rem;
+        border-radius: 6px;
+      }
 
-			.post-card {
-				background: var(--bg-card, #ffffff);
-				border: 1px solid var(--border-color, #e2e8f0);
-				border-radius: 14px;
-				overflow: hidden;
-				transition: transform 0.25s ease, box-shadow 0.25s ease;
-			}
+      /* global.css의 h2 세로선 및 가상 요소 제거 유지 */
+      :global(.post-item h2),
+      .post-title {
+        font-size: 1.25rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        border-left: none !important;
+        background: transparent !important;
+        line-height: 1.4 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+      }
+      :global(.post-item h2::before),
+      :global(.post-item h2::after),
+      .post-title::before,
+      .post-title::after {
+        content: none !important;
+        display: none !important;
+        border: none !important;
+      }
 
-			.post-card:hover {
-				transform: translateY(-5px);
-				box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.08);
-			}
+      .post-item a:hover :global(.post-title),
+      .post-item a:hover .post-title {
+        color: var(--accent-color, #2563eb) !important;
+      }
 
-			.post-card a {
-				display: flex;
-				flex-direction: column;
-				height: 100%;
-				text-decoration: none;
-				color: inherit;
-			}
+      .post-description {
+        font-size: 0.925rem;
+        color: #475569;
+        margin: 0 !important;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
 
-			.post-thumbnail {
-				width: 100%;
-				height: 200px;
-				object-fit: cover;
-				background-color: #f1f5f9;
-			}
+      /* 스포트라이트 검색 모달 */
+      .spotlight-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(8px);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        padding-top: 10vh;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+      .spotlight-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .spotlight-box {
+        width: 100%;
+        max-width: 620px;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        max-height: 70vh;
+        transform: scale(0.96);
+        transition: transform 0.2s ease;
+      }
+      .spotlight-backdrop.open .spotlight-box {
+        transform: scale(1);
+      }
+      .spotlight-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .spotlight-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 1.15rem;
+        font-weight: 500;
+        color: #0f172a;
+        background: transparent;
+      }
+      .spotlight-input::placeholder {
+        color: #94a3b8;
+      }
+      .spotlight-close-btn {
+        background: #f1f5f9;
+        border: none;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #64748b;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .spotlight-results {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0.75rem;
+        list-style: none;
+        margin: 0;
+      }
+      .spotlight-item a {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.85rem 1rem;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: background 0.15s ease;
+      }
+      .spotlight-item a:hover {
+        background-color: #f1f5f9;
+      }
+      .spotlight-item-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .spotlight-item-desc {
+        font-size: 0.875rem;
+        color: #64748b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .spotlight-empty {
+        padding: 3rem 1.5rem;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.95rem;
+      }
 
-			.post-content {
-				padding: 1.5rem;
-				display: flex;
-				flex-direction: column;
-				flex-grow: 1;
-			}
+      @media (max-width: 640px) {
+        .post-item a {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+        }
+        .thumbnail-wrapper {
+          width: 100%;
+          height: 180px;
+        }
+        .post-title {
+          white-space: normal !important;
+        }
+        .spotlight-backdrop {
+          padding-top: 5vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <!-- 블로그 상단 헤더 영역 -->
+      <div class="blog-header">
+        <div class="title-row">
+          <div class="title-wrapper">
+            <!-- 제목 옆 책 아이콘: 인라인 스타일로 크기 완전 고정 -->
+            <svg style="width: 28px !important; height: 28px !important; min-width: 28px !important; max-width: 28px !important; stroke: #1e293b; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <h1 class="page-title">전체 글 목록</h1>
+          </div>
 
-			.post-title {
-				font-size: 1.25rem;
-				font-family: var(--font-heading, sans-serif);
-				color: var(--text-primary, #0f172a);
-				margin-bottom: 0.75rem;
-				line-height: 1.4;
-				word-break: keep-all;
-			}
+          <!-- 검색 트리거 버튼 -->
+          <button id="searchTrigger" class="search-trigger-btn" aria-label="검색창 열기">
+            <svg style="width: 16px !important; height: 16px !important; min-width: 16px !important; max-width: 16px !important; stroke: currentColor; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>검색...</span>
+            <span class="search-shortcut">⌘K</span>
+          </button>
+        </div>
 
-			.post-date {
-				margin-top: auto;
-				font-size: 0.875rem;
-				color: var(--text-muted, #94a3b8);
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main class="blog-container">
-			<section class="page-header">
-				<h1 class="page-title">📝 전체 글 목록</h1>
-				<p class="page-description">루나소나타 블로그에 기록된 모든 포스트입니다.</p>
-			</section>
+        <!-- 동적 카테고리 내비게이션 -->
+        <nav class="category-nav">
+          <a href="/blog/" class="category-btn active">전체</a>
+          {
+            categories.map((cat) => (
+              <a href={`/category/${cat}/`} class="category-btn">
+                #{cat}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
 
-			<section>
-				<ul class="post-grid">
-					{
-						posts.map((post) => (
-							<li class="post-card">
-								<a href={`/${post.id}/`}>
-									{post.data.heroImage && (
-										typeof post.data.heroImage === 'string' ? (
-											<img class="post-thumbnail" src={post.data.heroImage} alt={post.data.title} />
-										) : (
-											<Image class="post-thumbnail" src={post.data.heroImage} alt={post.data.title} width={720} height={360} />
-										)
-									)}
-									<div class="post-content">
-										<h2 class="post-title">{post.data.title}</h2>
-										<p class="post-date">
-											<FormattedDate date={post.data.pubDate} />
-										</p>
-									</div>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
+      <!-- 포스트 카드 목록 -->
+      <section>
+        <ul class="post-list">
+          {
+            posts.map((post) => (
+              <li class="post-item">
+                <a href={`/${post.id}/`}>
+                  <div class="thumbnail-wrapper">
+                    {post.data.heroImage && typeof post.data.heroImage === 'object' ? (
+                      <Image src={post.data.heroImage} alt={post.data.title} width={200} height={125} />
+                    ) : post.data.heroImage ? (
+                      <img src={post.data.heroImage} alt={post.data.title} />
+                    ) : (
+                      <div class="no-image" />
+                    )}
+                  </div>
+                  <div class="post-content">
+                    <div class="post-meta">
+                      {post.data.category && (
+                        <span class="post-category-tag">{post.data.category}</span>
+                      )}
+                      <svg style="width: 14px !important; height: 14px !important; min-width: 14px !important; max-width: 14px !important; stroke: #64748b; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                      </svg>
+                      <FormattedDate date={post.data.pubDate} />
+                    </div>
+                    <h2 class="post-title">{post.data.title}</h2>
+                    {post.data.description && (
+                      <p class="post-description">{post.data.description}</p>
+                    )}
+                  </div>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </main>
+
+    <!-- 스포트라이트 검색 모달 -->
+    <div id="spotlightBackdrop" class="spotlight-backdrop">
+      <div class="spotlight-box">
+        <div class="spotlight-input-wrapper">
+          <svg style="width: 22px !important; height: 22px !important; min-width: 22px !important; max-width: 22px !important; stroke: #64748b; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="spotlightInput" class="spotlight-input" placeholder="글 제목 또는 내용으로 검색..." />
+          <button id="spotlightClose" class="spotlight-close-btn">ESC</button>
+        </div>
+        <ul id="spotlightResults" class="spotlight-results">
+          <div class="spotlight-empty">검색어를 입력하면 목록이 표시됩니다.</div>
+        </ul>
+      </div>
+    </div>
+
+    <Footer />
+
+    <script is:inline define:vars={{ searchData }}>
+      const triggerBtn = document.getElementById('searchTrigger');
+      const backdrop = document.getElementById('spotlightBackdrop');
+      const input = document.getElementById('spotlightInput');
+      const resultsContainer = document.getElementById('spotlightResults');
+      const closeBtn = document.getElementById('spotlightClose');
+
+      function openSpotlight() {
+        backdrop.classList.add('open');
+        input.value = '';
+        renderResults('');
+        setTimeout(() => input.focus(), 50);
+      }
+
+      function closeSpotlight() {
+        backdrop.classList.remove('open');
+      }
+
+      triggerBtn.addEventListener('click', openSpotlight);
+      closeBtn.addEventListener('click', closeSpotlight);
+
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) closeSpotlight();
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          if (backdrop.classList.contains('open')) {
+            closeSpotlight();
+          } else {
+            openSpotlight();
+          }
+        }
+        if (e.key === 'Escape' && backdrop.classList.contains('open')) {
+          closeSpotlight();
+        }
+      });
+
+      input.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        renderResults(query);
+      });
+
+      function renderResults(query) {
+        if (!query) {
+          resultsContainer.innerHTML = '<div class="spotlight-empty">검색어를 입력하면 목록이 표시됩니다.</div>';
+          return;
+        }
+
+        const filtered = searchData.filter((post) => 
+          post.title.toLowerCase().includes(query) || 
+          post.description.toLowerCase().includes(query) ||
+          post.category.toLowerCase().includes(query)
+        );
+
+        if (filtered.length === 0) {
+          resultsContainer.innerHTML = `<div class="spotlight-empty">"${query}"에 대한 검색 결과가 없습니다.</div>`;
+          return;
+        }
+
+        resultsContainer.innerHTML = filtered.map((post) => `
+          <li class="spotlight-item">
+            <a href="/${post.id}/">
+              <span class="spotlight-item-title">${escapeHtml(post.title)}</span>
+              ${post.description ? `<span class="spotlight-item-desc">${escapeHtml(post.description)}</span>` : ''}
+            </a>
+          </li>
+        `).join('');
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+    </script>
+  </body>
 </html>
