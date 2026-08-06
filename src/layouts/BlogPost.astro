@@ -39,7 +39,7 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
               )}
             </span>
             <span class="meta-divider">•</span>
-            <!-- 읽기 시간 표기 영역 (SVG 아이콘 적용) -->
+            <!-- 읽기 시간 표기 영역 -->
             <span class="reading-time">
               <svg class="reading-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -160,7 +160,7 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         margin: 0;
       }
 
-      /* 이미지 확대 힌트 (호버 오버레이) */
+      /* 대표 이미지 및 본문 이미지 호버 스타일 */
       .hero-image {
         margin-bottom: 2.5rem;
       }
@@ -267,26 +267,25 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         border-color: var(--accent-color, #5c6255);
       }
 
-      /* 모달 전체 컨테이너 */
+      /* 이미지 모달 전체 컨테이너 (기본 숨김 -> .open 붙으면 flex) */
       .image-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh; /* 구형 브라우저 호환용 폴백 */
-  height: 100dvh; /* Dynamic Viewport Height: 아이폰 주소창 변동에 맞게 실제 보이는 높이 계산 */
-  background-color: rgba(0, 0, 0, 0.92);
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  /* 모바일 안전 영역(Safe Area) 하단 여백 반영 */
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh; /* 모바일 동적 뷰포트 고려 */
+        background-color: rgba(0, 0, 0, 0.92);
+        z-index: 9999;
+        display: none; /* 기본 상태 숨김 */
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
 
       .image-modal.open {
-        display: block;
+        display: flex !important; /* 모달 열릴 때 flex 활성화 */
       }
 
       /* 화면 우측 상단 고정 X 버튼 */
@@ -322,13 +321,14 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         left: 0;
         width: 100vw;
         height: calc(100vh - 100px);
+        height: calc(100dvh - 100px);
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 40px 20px 0 20px;
         box-sizing: border-box;
         z-index: 10001;
-        touch-action: pan-y; /* 수직 스크롤 허용, 수평 스와이프 감지 */
+        touch-action: pan-y;
       }
 
       .img-container {
@@ -338,12 +338,14 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         justify-content: center;
         max-width: 85vw;
         max-height: calc(100vh - 140px);
+        max-height: calc(100dvh - 140px);
       }
 
       .modal-content {
         display: block;
         max-width: 85vw;
         max-height: calc(100vh - 140px);
+        max-height: calc(100dvh - 140px);
         object-fit: contain;
         cursor: zoom-in;
         user-select: none;
@@ -387,24 +389,18 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
       .prev-btn { left: 1.5rem; }
       .next-btn { right: 1.5rem; }
 
-      /* 하단 썸네일 바 */
+      /* 하단 썸네일 바 (아이폰 Safe Area 및 주소창 대응) */
       .floating-thumbnail-bar {
         position: absolute;
-  bottom: calc(15px + env(safe-area-inset-bottom, 0px)) !important; /* 주소창 및 홈바 높이만큼 띄움 */
-  left: 50%;
+        bottom: calc(15px + env(safe-area-inset-bottom, 0px)) !important;
+        left: 50%;
         transform: translateX(-50%);
-        height: 60px;
-        max-width: 90vw;
-        background: rgba(0, 0, 0, 0.75);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 30px;
-        padding: 0 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(10px);
         z-index: 10000;
-        box-sizing: border-box;
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(8px);
+        padding: 6px 12px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
       }
 
       .thumbnail-list {
@@ -412,7 +408,7 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         align-items: center;
         gap: 10px;
         overflow-x: auto;
-        max-width: 100%;
+        max-width: 80vw;
         height: 100%;
         padding: 0 4px;
       }
@@ -445,76 +441,77 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         transform: scale(1.1) !important;
       }
 
-     @media (max-width: 768px) {
-  .article-container {
-    padding: 1.5rem 1rem 4rem 1rem;
-  }
+      /* 모바일 레이아웃 최적화 */
+      @media (max-width: 768px) {
+        .article-container {
+          padding: 1.5rem 1rem 4rem 1rem;
+        }
 
-  /* 📱 모바일에서 감싸는 wrapper 박스도 양옆 여백 없이 꽉 채우도록 설정 */
-  .prose :global(.image-hover-wrapper) {
-    width: calc(100% + 2rem) !important;
-    max-width: calc(100% + 2rem) !important;
-    margin-left: -1rem !important;
-    margin-right: -1rem !important;
-    border-radius: 0 !important; /* 화면 가득 찰 때 더 깔끔하게 보이도록 직각 처리 (선택사항) */
-  }
+        /* 모바일 본문 이미지 wrapper 양옆 꽉 차게 확장 */
+        .prose :global(.image-hover-wrapper) {
+          width: calc(100% + 2rem) !important;
+          max-width: calc(100% + 2rem) !important;
+          margin-left: -1rem !important;
+          margin-right: -1rem !important;
+          border-radius: 0 !important;
+        }
 
-  .prose :global(.image-hover-wrapper img) {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    border-radius: 0 !important;
-  }
+        .prose :global(.image-hover-wrapper img) {
+          width: 100% !important;
+          max-width: 100% !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+        }
 
-  .post-title {
-    font-size: 1.65rem;
-  }
+        .post-title {
+          font-size: 1.65rem;
+        }
 
-  .zoom-hint-overlay,
-  :global(.zoom-hint-overlay) {
-    display: none; /* 모바일 환경에서는 돋보기 레이어 숨김 */
-  }
+        .zoom-hint-overlay,
+        :global(.zoom-hint-overlay) {
+          display: none;
+        }
 
-  .floating-top-btn {
-    bottom: 1.25rem;
-    right: 1.25rem;
-    width: 40px;
-    height: 40px;
-  }
+        .floating-top-btn {
+          bottom: 1.25rem;
+          right: 1.25rem;
+          width: 40px;
+          height: 40px;
+        }
 
-  .modal-close {
-    top: 12px;
-    right: 12px;
-    width: 36px;
-    height: 36px;
-    font-size: 1.5rem;
-  }
+        .modal-close {
+          top: 12px;
+          right: 12px;
+          width: 36px;
+          height: 36px;
+          font-size: 1.5rem;
+        }
 
-  .nav-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 1.4rem;
-  }
-  .prev-btn { left: 0.5rem; }
-  .next-btn { right: 0.5rem; }
-  
-  .floating-thumbnail-bar {
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-    height: 48px;
-    border-radius: 24px;
-    padding: 0 8px;
-  }
+        .nav-btn {
+          width: 36px;
+          height: 36px;
+          font-size: 1.4rem;
+        }
+        .prev-btn { left: 0.5rem; }
+        .next-btn { right: 0.5rem; }
+        
+        .floating-thumbnail-bar {
+          bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+          height: 48px;
+          border-radius: 24px;
+          padding: 0 8px;
+        }
 
-  :global(.thumb-item),
-  :global(.thumb-item.active) {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    max-width: 32px !important;
-    min-height: 32px !important;
-    max-height: 32px !important;
-  }
-}
+        :global(.thumb-item),
+        :global(.thumb-item.active) {
+          width: 32px !important;
+          height: 32px !important;
+          min-width: 32px !important;
+          max-width: 32px !important;
+          min-height: 32px !important;
+          max-height: 32px !important;
+        }
+      }
     </style>
 
     <script>
@@ -540,26 +537,24 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
-      // 2. 본문 읽기 시간(Reading Time) 자동 계산 (SVG 아이콘 보존 처리)
+      // 2. 본문 읽기 시간 자동 계산
       document.addEventListener('DOMContentLoaded', () => {
         const prose = document.getElementById('prose-content');
         const readingTimeText = document.getElementById('reading-time-text');
 
         if (prose && readingTimeText) {
           const text = prose.textContent || '';
-          // 한국어/영어 통합 분당 읽기 속도 (약 500자/분 기준)
           const charCount = text.trim().length;
           const minutes = Math.max(1, Math.ceil(charCount / 500));
           readingTimeText.textContent = `약 ${minutes}분 읽기`;
         }
       });
 
-      // 3. 본문 이미지 돋보기 힌트 레이어 동적 생성
+      // 3. 본문 이미지 돋보기 힌트 레이어 동적 생성 (no-hover-wrap 제외)
       document.addEventListener('DOMContentLoaded', () => {
         const proseImages = document.querySelectorAll<HTMLImageElement>('.prose img:not(.no-hover-wrap)');
         
         proseImages.forEach((img) => {
-          // 이미 자식이 아니면 wrapper로 감싸기
           const parent = img.parentElement;
           if (parent && !parent.classList.contains('image-hover-wrapper')) {
             const wrapper = document.createElement('div');
@@ -593,9 +588,10 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         const nextBtn = document.getElementById('next-btn');
         const thumbnailList = document.getElementById('thumbnail-list');
 
+        // src가 유효한 이미지들만 안전하게 수집
         const allImages = Array.from(
           document.querySelectorAll<HTMLImageElement>('.hero-image img, .prose img')
-        );
+        ).filter((img) => img.src && img.src.trim() !== '');
 
         let currentIndex = 0;
         let isZoomed = false;
@@ -608,7 +604,6 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         let currentX = 0;
         let currentY = 0;
 
-        // 모바일 스와이프 전용 변수
         let touchStartX = 0;
         let touchStartY = 0;
         let touchEndX = 0;
@@ -633,7 +628,10 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
           
           resetZoom();
           currentIndex = (index + allImages.length) % allImages.length;
-          modalImg.src = allImages[currentIndex].src;
+          
+          const targetImg = allImages[currentIndex];
+          modalImg.src = targetImg.currentSrc || targetImg.src;
+          modalImg.alt = targetImg.alt || '확대 이미지';
 
           const thumbs = thumbnailList?.querySelectorAll('.thumb-item');
           thumbs?.forEach((thumb, i) => {
@@ -651,7 +649,7 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
 
           allImages.forEach((img, i) => {
             const thumb = document.createElement('img');
-            thumb.src = img.src;
+            thumb.src = img.currentSrc || img.src;
             thumb.className = 'thumb-item';
             thumb.alt = `썸네일 ${i + 1}`;
             thumb.addEventListener('click', (e) => {
@@ -682,9 +680,8 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
           img.addEventListener('click', () => openModal(index));
         });
 
-        // 모바일 스와이프 이벤트 바인딩
         modalStage?.addEventListener('touchstart', (e: TouchEvent) => {
-          if (isZoomed) return; // 확대된 상태에서는 스와이프 제스처 무시 (드래그 조작 우선)
+          if (isZoomed) return;
           touchStartX = e.changedTouches[0].clientX;
           touchStartY = e.changedTouches[0].clientY;
         }, { passive: true });
@@ -701,12 +698,11 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
           const diffX = touchEndX - touchStartX;
           const diffY = touchEndY - touchStartY;
 
-          // 수평 이동 거리가 수직 이동 거리보다 크고, 40px 이상 쓸었을 때만 넘김
           if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
             if (diffX < 0) {
-              updateModalImage(currentIndex + 1); // 왼쪽으로 밀어서 다음 이미지
+              updateModalImage(currentIndex + 1);
             } else {
-              updateModalImage(currentIndex - 1); // 오른쪽으로 밀어서 이전 이미지
+              updateModalImage(currentIndex - 1);
             }
           }
         }
