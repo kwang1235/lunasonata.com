@@ -4,5 +4,5 @@ export const SITE_DESCRIPTION = '개인 일상, 에피소드, 여행을 기록�
 
 export const SOCIAL_LINKS = {
   instagram: 'https://www.instagram.com/sekwang_hyeon',
-  email: 'mailto:kwang11235@naver.com',
+  email: 'kwang11235@naver.com',
 };

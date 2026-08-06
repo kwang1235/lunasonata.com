@@ -16,25 +16,25 @@ const today = new Date();
 
       <!-- 빠른 링크 -->
       <div class="footer-links">
-        <h4 class="footer-heading">Navigation</h4>
+        <h4 class="footer-heading">바로가기</h4>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/blog">Blog</a></li>
-          <li><a href="/about">About</a></li>
+          <li><a href="/">홈</a></li>
+          <li><a href="/blog">블로그</a></li>
+          <li><a href="/about">소개</a></li>
         </ul>
       </div>
 
       <!-- 소셜 미디어 링크 -->
       <div class="footer-social">
-        <h4 class="footer-heading">Connect</h4>
+        <h4 class="footer-heading">소통하기</h4>
         <div class="social-icons">
           {SOCIAL_LINKS.instagram && (
-            <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="인스타그램">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
             </a>
           )}
           {SOCIAL_LINKS.email && (
-            <a href={SOCIAL_LINKS.email} aria-label="Email">
+            <a href={`mailto:${SOCIAL_LINKS.email}`} aria-label="이메일 보낼 보내기">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
             </a>
           )}
@@ -46,7 +46,7 @@ const today = new Date();
       <p class="copyright">
         &copy; {today.getFullYear()} Sekwang. All rights reserved.
       </p>
-      <button id="back-to-top" class="back-to-top" aria-label="Back to Top">
+      <button id="back-to-top" class="back-to-top" aria-label="맨 위로 이동">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"></path></svg>
       </button>
     </div>
@@ -64,10 +64,10 @@ const today = new Date();
 <style>
   .site-footer {
     background-color: var(--footer-bg, #f8f9fa);
-    border-top: 1px solid var(--border-color, #e9ecef);
-    padding: 3rem 1.5rem 1.5rem;
-    margin-top: 4rem;
-    color: var(--text-color, #495057);
+    border-top: 1px solid var(--border-color, #ebeae6);
+    padding: 3.5rem 1.5rem 2rem;
+    margin-top: 5rem;
+    color: var(--text-color, #334155);
     font-size: 0.95rem;
   }
 
@@ -79,7 +79,7 @@ const today = new Date();
   .footer-grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    gap: 2rem;
+    gap: 2.5rem;
     margin-bottom: 2.5rem;
   }
 
@@ -91,25 +91,27 @@ const today = new Date();
   }
 
   .footer-logo {
-    font-size: 1.15rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem 0;
-    color: var(--heading-color, #212529);
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 0 0 0.6rem 0;
+    color: var(--heading-color, #1e293b);
+    letter-spacing: -0.02em;
   }
 
   .footer-desc {
     margin: 0;
     line-height: 1.6;
-    color: var(--text-muted, #6c757d);
+    color: var(--text-muted, #475569); /* 명도 높여 가독성 확보 */
+    font-size: 0.9rem;
   }
 
   .footer-heading {
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0 0 1rem 0;
-    color: var(--heading-color, #212529);
+    color: var(--heading-color, #1e293b);
   }
 
   .footer-links ul {
@@ -119,17 +121,20 @@ const today = new Date();
   }
 
   .footer-links li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
   }
 
   .footer-links a {
-    color: var(--text-muted, #6c757d);
+    display: inline-block;
+    padding: 0.2rem 0; /* 모바일 터치 영역 확장 */
+    color: var(--text-muted, #475569);
     text-decoration: none;
+    font-weight: 500;
     transition: color 0.2s ease;
   }
 
   .footer-links a:hover {
-    color: var(--accent-color, #228be6);
+    color: var(--accent-color, #5c6255);
   }
 
   .social-icons {
@@ -141,16 +146,16 @@ const today = new Date();
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    background-color: var(--icon-bg, #edf2f7);
-    color: var(--text-color, #495057);
+    background-color: var(--icon-bg, #e2e8f0);
+    color: var(--text-color, #334155);
     transition: all 0.2s ease;
   }
 
   .social-icons a:hover {
-    background-color: var(--accent-color, #228be6);
+    background-color: var(--accent-color, #5c6255);
     color: #ffffff;
     transform: translateY(-2px);
   }
@@ -159,32 +164,32 @@ const today = new Date();
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color, #e9ecef);
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--border-color, #e2e8f0);
   }
 
   .copyright {
     margin: 0;
     font-size: 0.85rem;
-    color: var(--text-muted, #6c757d);
+    color: var(--text-muted, #64748b);
   }
 
   .back-to-top {
-    background: var(--icon-bg, #edf2f7);
+    background: var(--icon-bg, #e2e8f0);
     border: none;
-    border-radius: 6px;
-    width: 32px;
-    height: 32px;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--text-color, #495057);
+    color: var(--text-color, #334155);
     transition: all 0.2s ease;
   }
 
   .back-to-top:hover {
-    background: var(--accent-color, #228be6);
+    background: var(--accent-color, #5c6255);
     color: #ffffff;
   }
 </style>
