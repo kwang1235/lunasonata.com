@@ -440,60 +440,76 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
         transform: scale(1.1) !important;
       }
 
-      @media (max-width: 768px) {
-        .article-container {
-          padding: 1.5rem 1rem 4rem 1rem;
-        }
+     @media (max-width: 768px) {
+  .article-container {
+    padding: 1.5rem 1rem 4rem 1rem;
+  }
 
-        .post-title {
-          font-size: 1.65rem;
-        }
+  /* 📱 모바일에서 감싸는 wrapper 박스도 양옆 여백 없이 꽉 채우도록 설정 */
+  .prose :global(.image-hover-wrapper) {
+    width: calc(100% + 2rem) !important;
+    max-width: calc(100% + 2rem) !important;
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    border-radius: 0 !important; /* 화면 가득 찰 때 더 깔끔하게 보이도록 직각 처리 (선택사항) */
+  }
 
-        .zoom-hint-overlay,
-        :global(.zoom-hint-overlay) {
-          display: none; /* 모바일 환경에서는 오버레이 숨김 */
-        }
+  .prose :global(.image-hover-wrapper img) {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
 
-        .floating-top-btn {
-          bottom: 1.25rem;
-          right: 1.25rem;
-          width: 40px;
-          height: 40px;
-        }
+  .post-title {
+    font-size: 1.65rem;
+  }
 
-        .modal-close {
-          top: 12px;
-          right: 12px;
-          width: 36px;
-          height: 36px;
-          font-size: 1.5rem;
-        }
+  .zoom-hint-overlay,
+  :global(.zoom-hint-overlay) {
+    display: none; /* 모바일 환경에서는 돋보기 레이어 숨김 */
+  }
 
-        .nav-btn {
-          width: 36px;
-          height: 36px;
-          font-size: 1.4rem;
-        }
-        .prev-btn { left: 0.5rem; }
-        .next-btn { right: 0.5rem; }
-        
-        .floating-thumbnail-bar {
-          bottom: 10px;
-          height: 50px;
-          border-radius: 25px;
-          padding: 0 10px;
-        }
+  .floating-top-btn {
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 40px;
+    height: 40px;
+  }
 
-        :global(.thumb-item),
-        :global(.thumb-item.active) {
-          width: 32px !important;
-          height: 32px !important;
-          min-width: 32px !important;
-          max-width: 32px !important;
-          min-height: 32px !important;
-          max-height: 32px !important;
-        }
-      }
+  .modal-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    font-size: 1.5rem;
+  }
+
+  .nav-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.4rem;
+  }
+  .prev-btn { left: 0.5rem; }
+  .next-btn { right: 0.5rem; }
+  
+  .floating-thumbnail-bar {
+    bottom: 10px;
+    height: 50px;
+    border-radius: 25px;
+    padding: 0 10px;
+  }
+
+  :global(.thumb-item),
+  :global(.thumb-item.active) {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
+  }
+}
     </style>
 
     <script>
