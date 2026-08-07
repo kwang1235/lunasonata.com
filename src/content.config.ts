@@ -21,6 +21,7 @@ const blog = defineCollection({
       tags: z.array(z.string()).optional(),
       featured: z.boolean().default(false),
       author: z.string().default('세광'),
+			slug: z.string().optional(),
 		}),
 });
 

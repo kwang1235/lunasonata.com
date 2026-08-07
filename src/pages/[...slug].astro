@@ -1,12 +1,13 @@
 ---
 // src/pages/[...slug].astro
 import { type CollectionEntry, getCollection, render } from 'astro:content';
-import BlogPost from '../layouts/BlogPost.astro'; // 경로 수정 완료 (../)
+import BlogPost from '../layouts/BlogPost.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts.map((post) => ({
-    params: { slug: post.id },
+    // 💡 프론트매터에 적은 slug가 있으면 그걸 사용하고, 없으면 파일명(post.id) 사용
+    params: { slug: post.data.slug || post.id },
     props: post,
   }));
 }
