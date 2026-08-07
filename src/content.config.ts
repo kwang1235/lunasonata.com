@@ -15,6 +15,12 @@ const blog = defineCollection({
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.string().optional(),
 			categories: z.array(z.string()).optional(),
+
+			// ➕ 추가로 넣으면 좋은 선택 사항들
+      draft: z.boolean().default(false),
+      tags: z.array(z.string()).optional(),
+      featured: z.boolean().default(false),
+      author: z.string().default('세광'),
 		}),
 });
 
