@@ -585,10 +585,24 @@ import BaseHead from '../components/BaseHead.astro';
         .lightbox-nav-btn.next { right: 10px; }
       }
 
-      /* ==========================================
-   NAS 이미지 및 본문 사진 최적화 UI 스타일
-   ========================================== */
+      /* 실시간 미리보기 다크모드 전환 스타일 */
+.preview-box.dark-mode {
+  background: #0f172a !important;
+  color: #f8fafc !important;
 }
+.preview-box.dark-mode h1,
+.preview-box.dark-mode h2,
+.preview-box.dark-mode h3 {
+  color: #f8fafc !important;
+}
+.preview-box.dark-mode h2 {
+  border-bottom-color: #334155 !important;
+}
+.preview-box.dark-mode code {
+  background: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
     </style>
   </head>
   <body>
@@ -599,16 +613,46 @@ import BaseHead from '../components/BaseHead.astro';
 
     <main class="editor-grid">
       <section class="card">
-        <div class="stats-bar">
-          <span>글자 수: <strong id="char-count">0</strong> 자</span>
-          <span>•</span>
-          <span>예상 읽기 시간: <strong id="read-time">0</strong> 분</span>
-        </div>
+        <!-- 기존 stats-bar 코드를 아래와 같이 교체해 주세요 -->
+<div class="stats-bar" style="justify-content: space-between; align-items: center;">
+  <div>
+    <span>글자 수: <strong id="char-count">0</strong> 자</span>
+    <span>•</span>
+    <span>예상 읽기 시간: <strong id="read-time">0</strong> 분</span>
+  </div>
+  <div style="display: flex; gap: 0.5rem; align-items: center;">
+    <span id="save-status" style="font-size: 0.75rem; color: #10b981;">작성 내용 자동 저장됨</span>
+    <button type="button" id="btn-reset-draft" class="tool-btn" style="background: #e11d48; padding: 0.2rem 0.5rem; font-size: 0.75rem;">🗑️ 내용 비우기</button>
+  </div>
+</div>
 
         <div class="form-group">
           <label for="post-title">포스트 제목</label>
           <input type="text" id="post-title" placeholder="글 제목을 입력하세요..." />
         </div>
+
+        <!-- 포스트 제목 바로 아래에 추가할 메타데이터 입력 구역 -->
+<div class="form-group">
+  <label for="post-desc">포스트 요약 (Description)</label>
+  <input type="text" id="post-desc" placeholder="글의 주요 내용을 한 줄로 요약해 주세요..." />
+</div>
+
+<!-- 슬러그 입력 필드 추가 -->
+<div class="form-group">
+  <label for="post-slug">포스트 슬러그 (URL 영문 주소)</label>
+  <input type="text" id="post-slug" placeholder="예: my-first-post (영문, 숫자, 하이픈 사용)" />
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+  <div class="form-group">
+    <label for="post-category">카테고리 (쉼표로 구분)</label>
+    <input type="text" id="post-category" placeholder="예: 일상, 개발, 여행" />
+  </div>
+  <div class="form-group">
+    <label for="post-hero">대표 이미지 URL (Hero Image)</label>
+    <input type="text" id="post-hero" placeholder="갤러리에서 이미지 URL을 복사해 넣으세요" />
+  </div>
+</div>
 
         <div class="toolbar">
           <button type="button" class="tool-btn" data-tag="h2">H2 소제목</button>
@@ -617,7 +661,12 @@ import BaseHead from '../components/BaseHead.astro';
           <button type="button" class="tool-btn" data-tag="strong">강조(strong)</button>
           <button type="button" class="tool-btn" data-tag="code">코드(code)</button>
           <button type="button" class="tool-btn highlight" id="btn-open-gallery">🖼️ NAS 이미지 선택 & 관리</button>
+          <!-- 기존 tool-btn 버튼들 바로 뒤에 추가 -->
+<button type="button" class="tool-btn" id="btn-tmpl-callout">💡 안내 상자</button>
+<button type="button" class="tool-btn" id="btn-tmpl-quote">💬 인용구</button>
+<button type="button" class="tool-btn" id="btn-tmpl-figure">🖼️ 이미지+캡션</button>
         </div>
+      
 
         <div class="form-group">
           <label for="post-html">HTML / 본문 작성 공간</label>
@@ -625,13 +674,20 @@ import BaseHead from '../components/BaseHead.astro';
         </div>
 
         <div class="btn-group">
-          <button type="button" class="btn-submit" id="copy-btn">📋 HTML 코드 복사</button>
+          <div class="btn-group">
+  <button type="button" class="btn-submit" id="btn-publish-web" style="background: #0284c7; color: #ffffff; flex: 1.5;">🚀 바로 웹에 게시하기</button>
+  <button type="button" class="btn-submit" id="copy-btn">📋 코드 전체 복사</button>
+  <button type="button" class="btn-submit" id="download-btn" style="background: #10b981; color: #ffffff;">📥 .md 파일 다운로드</button>
+</div>
         </div>
       </section>
 
       <section class="card">
-        <label>👀 실시간 미리보기</label>
-        <div class="preview-box">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <label>👀 실시간 미리보기</label>
+    <button type="button" id="btn-toggle-pv-theme" class="tool-btn" style="font-size: 0.75rem;">🌙 다크모드 보기</button>
+  </div>
+  <div class="preview-box">
           <h1 id="pv-title" class="preview-title">제목을 입력하면 여기에 나타납니다</h1>
           <div id="pv-body">
             <p style="color: #94a3b8; text-align: center; margin-top: 4rem;">
@@ -1006,12 +1062,45 @@ import BaseHead from '../components/BaseHead.astro';
         });
       });
 
-      copyBtn?.addEventListener('click', () => {
-        const fullContent = `<h1>${titleInput.value}</h1>\n\n${htmlInput.value}`;
-        navigator.clipboard.writeText(fullContent).then(() => {
-          showToast('✨ 작성하신 포스트 HTML 코드가 클립보드에 복사되었습니다!');
-        });
-      });
+      // 추가된 입력 필드 엘리먼트 가져오기
+const descInput = document.getElementById('post-desc') as HTMLInputElement;
+const categoryInput = document.getElementById('post-category') as HTMLInputElement;
+const heroInput = document.getElementById('post-hero') as HTMLInputElement;
+const slugInput = document.getElementById('post-slug') as HTMLInputElement;
+
+// Frontmatter 헤더 생성 함수
+function generateFrontmatter(): string {
+  const title = titleInput.value.trim() || '제목 없음';
+  const description = descInput?.value.trim() || title;
+  const heroImage = heroInput?.value.trim() || '';
+  const slug = slugInput?.value.trim() || '';
+
+  // 카테고리를 배열 형태 ['일상', '개발'] 로 변환
+  const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
+  const categoriesFormatted = rawCategories.length > 0 
+    ? `\ncategories:\n${rawCategories.map(c => `  - "${c}"`).join('\n')}` 
+    : '';
+
+  const today = new Date().toISOString().split('T')[0];
+
+  return `---
+title: "${title}"
+description: "${description}"
+pubDate: ${today}
+${slug ? `slug: "${slug}"\n` : ''}${heroImage ? `heroImage: "${heroImage}"\n` : ''}${categoriesFormatted}
+draft: false
+---
+
+${htmlInput.value}`;
+}
+
+// 복사 버튼 클릭 이벤트 핸들러 업데이트
+copyBtn?.addEventListener('click', () => {
+  const fullPost = generateFrontmatter();
+  navigator.clipboard.writeText(fullPost).then(() => {
+    showToast('✨ Frontmatter가 포함된 완성형 블로그 포스트 코드가 복사되었습니다!');
+  });
+});
 
       btnOpenGallery?.addEventListener('click', openModal);
       btnCloseGallery?.addEventListener('click', closeModal);
@@ -1095,6 +1184,132 @@ import BaseHead from '../components/BaseHead.astro';
           await deleteFilesApi(Array.from(selectedRelPaths));
         }
       });
+
+      // --- 💾 자동 저장 (LocalStorage) 로직 ---
+const saveStatus = document.getElementById('save-status');
+const btnResetDraft = document.getElementById('btn-reset-draft');
+const DRAFT_KEY = 'lunasonata_admin_draft';
+
+// 1. 저장된 임시 글 불러오기
+function loadDraft() {
+  const savedData = localStorage.getItem(DRAFT_KEY);
+  if (savedData) {
+    try {
+      const { title, content } = JSON.parse(savedData);
+      if (titleInput && title) titleInput.value = title;
+      if (htmlInput && content) htmlInput.value = content;
+      updatePreview();
+      if (saveStatus) saveStatus.textContent = '💾 이전 작성글 복구됨';
+    } catch (e) {
+      console.error('임시 저장 데이터 로드 실패', e);
+    }
+  }
+}
+
+// 2. 입력할 때마다 브라우저에 자동 저장
+function saveDraft() {
+  const draftData = {
+    title: titleInput.value,
+    content: htmlInput.value,
+    updatedAt: new Date().toISOString()
+  };
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
+  if (saveStatus) {
+    saveStatus.textContent = '✅ 자동 저장 완료';
+    saveStatus.style.color = '#10b981';
+  }
+}
+
+// 3. 내용 비우기 (새 글 작성 시)
+btnResetDraft?.addEventListener('click', () => {
+  if (confirm('작성 중인 내용을 모두 지우고 새 글을 작성하시겠습니까?')) {
+    titleInput.value = '';
+    htmlInput.value = '';
+    localStorage.removeItem(DRAFT_KEY);
+    updatePreview();
+    if (saveStatus) saveStatus.textContent = '✨ 새 글 작성 준비됨';
+  }
+});
+
+// 입력 이벤트 발생 시 자동 저장 실행
+titleInput?.addEventListener('input', saveDraft);
+htmlInput?.addEventListener('input', saveDraft);
+
+// 페이지 들어왔을 때 저장된 글 복구 실행
+loadDraft();
+
+// --- 🎨 디자인 블록 원클릭 삽입 로직 ---
+document.getElementById('btn-tmpl-callout')?.addEventListener('click', () => {
+  const calloutTmpl = `<div style="background: #0f172a; border-left: 4px solid #38bdf8; padding: 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0;">\n  💡 <strong>참고:</strong> 여기에 안내하고 싶은 핵심 내용을 적어주세요.\n</div>\n`;
+  insertTag('', calloutTmpl);
+});
+
+document.getElementById('btn-tmpl-quote')?.addEventListener('click', () => {
+  const quoteTmpl = `<blockquote style="border-left: 3px solid #64748b; padding-left: 1rem; color: #cbd5e1; font-style: italic; margin: 1rem 0;">\n  "기억하고 싶은 한 줄 문장이나 인용구를 적어주세요."\n</blockquote>\n`;
+  insertTag('', quoteTmpl);
+});
+
+document.getElementById('btn-tmpl-figure')?.addEventListener('click', () => {
+  const figureTmpl = `<figure style="margin: 1.5rem 0; text-align: center;">\n  <img src="https://image.lunasonata.com/sample.webp" alt="사진 설명" style="border-radius: 8px; max-width: 100%;" />\n  <figcaption style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">▲ 사진에 대한 설명을 적어주세요</figcaption>\n</figure>\n`;
+  insertTag('', figureTmpl);
+});
+
+// --- 🌙 미리보기 다크/라이트 모드 토글 로직 ---
+const btnTogglePvTheme = document.getElementById('btn-toggle-pv-theme');
+const previewBox = document.querySelector('.preview-box');
+
+btnTogglePvTheme?.addEventListener('click', () => {
+  if (!previewBox) return;
+  const isDark = previewBox.classList.toggle('dark-mode');
+  btnTogglePvTheme.textContent = isDark ? '☀️ 라이트모드 보기' : '🌙 다크모드 보기';
+});
+
+// --- 🚀 원클릭 웹 게시 (NAS API 호출) 로직 ---
+const btnPublishWeb = document.getElementById('btn-publish-web');
+
+btnPublishWeb?.addEventListener('click', async () => {
+  const slug = slugInput?.value.trim();
+  
+  // 1. 필수 값(슬러그) 입력 검증
+  if (!slug) {
+    alert('포스트 슬러그(URL 영문 주소)를 먼저 입력해 주세요!\n예: my-first-post');
+    slugInput?.focus();
+    return;
+  }
+
+  // 2. 전체 Frontmatter 포스트 데이터 생성
+  const fullContent = generateFrontmatter();
+
+  if (!confirm(`'${slug}.md' 글을 블로그 웹사이트에 바로 게시하시겠습니까?`)) {
+    return;
+  }
+
+  showToast('📡 NAS 서버로 글을 전송 중입니다...');
+
+  try {
+    // NAS의 Flask 게시 API 호출
+    const res = await fetch('https://image.lunasonata.com:9003/api/save-post', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        password: '88gustprhkd!', // app.py의 GALLERY_PASSWORD
+        slug: slug,
+        content: fullContent
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      showToast(data.message || '🚀 글 작성이 완료되어 게시(배포)가 시작되었습니다!');
+    } else {
+      alert(`게시 실패: ${data.message || data.error || '오류가 발생했습니다.'}`);
+    }
+  } catch (e) {
+    console.error('포스트 게시 요청 에러:', e);
+    alert('게시 요청 중 NAS 서버 연결에 실패했습니다.');
+  }
+});
     </script>
   </body>
 </html>
