@@ -626,6 +626,34 @@ import BaseHead from '../components/BaseHead.astro';
 </style>
   </head>
   <body>
+  <!-- 🔒 관리자 인증 잠금 화면 (여기 <body> 바로 밑에 추가합니다) -->
+  <div id="auth-overlay" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); z-index: 99999; display: flex; align-items: center; justify-content: center;">
+    <div style="background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 2.5rem; max-width: 380px; width: 90%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+      <h2 style="color: #f8fafc; margin-bottom: 0.5rem; font-size: 1.4rem; font-weight: 700;">관리자 인증</h2>
+      <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.4;">이 페이지는 관리자 전용 공간입니다.<br/>비밀번호를 입력해 주세요.</p>
+      
+      <input 
+        type="password" 
+        id="auth-password-input" 
+        placeholder="비밀번호 입력..." 
+        style="width: 100%; padding: 0.8rem 1rem; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 0.95rem; margin-bottom: 1rem; box-sizing: border-box; outline: none;" 
+      />
+      
+      <button 
+        type="button" 
+        id="auth-login-btn" 
+        style="width: 100%; padding: 0.8rem; border-radius: 8px; border: none; background: #3b82f6; color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background 0.2s;"
+      >
+        접속하기
+      </button>
+      
+      <p id="auth-error-msg" style="color: #f87171; font-size: 0.85rem; margin-top: 1rem; display: none;"></p>
+    </div>
+  </div>
+
+  <!-- 기존의 admin.astro 본문 내용들... -->
+
     <header class="header-bar">
       <h1>✨ Lunasonata 포스팅 에디터</h1>
       <span style="color: var(--text-muted); font-size: 0.9rem;">반갑습니다, 세광님! 🎹</span>
@@ -1638,6 +1666,69 @@ btnPublishWeb?.addEventListener('click', async () => {
       });
 
       postsSearch?.addEventListener('input', renderPostsList);
+
+// --- 🔒 관리자 인증 잠금 기능 ---
+      const authOverlay = document.getElementById('auth-overlay');
+      const authPasswordInput = document.getElementById('auth-password-input') as HTMLInputElement;
+      const authLoginBtn = document.getElementById('auth-login-btn');
+      const authErrorMsg = document.getElementById('auth-error-msg');
+
+      // 1. 페이지 접속 시 이미 인증되었는지 확인
+      function checkAdminAuth() {
+        const isAuth = sessionStorage.getItem('admin_authenticated');
+        if (isAuth === 'true') {
+          if (authOverlay) authOverlay.style.display = 'none';
+        } else {
+          if (authOverlay) authOverlay.style.display = 'flex';
+        }
+      }
+
+      // 2. 비밀번호 검증 요청
+      async function handleAdminLogin() {
+        const password = authPasswordInput?.value.trim();
+        if (!password) {
+          showAuthError('비밀번호를 입력해 주세요.');
+          return;
+        }
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/verify-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            sessionStorage.setItem('admin_authenticated', 'true');
+            if (authOverlay) authOverlay.style.display = 'none';
+            if (authErrorMsg) authErrorMsg.style.display = 'none';
+            showToast('🔓 관리자 인증 성공!');
+          } else {
+            showAuthError('❌ 비밀번호가 올바르지 않습니다.');
+          }
+        } catch (err) {
+          console.error('인증 오류:', err);
+          showAuthError('❌ 서버 통신 중 오류가 발생했습니다.');
+        }
+      }
+
+      function showAuthError(msg: string) {
+        if (authErrorMsg) {
+          authErrorMsg.textContent = msg;
+          authErrorMsg.style.display = 'block';
+        }
+      }
+
+      // 이벤트 연결 (버튼 클릭 & 엔터키)
+      authLoginBtn?.addEventListener('click', handleAdminLogin);
+      authPasswordInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleAdminLogin();
+      });
+
+      // 페이지 진입 시 실행
+      checkAdminAuth();
+
     </script>
     <!-- 토스트 알림 메시지 창 -->
 <div id="toast" class="toast">알림 메시지</div>
