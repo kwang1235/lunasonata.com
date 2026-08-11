@@ -7,603 +7,623 @@ import BaseHead from '../components/BaseHead.astro';
 <html lang="ko">
   <head>
     <BaseHead title="Lunasonata 포스팅 에디터" description="웹 기반 글쓰기 관리자 페이지" />
-    <style is:global>
-      :root {
-        --bg-main: #0f172a;
-        --bg-card: #1e293b;
-        --bg-input: #020617;
-        --border-color: #334155;
-        --primary-color: #38bdf8;
-        --primary-hover: #0284c7;
-        --text-muted: #94a3b8;
-      }
-
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: var(--bg-main);
-        color: #f8fafc;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      }
-
-      .header-bar {
-        background: var(--bg-card);
-        border-bottom: 1px solid var(--border-color);
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .header-bar h1 {
-        margin: 0;
-        font-size: 1.4rem;
-        color: var(--primary-color);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .editor-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        padding: 1.5rem;
-        max-width: 1600px;
-        margin: 0 auto;
-        min-height: calc(100vh - 80px);
-      }
-
-      .card {
-        background: var(--bg-card);
-        border-radius: 12px;
-        padding: 1.5rem;
-        border: 1px solid var(--border-color);
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .stats-bar {
-        display: flex;
-        gap: 1rem;
-        background: var(--bg-input);
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        font-size: 0.85rem;
-        color: var(--text-muted);
-      }
-
-      .stats-bar span strong {
-        color: var(--primary-color);
-      }
-
-      .toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        background: var(--bg-input);
-        padding: 0.5rem;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-      }
-
-      .tool-btn {
-        background: #334155;
-        color: #f8fafc;
-        border: none;
-        padding: 0.4rem 0.75rem;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-
-      .tool-btn:hover {
-        background: var(--primary-color);
-        color: #0f172a;
-      }
-
-      .tool-btn.highlight {
-        background: #0284c7;
-        color: #fff;
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      label {
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--text-muted);
-      }
-
-      input, select, textarea {
-        background: var(--bg-input);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        color: #fff;
-        font-family: inherit;
-        font-size: 0.95rem;
-        transition: border-color 0.2s;
-      }
-
-      input:focus, select:focus, textarea:focus {
-        outline: none;
-        border-color: var(--primary-color);
-      }
-
-      textarea.code-area {
-        font-family: 'Fira Code', Consolas, Monaco, monospace;
-        min-height: 380px;
-        resize: vertical;
-        line-height: 1.6;
-      }
-
-      .btn-group {
-        display: flex;
-        gap: 0.75rem;
-      }
-
-      .btn-submit {
-        flex: 1;
-        background: var(--primary-color);
-        color: #0f172a;
-        font-weight: 700;
-        padding: 0.875rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: all 0.2s;
-      }
-
-      .btn-submit:hover {
-        background: var(--primary-hover);
-        color: #ffffff;
-      }
-
-      .preview-box {
-        background: #ffffff;
-        color: #1e293b;
-        border-radius: 8px;
-        padding: 2rem;
-        min-height: 500px;
-        overflow-y: auto;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        line-height: 1.8;
-      }
-
-      .preview-box h2 {
-        font-size: 1.5rem;
-        color: #0f172a;
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 0.4rem;
-      }
-
-      .preview-box h3 {
-        font-size: 1.25rem;
-        color: #1e293b;
-        margin-top: 1.25rem;
-      }
-
-      .preview-box p {
-        margin-bottom: 1rem;
-      }
-
-      .preview-box img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        margin: 1rem 0;
-      }
-
-      .preview-box code {
-        background: #f1f5f9;
-        color: #0f172a;
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-        font-family: monospace;
-      }
-
-      .preview-title {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-top: 0;
-        margin-bottom: 1.5rem;
-        color: #0f172a;
-        border-bottom: 2px solid #38bdf8;
-        padding-bottom: 0.75rem;
-      }
-
-      /* 모달 전역 디자인 */
-      .modal-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(6px);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-      }
-
-      .modal-box {
-        background: #1e293b !important;
-        border: 1px solid #334155 !important;
-        border-radius: 16px;
-        width: 95%;
-        max-width: 1100px;
-        height: 85vh;
-        display: flex;
-        flex-direction: column;
-        padding: 1.5rem;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      }
-
-      .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #334155;
-        padding-bottom: 1rem;
-      }
-
-      .filter-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        align-items: center;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #334155;
-        margin-bottom: 1rem;
-      }
-
-      .filter-btn-group {
-        display: flex;
-        background: #020617;
-        padding: 3px;
-        border-radius: 8px;
-        border: 1px solid #334155;
-      }
-
-      .filter-btn {
-        background: transparent;
-        color: #94a3b8;
-        border: none;
-        padding: 0.3rem 0.6rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .filter-btn.active {
-        background: #0284c7 !important;
-        color: #ffffff !important;
-      }
-
-      .alt-input-box {
-        background: #020617;
-        border: 1px solid #334155;
-        padding: 0.4rem 0.75rem;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        flex: 1;
-        min-width: 240px;
-      }
-
-      .alt-input-box label {
-        white-space: nowrap;
-        color: #38bdf8;
-        font-size: 0.8rem;
-      }
-
-      .alt-input-box input {
-        flex: 1;
-        padding: 0.25rem 0.5rem;
-        font-size: 0.8rem;
-        border: none;
-      }
-
-      .modal-grid {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
-        gap: 1.25rem !important;
-        overflow-y: auto !important;
-        padding-right: 0.5rem !important;
-        flex: 1 !important;
-        align-content: start !important;
-      }
-
-      /* 카드 스타일 강제 고정 */
-      .modal-item {
-        background: #020617 !important;
-        border: 2px solid #334155 !important;
-        border-radius: 12px !important;
-        overflow: hidden !important;
-        cursor: pointer;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative !important;
-        display: flex !important;
-        flex-direction: column !important;
-        height: 200px !important;
-        box-sizing: border-box !important;
-      }
-
-      .modal-item:hover {
-        transform: translateY(-3px) !important;
-        border-color: #64748b !important;
-      }
-
-      .modal-item.selected {
-        border-color: #38bdf8 !important;
-        box-shadow: 0 0 16px rgba(56, 189, 248, 0.75) !important;
-        background: #0f172a !important;
-      }
-
-      .modal-item-thumb-wrapper {
-        position: relative !important;
-        width: 100% !important;
-        height: 115px !important;
-        background: #000000 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        overflow: hidden !important;
-      }
-
-      .modal-item-thumb-wrapper img {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-      }
-
-      .badge-used {
-        position: absolute !important;
-        top: 6px !important;
-        left: 6px !important;
-        background: rgba(16, 185, 129, 0.9) !important;
-        color: #ffffff !important;
-        font-size: 0.65rem !important;
-        font-weight: 700 !important;
-        padding: 2px 6px !important;
-        border-radius: 4px !important;
-        z-index: 2 !important;
-      }
-
-      .badge-unused {
-        position: absolute !important;
-        top: 6px !important;
-        left: 6px !important;
-        background: rgba(244, 63, 94, 0.9) !important;
-        color: #ffffff !important;
-        font-size: 0.65rem !important;
-        font-weight: 700 !important;
-        padding: 2px 6px !important;
-        border-radius: 4px !important;
-        z-index: 2 !important;
-      }
-
-      .badge-selected-check {
-        position: absolute !important;
-        top: 6px !important;
-        right: 6px !important;
-        background: #38bdf8 !important;
-        color: #0f172a !important;
-        font-size: 0.85rem !important;
-        font-weight: 900 !important;
-        width: 22px !important;
-        height: 22px !important;
-        border-radius: 50% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.6) !important;
-        z-index: 3 !important;
-      }
-
-      .modal-item-info {
-        padding: 0.5rem !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
-        height: 81px !important;
-        background: #1e293b !important;
-        box-sizing: border-box !important;
-      }
-
-      .modal-item-name {
-        font-size: 0.72rem !important;
-        font-weight: 500 !important;
-        color: #cbd5e1 !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-      }
-
-      .modal-item-actions {
-        display: flex !important;
-        gap: 0.25rem !important;
-      }
-
-      .btn-card-mini {
-        flex: 1 !important;
-        background: #334155 !important;
-        color: #f8fafc !important;
-        border: none !important;
-        padding: 0.35rem 0.1rem !important;
-        font-size: 0.62rem !important;
-        font-weight: 600 !important;
-        border-radius: 4px !important;
-        cursor: pointer !important;
-        transition: all 0.2s !important;
-        text-align: center !important;
-      }
-
-      .btn-card-mini:hover {
-        background: #38bdf8 !important;
-        color: #0f172a !important;
-      }
-
-      .btn-card-mini-danger {
-        flex: 1 !important;
-        background: rgba(244, 63, 94, 0.2) !important;
-        color: #f43f5e !important;
-        border: none !important;
-        padding: 0.35rem 0.1rem !important;
-        font-size: 0.62rem !important;
-        font-weight: 600 !important;
-        border-radius: 4px !important;
-        cursor: pointer !important;
-        transition: all 0.2s !important;
-        text-align: center !important;
-      }
-
-      .btn-card-mini-danger:hover {
-        background: #f43f5e !important;
-        color: #ffffff !important;
-      }
-
-      /* 라이트박스 (크게 보기) 슬라이더 팝업 */
-      .lightbox-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(2, 6, 23, 0.95);
-        backdrop-filter: blur(8px);
-        display: none;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-      }
-
-      .lightbox-img-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        max-width: 85vw;
-        max-height: 70vh;
-      }
-
-      .lightbox-img {
-        max-width: 85vw;
-        max-height: 70vh;
-        object-fit: contain;
-        border-radius: 12px;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-      }
-
-      .lightbox-nav-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(30, 41, 59, 0.85);
-        color: #38bdf8;
-        border: 1px solid #334155;
-        font-size: 2rem;
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s;
-        z-index: 10;
-        user-select: none;
-      }
-
-      .lightbox-nav-btn:hover {
-        background: #0284c7;
-        color: #fff;
-      }
-
-      .lightbox-nav-btn.prev { left: -70px; }
-      .lightbox-nav-btn.next { right: -70px; }
-
-      .lightbox-caption {
-        margin-top: 1rem;
-        color: #94a3b8;
-        font-size: 0.9rem;
-      }
-
-      .lightbox-controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-top: 1rem;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .toast {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        background: #0284c7;
-        color: #fff;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-        transform: translateY(100px);
-        opacity: 0;
-        transition: all 0.3s ease;
-        z-index: 10000;
-      }
-
-      .toast.show {
-        transform: translateY(0);
-        opacity: 1;
-      }
-
-      @media (max-width: 900px) {
-        .editor-grid {
-          grid-template-columns: 1fr;
-        }
-        .lightbox-nav-btn.prev { left: 10px; }
-        .lightbox-nav-btn.next { right: 10px; }
-      }
-
-      /* 실시간 미리보기 다크모드 전환 스타일 */
-.preview-box.dark-mode {
-  background: #0f172a !important;
-  color: #f8fafc !important;
-}
-.preview-box.dark-mode h1,
-.preview-box.dark-mode h2,
-.preview-box.dark-mode h3 {
-  color: #f8fafc !important;
-}
-.preview-box.dark-mode h2 {
-  border-bottom-color: #334155 !important;
-}
-.preview-box.dark-mode code {
-  background: #1e293b !important;
-  color: #38bdf8 !important;
-}
-
-    </style>
+   <style is:global>
+  :root {
+    --bg-main: #0b0f19;
+    --bg-card: #151d2a;
+    --bg-input: #070a12;
+    --border-color: #2a364f;
+    --border-color-glow: rgba(56, 189, 248, 0.4);
+    --primary-color: #38bdf8;
+    --primary-hover: #0284c7;
+    --accent-color: #10b981;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Pretendard', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header-bar {
+    background: rgba(21, 29, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.85rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-bar h1 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    max-width: 1700px;
+    margin: 0 auto;
+    min-height: calc(100vh - 70px);
+    box-sizing: border-box;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  }
+
+  .stats-bar {
+    display: flex;
+    gap: 1rem;
+    background: var(--bg-input);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .stats-bar span strong {
+    color: var(--primary-color);
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    background: var(--bg-input);
+    padding: 0.6rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+  }
+
+  .tool-btn {
+    background: #1e293b;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 0.45rem 0.8rem;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tool-btn:hover {
+    background: var(--primary-color);
+    color: #0b0f19;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+  }
+
+  .tool-btn.highlight {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #38bdf8;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  input, select, textarea {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.92rem;
+    transition: all 0.2s ease;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+  }
+
+  textarea.code-area {
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
+    min-height: 420px;
+    resize: vertical;
+    line-height: 1.6;
+    tab-size: 2;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .btn-submit {
+    flex: 1;
+    background: var(--primary-color);
+    color: #0b0f19;
+    font-weight: 700;
+    padding: 0.875rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+
+  .btn-submit:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  .preview-box {
+    background: #ffffff;
+    color: #1e293b;
+    border-radius: 10px;
+    padding: 2rem;
+    min-height: 500px;
+    overflow-y: auto;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    line-height: 1.8;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .preview-box h2 {
+    font-size: 1.5rem;
+    color: #0f172a;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.4rem;
+  }
+
+  .preview-box h3 {
+    font-size: 1.25rem;
+    color: #1e293b;
+    margin-top: 1.25rem;
+  }
+
+  .preview-box p {
+    margin-bottom: 1rem;
+  }
+
+  .preview-box img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+
+  .preview-box code {
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+
+  .preview-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #0f172a;
+    border-bottom: 2px solid #38bdf8;
+    padding-bottom: 0.75rem;
+    word-break: break-word;
+  }
+
+  /* 모달 레이아웃 */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(7, 10, 18, 0.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  .modal-box {
+    background: #151d2a !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 16px;
+    width: 95%;
+    max-width: 1100px;
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+  }
+
+  .filter-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+  }
+
+  .filter-btn-group {
+    display: flex;
+    background: var(--bg-input);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+
+  .filter-btn {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn.active {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+  }
+
+  .alt-input-box {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 240px;
+  }
+
+  .alt-input-box label {
+    white-space: nowrap;
+    color: var(--primary-color);
+    font-size: 0.8rem;
+  }
+
+  .alt-input-box input {
+    flex: 1;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    border: none;
+  }
+
+  .modal-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    gap: 1.25rem !important;
+    overflow-y: auto !important;
+    padding-right: 0.5rem !important;
+    flex: 1 !important;
+    align-content: start !important;
+  }
+
+  .modal-item {
+    background: var(--bg-input) !important;
+    border: 2px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 200px !important;
+    box-sizing: border-box !important;
+  }
+
+  .modal-item:hover {
+    transform: translateY(-3px) !important;
+    border-color: #64748b !important;
+  }
+
+  .modal-item.selected {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.5) !important;
+    background: #0f172a !important;
+  }
+
+  .modal-item-thumb-wrapper {
+    position: relative !important;
+    width: 100% !important;
+    height: 115px !important;
+    background: #000000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+
+  .modal-item-thumb-wrapper img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .badge-used {
+    position: absolute !important;
+    top: 6px !important;
+    left: 6px !important;
+    background: rgba(16, 185, 129, 0.9) !important;
+    color: #ffffff !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    z-index: 2 !important;
+  }
+
+  .badge-unused {
+    position: absolute !important;
+    top: 6px !important;
+    left: 6px !important;
+    background: rgba(244, 63, 94, 0.9) !important;
+    color: #ffffff !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    z-index: 2 !important;
+  }
+
+  .badge-selected-check {
+    position: absolute !important;
+    top: 6px !important;
+    right: 6px !important;
+    background: var(--primary-color) !important;
+    color: #0b0f19 !important;
+    font-size: 0.85rem !important;
+    font-weight: 900 !important;
+    width: 22px !important;
+    height: 22px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6) !important;
+    z-index: 3 !important;
+  }
+
+  .modal-item-info {
+    padding: 0.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    height: 81px !important;
+    background: #151d2a !important;
+    box-sizing: border-box !important;
+  }
+
+  .modal-item-name {
+    font-size: 0.72rem !important;
+    font-weight: 500 !important;
+    color: #cbd5e1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .modal-item-actions {
+    display: flex !important;
+    gap: 0.25rem !important;
+  }
+
+  .btn-card-mini {
+    flex: 1 !important;
+    background: #1e293b !important;
+    color: #f8fafc !important;
+    border: none !important;
+    padding: 0.35rem 0.1rem !important;
+    font-size: 0.62rem !important;
+    font-weight: 600 !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    text-align: center !important;
+  }
+
+  .btn-card-mini:hover {
+    background: var(--primary-color) !important;
+    color: #0b0f19 !important;
+  }
+
+  .btn-card-mini-danger {
+    flex: 1 !important;
+    background: rgba(244, 63, 94, 0.2) !important;
+    color: #f43f5e !important;
+    border: none !important;
+    padding: 0.35rem 0.1rem !important;
+    font-size: 0.62rem !important;
+    font-weight: 600 !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    text-align: center !important;
+  }
+
+  .btn-card-mini-danger:hover {
+    background: #f43f5e !important;
+    color: #ffffff !important;
+  }
+
+  /* 라이트박스 모달 */
+  .lightbox-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(7, 10, 18, 0.95);
+    backdrop-filter: blur(10px);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .lightbox-img-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 85vw;
+    max-height: 70vh;
+  }
+
+  .lightbox-img {
+    max-width: 85vw;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  }
+
+  .lightbox-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(21, 29, 42, 0.85);
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    font-size: 1.8rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+    user-select: none;
+  }
+
+  .lightbox-nav-btn:hover {
+    background: #0284c7;
+    color: #fff;
+  }
+
+  .lightbox-nav-btn.prev { left: -65px; }
+  .lightbox-nav-btn.next { right: -65px; }
+
+  .lightbox-caption {
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .lightbox-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #0284c7;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10000;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* 실시간 미리보기 다크모드 토글 */
+  .preview-box.dark-mode {
+    background: #0b0f19 !important;
+    color: #f8fafc !important;
+  }
+  .preview-box.dark-mode h1,
+  .preview-box.dark-mode h2,
+  .preview-box.dark-mode h3 {
+    color: #f8fafc !important;
+  }
+  .preview-box.dark-mode h2 {
+    border-bottom-color: var(--border-color) !important;
+  }
+  .preview-box.dark-mode code {
+    background: #1e293b !important;
+    color: var(--primary-color) !important;
+  }
+
+  /* 반응형 모바일 그리드 처리 */
+  @media (max-width: 1024px) {
+    .editor-grid {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+    }
+    .lightbox-nav-btn.prev { left: 10px; }
+    .lightbox-nav-btn.next { right: 10px; }
+  }
+</style>
   </head>
   <body>
     <header class="header-bar">
@@ -659,12 +679,18 @@ import BaseHead from '../components/BaseHead.astro';
           <button type="button" class="tool-btn" data-tag="h3">H3 소제목</button>
           <button type="button" class="tool-btn" data-tag="p">단락(p)</button>
           <button type="button" class="tool-btn" data-tag="strong">강조(strong)</button>
+          <button type="button" class="tool-btn" data-action="bold"><b>B</b></button>
+          <button type="button" class="tool-btn" data-action="italic"><i>I</i></button>
+          <button type="button" class="tool-btn" data-action="quote">Quote</button>
+          <button type="button" class="tool-btn" data-action="codeblock">Block</button>
+          <button type="button" class="tool-btn" data-action="link">Link</button>
           <button type="button" class="tool-btn" data-tag="code">코드(code)</button>
-          <button type="button" class="tool-btn highlight" id="btn-open-gallery">🖼️ NAS 이미지 선택 & 관리</button>
-          <!-- 기존 tool-btn 버튼들 바로 뒤에 추가 -->
-<button type="button" class="tool-btn" id="btn-tmpl-callout">💡 안내 상자</button>
+          <button type="button" class="tool-btn" id="btn-tmpl-callout">💡 안내 상자</button>
 <button type="button" class="tool-btn" id="btn-tmpl-quote">💬 인용구</button>
 <button type="button" class="tool-btn" id="btn-tmpl-figure">🖼️ 이미지+캡션</button>
+          <button type="button" class="tool-btn highlight" id="btn-open-gallery">🖼️ NAS 이미지 선택 & 관리</button>
+          <!-- 기존 tool-btn highlight 버튼 위치 근처에 아래 버튼을 추가해 주세요 -->
+<button type="button" class="tool-btn highlight" id="btn-open-posts" style="background: #8b5cf6; border-color: #a78bfa;">📂 기존 글 불러오기 / 수정</button>
         </div>
       
 
@@ -755,6 +781,24 @@ import BaseHead from '../components/BaseHead.astro';
       </div>
     </div>
 
+    <!-- 기존 글 목록 불러오기 모달 -->
+<div id="posts-modal" class="modal-backdrop">
+  <div class="modal-box" style="max-width: 800px;">
+    <div class="modal-header">
+      <h3 style="margin:0; color:#a78bfa;">📂 작성된 글 목록 (수정할 글 선택)</h3>
+      <button type="button" id="btn-close-posts" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;" title="닫기 (Esc)">✕</button>
+    </div>
+
+    <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
+      <input type="text" id="posts-search" placeholder="🔍 글 제목 또는 영문 슬러그 검색..." style="width: 100%; box-sizing: border-box;" />
+    </div>
+
+    <div id="posts-list-container" style="overflow-y: auto; flex: 1; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+      <p style="color:var(--text-muted); text-align:center; padding:2rem;">글 목록을 불러오는 중입니다...</p>
+    </div>
+  </div>
+</div>
+
     <div id="toast" class="toast">클립보드에 복사되었습니다!</div>
 
     <script>
@@ -777,6 +821,12 @@ import BaseHead from '../components/BaseHead.astro';
       const btnDeleteSelected = document.getElementById('btn-delete-selected') as HTMLButtonElement;
       const toast = document.getElementById('toast');
 
+      const postsModal = document.getElementById('posts-modal');
+      const btnOpenPosts = document.getElementById('btn-open-posts');
+      const btnClosePosts = document.getElementById('btn-close-posts');
+      const postsSearch = document.getElementById('posts-search') as HTMLInputElement;
+      const postsContainer = document.getElementById('posts-list-container');
+
       const filterUsageAll = document.getElementById('filter-usage-all');
       const filterUsageUsed = document.getElementById('filter-usage-used');
       const filterUsageUnused = document.getElementById('filter-usage-unused');
@@ -792,6 +842,7 @@ import BaseHead from '../components/BaseHead.astro';
       const lbCopyUrl = document.getElementById('lb-copy-url');
 
       let allGalleryItems: any[] = [];
+      let allPostsData: any[] = [];
       let currentFilteredItems: any[] = [];
       let selectedRelPaths = new Set<string>();
       let currentUsageFilter = 'all';
@@ -1310,6 +1361,285 @@ btnPublishWeb?.addEventListener('click', async () => {
     alert('게시 요청 중 NAS 서버 연결에 실패했습니다.');
   }
 });
+
+// 1. 주요 에디터 요소 가져오기
+  const editor = document.querySelector('textarea.code-area') as HTMLTextAreaElement;
+  const saveBtn = document.querySelector('.btn-submit') as HTMLButtonElement;
+
+  // 2. [단축키] Ctrl + S (또는 Cmd + S) 누르면 자동 저장/발행 실행
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault(); // 브라우저 기본 저장창 뜨는 것 방지
+      
+      if (saveBtn) {
+        saveBtn.click(); // '저장 및 배포' 버튼 클릭 효과
+      }
+    }
+  });
+
+  // 3. [탭 키] 에디터에서 Tab 키 입력 시 2칸 공백 들여쓰기
+  if (editor) {
+    editor.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault(); // 다음 선택 상자로 넘어가지 않게 방지
+        const start = editor.selectionStart;
+        const end = editor.selectionEnd;
+
+        // 현재 커서 위치에 공백 2개 넣기
+        editor.value = editor.value.substring(0, start) + "  " + editor.value.substring(end);
+
+        // 커서 위치를 공백 바로 뒤로 이동
+        editor.selectionStart = editor.selectionEnd = start + 2;
+
+        // 실시간 미리보기 갱신 이벤트 호출
+        editor.dispatchEvent(new Event('input'));
+      }
+    });
+  }
+
+  // 4. [서식 도구] 마크다운 문법 감싸기/삽입 도 도우미 함수
+  function applyFormatting(prefix: string, suffix: string = '', defaultText: string = '') {
+    if (!editor) return;
+
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const selectedText = editor.value.substring(start, end) || defaultText;
+
+    const replacement = prefix + selectedText + suffix;
+    editor.value = editor.value.substring(0, start) + replacement + editor.value.substring(end);
+
+    // 커서 포커스 및 범위 재설정
+    editor.focus();
+    if (selectedText === defaultText) {
+      editor.setSelectionRange(start + prefix.length, start + prefix.length + selectedText.length);
+    } else {
+      editor.setSelectionRange(start + prefix.length + selectedText.length + suffix.length, start + prefix.length + selectedText.length + suffix.length);
+    }
+
+    // 미리보기 갱신
+    editor.dispatchEvent(new Event('input'));
+  }
+
+  // 5. 툴바 버튼 클릭 이벤트 자동 연결
+  document.addEventListener('DOMContentLoaded', () => {
+    const toolButtons = document.querySelectorAll('.tool-btn');
+    
+    toolButtons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = (btn as HTMLElement).dataset.action;
+
+        switch (action) {
+          case 'h2':
+            applyFormatting('<h2>', '</h2>', '제목 2');
+            break;
+          case 'h3':
+            applyFormatting('<h3>', '</h3>', '제목 3');
+            break;
+          case 'bold':
+            applyFormatting('<b>', '</b>', '굵은 텍스트');
+            break;
+          case 'italic':
+            applyFormatting('<i>', '</i>', '기울인 텍스트');
+            break;
+          case 'code':
+            applyFormatting('<code>', '</code>', '코드');
+            break;
+          case 'codeblock':
+            applyFormatting('<pre><code>\n', '\n</code></pre>', '// 코드를 입력하세요');
+            break;
+          case 'quote':
+            applyFormatting('<blockquote>', '</blockquote>', '인용구 내용');
+            break;
+          case 'link':
+            applyFormatting('<a href="https://">', '</a>', '링크 이름');
+            break;
+        }
+      });
+    });
+  });
+
+// --- 📂 기존 작성 글 목록 불러오기 기능 ---
+      const API_BASE_URL = 'https://image.lunasonata.com:9003';
+
+      // 1. 글 목록 모달 열기 / 닫기
+      function openPostsModal() {
+        if (postsModal) postsModal.style.display = 'flex';
+        fetchPostsList();
+      }
+
+      function closePostsModal() {
+        if (postsModal) postsModal.style.display = 'none';
+      }
+
+      // 2. 서버에서 작성된 글 목록 가져오기
+      async function fetchPostsList() {
+        if (!postsContainer) return;
+        postsContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:2rem;">글 목록을 불러오는 중입니다...</p>';
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/posts`);
+          const result = await res.json();
+
+          if (result.success && result.data) {
+            allPostsData = result.data;
+            renderPostsList();
+          } else {
+            postsContainer.innerHTML = '<p style="color:#f87171; text-align:center; padding:2rem;">작성된 글이 없습니다.</p>';
+          }
+        } catch (err) {
+          console.error('글 목록 로드 실패:', err);
+          postsContainer.innerHTML = '<p style="color:#f87171; text-align:center; padding:2rem;">글 목록을 불러올 수 없습니다. NAS 서버 연결 상태를 확인해 주세요.</p>';
+        }
+      }
+
+      // 3. 선택한 글의 원본 내용을 에디터(입력창)로 가져오기 (수정 모드)
+      async function loadPostContent(slug: string) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/get-post?slug=${encodeURIComponent(slug)}`);
+          const result = await res.json();
+
+          if (result.success) {
+            const rawContent = result.content;
+
+            if (slugInput) slugInput.value = result.slug;
+
+            const titleMatch = rawContent.match(/^title:\s*["']?(.*?)["']?$/m);
+            if (titleMatch && titleInput) titleInput.value = titleMatch[1];
+
+            const descMatch = rawContent.match(/^description:\s*["']?(.*?)["']?$/m);
+            if (descMatch && descInput) descInput.value = descMatch[1];
+
+            const heroMatch = rawContent.match(/^heroImage:\s*["']?(.*?)["']?$/m);
+            if (heroMatch && heroInput) heroInput.value = heroMatch[1];
+
+            const bodyContent = rawContent.replace(/^---[\s\S]*?---\s*/, '');
+            if (htmlInput) htmlInput.value = bodyContent;
+
+            updatePreview();
+            closePostsModal();
+            showToast(`✅ '${result.slug}' 글을 성공적으로 불러왔습니다!`);
+          } else {
+            alert(`❌ 글을 불러오지 못했습니다: ${result.message}`);
+          }
+        } catch (err) {
+          console.error('글 내용 로드 오류:', err);
+          alert('❌ 서버 통신 중 오류가 발생했습니다.');
+        }
+      }
+
+      // 4. 선택한 글 삭제하기 (삭제 기능 추가)
+      async function deletePostContent(slug: string) {
+        const password = prompt(`🗑️ '${slug}' 글을 정말 삭제하시겠습니까?\n관리자 비밀번호를 입력해 주세요:`);
+        if (!password) return;
+
+        if (!confirm(`⚠️ [최종 확인] 삭제된 파일은 복구할 수 없습니다.\n정말로 '${slug}' 포스트를 삭제하시겠습니까?`)) {
+          return;
+        }
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/delete-post`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slug, password })
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            showToast(result.message || `🗑️ '${slug}' 글이 성공적으로 삭제되었습니다.`);
+            fetchPostsList(); // 삭제 후 목록 최신화
+          } else {
+            alert(`❌ 삭제 실패: ${result.message}`);
+          }
+        } catch (err) {
+          console.error('글 삭제 오류:', err);
+          alert('❌ 서버 통신 중 오류가 발생했습니다.');
+        }
+      }
+
+      // 5. 가져온 글 목록을 화면 카드 형태로 출력하기
+      function renderPostsList() {
+        if (!postsContainer) return;
+
+        const query = postsSearch?.value.toLowerCase().trim() || '';
+
+        const filtered = allPostsData.filter((post) => {
+          return post.title.toLowerCase().includes(query) || post.slug.toLowerCase().includes(query);
+        });
+
+        if (filtered.length === 0) {
+          postsContainer.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:2rem;">작성된 글이 없거나 검색 결과가 없습니다.</p>`;
+          return;
+        }
+
+        postsContainer.innerHTML = '';
+
+        filtered.forEach((post) => {
+          const item = document.createElement('div');
+          item.style.cssText = `
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+          `;
+
+          item.innerHTML = `
+            <div>
+              <div style="font-weight: 700; color: #f8fafc; font-size: 1rem; margin-bottom: 0.25rem;">${post.title}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">
+                <span style="color: var(--primary-color);">slug: ${post.slug}</span> | 작성일: ${post.pubDate || '날짜 없음'}
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button type="button" class="tool-btn highlight btn-load-post" style="font-size:0.8rem; padding: 0.4rem 0.8rem;">
+                ✏️ 수정
+              </button>
+              <button type="button" class="tool-btn btn-delete-post" style="font-size:0.8rem; padding: 0.4rem 0.8rem; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">
+                🗑️ 삭제
+              </button>
+            </div>
+          `;
+
+          // 버튼 클릭 이벤트 연결
+          const btnLoad = item.querySelector('.btn-load-post');
+          btnLoad?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            loadPostContent(post.slug);
+          });
+
+          const btnDelete = item.querySelector('.btn-delete-post');
+          btnDelete?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deletePostContent(post.slug);
+          });
+
+          // 마우스 오버 효과
+          item.addEventListener('mouseenter', () => {
+            item.style.borderColor = 'var(--primary-color)';
+          });
+          item.addEventListener('mouseleave', () => {
+            item.style.borderColor = 'var(--border-color)';
+          });
+
+          postsContainer.appendChild(item);
+        });
+      }
+
+      // 6. 이벤트 리스너 등록
+      btnOpenPosts?.addEventListener('click', openPostsModal);
+      btnClosePosts?.addEventListener('click', closePostsModal);
+
+      postsModal?.addEventListener('click', (e) => {
+        if (e.target === postsModal) closePostsModal();
+      });
+
+      postsSearch?.addEventListener('input', renderPostsList);
     </script>
+    <!-- 토스트 알림 메시지 창 -->
+<div id="toast" class="toast">알림 메시지</div>
   </body>
 </html>
