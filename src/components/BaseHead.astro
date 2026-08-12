@@ -23,6 +23,11 @@ const imageURL = typeof image === 'string'
   : new URL(image.src, Astro.site || SITE_URL);
 ---
 
+<!-- 브라우저 캐싱 힌트 및 리소스 도메인 사전 연결 -->
+<meta http-equiv="Cache-Control" content="max-age=31536000, public" />
+<link rel="dns-prefetch" href="https://image.lunasonata.com" />
+<link rel="preconnect" href="https://image.lunasonata.com" crossorigin />
+
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -41,6 +46,12 @@ const imageURL = typeof image === 'string'
 <meta name="generator" content={Astro.generator} />
 
 <Font cssVariable="--font-atkinson" preload />
+<!-- 폰트 로딩 동안 기본 텍스트를 먼저 보여주어 렌더링 차단 방지 -->
+<style is:inline>
+  @font-face {
+    font-display: swap;
+  }
+</style>
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
