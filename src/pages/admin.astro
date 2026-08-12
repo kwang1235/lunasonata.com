@@ -941,7 +941,7 @@ import BaseHead from '../components/BaseHead.astro';
         galleryGrid.innerHTML = `<p style="color:var(--text-muted); text-align:center; grid-column: 1/-1;">이미지 목록을 불러오는 중입니다...</p>`;
 
         try {
-          const res = await fetch('https://image.lunasonata.com:9003/api/images', { method: 'GET' });
+          const res = await fetch('https://api.lunasonata.com/api/images', { method: 'GET' });
           if (res.ok) {
             const result = await res.json();
             if (result && result.success && result.data) {
@@ -1105,7 +1105,7 @@ import BaseHead from '../components/BaseHead.astro';
       // 삭제 처리 로직 (단일 HTTPS 엔드포인트 호출)
       async function deleteFilesApi(files: string[]) {
         try {
-          const res = await fetch('https://image.lunasonata.com:9003/api/delete', {
+          const res = await fetch('https://api.lunasonata.com/api/delete', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1367,7 +1367,7 @@ btnPublishWeb?.addEventListener('click', async () => {
 
   try {
     // NAS의 Flask 게시 API 호출
-    const res = await fetch('https://image.lunasonata.com:9003/api/save-post', {
+    const res = await fetch('https://api.lunasonata.com/api/save-post', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1488,7 +1488,7 @@ btnPublishWeb?.addEventListener('click', async () => {
   });
 
 // --- 📂 기존 작성 글 목록 불러오기 기능 ---
-      const API_BASE_URL = 'https://image.lunasonata.com:9003';
+      const API_BASE_URL = 'https://api.lunasonata.com';
 
       // 1. 글 목록 모달 열기 / 닫기
       function openPostsModal() {
