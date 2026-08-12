@@ -1661,6 +1661,41 @@ ${cleanedContent}`;
       });
 
       checkAdminAuth();
+
+      // 💡 오른쪽 미리보기 클릭 시 왼쪽 Monaco Editor 코드 위치로 자동 이동 기능
+      pvBody?.addEventListener('click', (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        if (!target || !monacoEditor) return;
+
+        // 클릭된 요소의 텍스트에서 의미 있는 키워드 추출 (너무 짧거나 공백만 있는 경우 제외)
+        const selectedText = target.innerText ? target.innerText.trim() : '';
+        if (!selectedText || selectedText.length < 2) return;
+
+        // 검색에 사용할 첫 번째 줄 텍스트 또는 20자 이내 키워드 추출
+        const searchText = selectedText.split('\n')[0].substring(0, 20).trim();
+        if (!searchText) return;
+
+        const model = monacoEditor.getModel();
+        if (!model) return;
+
+        // Monaco Editor 모델 전체 내용에서 해당 텍스트 위치(Find) 검색
+        const matches = model.findMatches(searchText, false, false, false, null, true);
+
+        if (matches && matches.length > 0) {
+          const matchRange = matches[0].range;
+          
+          // 해당 행으로 커서 이동 및 중앙으로 스크롤
+          monacoEditor.setPosition({
+            lineNumber: matchRange.startLineNumber,
+            column: matchRange.startColumn
+          });
+          monacoEditor.revealLineInCenter(matchRange.startLineNumber);
+          monacoEditor.focus();
+
+          // 클릭 시 시각적 피드백 (토스트 알림)
+          showToast(`🎯 코드 ${matchRange.startLineNumber}번째 줄로 이동했습니다.`);
+        }
+      });
     </script>
 
     <div id="toast" class="toast">알림 메시지</div>
