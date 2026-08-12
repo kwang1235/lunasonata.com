@@ -48,6 +48,10 @@ const imageURL = typeof image === 'string'
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="description" content={description} />
+<meta name="author" content="세광" />
+
+<!-- 검색엔진 수집 및 색인 허용 -->
+<meta name="robots" content="index, follow" />
 
 <!-- Open Graph / Facebook / KakaoTalk -->
 <meta property="og:type" content="website" />
@@ -55,6 +59,8 @@ const imageURL = typeof image === 'string'
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={imageURL} />
+<meta property="og:site_name" content="세광로그" />
+<meta property="og:locale" content="ko_KR" />
 
 <!-- Twitter Meta Tags -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -76,3 +82,26 @@ const imageURL = typeof image === 'string'
     g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
   })();
 </script>
+
+<!-- 구글 & 네이버 상단 노출을 위한 Article 구조화 데이터 (JSON-LD) -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": title,
+  "description": description,
+  "image": imageURL.toString(),
+  "author": {
+    "@type": "Person",
+    "name": "세광",
+    "url": SITE_URL
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": SITE_TITLE,
+    "url": SITE_URL
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": canonicalURL.toString()
+  }
+})} />
