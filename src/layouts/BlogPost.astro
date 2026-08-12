@@ -56,18 +56,6 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
           <h1 class="post-title">{title}</h1>
         </header>
 
-<!-- 📌 대표 이미지 영역 (작성한 이미지가 없으면 기본 대체 이미지 자동 표시) -->
-        <div class="hero-image">
-          <div class="image-hover-wrapper">
-            <img 
-              src={displayHeroImage} 
-              alt={title} 
-              loading="eager" 
-              fetchpriority="high"
-              decoding="async" 
-            />
-          </div>
-        </div>
 
         <!-- 📌 통합 목차 (기본 상단 위치 -> PC 스크롤 시 좌측 플로팅 전환) -->
         <nav id="toc-container" class="toc-container" aria-label="목차">
