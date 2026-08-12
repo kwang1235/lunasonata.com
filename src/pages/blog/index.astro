@@ -5,7 +5,7 @@ import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, DEFAULT_OG_IMAGE } from '../../consts';
 
 const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -480,14 +480,17 @@ const searchData = posts.map((post) => ({
               <li class="post-item">
                 <a href={`/${post.id}/`}>
                   <div class="thumbnail-wrapper">
-                    {post.data.heroImage && typeof post.data.heroImage === 'object' ? (
-                      <Image src={post.data.heroImage} alt={post.data.title} width={200} height={125} />
-                    ) : post.data.heroImage ? (
-                      <img src={post.data.heroImage} alt={post.data.title} />
-                    ) : (
-                      <div class="no-image" />
-                    )}
-                  </div>
+  {
+    post.data.heroImage && typeof post.data.heroImage === 'object' ? (
+      <Image src={post.data.heroImage} alt={post.data.title} width={200} height={125} />
+    ) : (
+      <img 
+        src={post.data.heroImage || DEFAULT_OG_IMAGE} 
+        alt={post.data.title} 
+      />
+    )
+  }
+</div>
                   <div class="post-content">
                     <div class="post-meta">
                       {post.data.category && (
