@@ -102,7 +102,7 @@ img, video {
 }
 
 .prose img {
-  cursor: zoom-in;
+  cursor: grab;
   margin: 2rem 0;
 }
 

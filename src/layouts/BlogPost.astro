@@ -330,26 +330,48 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         display: block;
       }
 
+      /* 💡 1. 이미지 래퍼 및 이미지 바깥 여백(margin) 0으로 설정 & 사진 간격 1rem 설정 */
       .prose :global(.image-hover-wrapper) {
         position: relative;
-        display: inline-block;
+        display: block;
         max-width: 100%;
         overflow: hidden;
-        border-radius: 12px;
-        margin: 1.5rem 0;
-        cursor: pointer;
+        border-radius: 0 !important;
+        margin: 0 0 1rem 0 !important;
+        cursor: default;
       }
 
       .prose :global(img) {
         display: block;
         max-width: 100%;
         height: auto;
-        border-radius: 12px;
+        border-radius: 0 !important;
+        margin: 0 !important;
         transition: transform 0.3s ease, filter 0.3s ease;
+      }
+
+      .image-hover-wrapper:hover img,
+      :global(.image-hover-wrapper:hover img) {
+        filter: brightness(0.95);
+        transform: scale(1.01);
+      }
+
+      /* 💡 2. figure 태그 및 캡션(figcaption) 간격 정밀 조정 */
+      .prose :global(figure) {
+        margin: 0 0 1rem 0 !important; /* figure 간격 1rem */
+        text-align: center;
+      }
+
+      .prose :global(figcaption) {
+        font-size: 0.85rem;
+        color: var(--text-muted, #64748b);
+        margin-top: 0.35rem !important; /* 이미지 바로 밑에 가깝게 붙이기 */
+        line-height: 1.4;
       }
 
       .zoom-hint-overlay,
       :global(.zoom-hint-overlay) {
+        display: none !important; /* 💡 이미지 위 호버 아이콘 레이어 숨김 */
         position: absolute;
         bottom: 12px;
         right: 12px;
@@ -360,7 +382,6 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         border-radius: 20px;
         font-size: 0.75rem;
         font-weight: 600;
-        display: flex;
         align-items: center;
         gap: 0.35rem;
         opacity: 0;
