@@ -56,6 +56,9 @@ const imageURL = typeof image === 'string'
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
+<!-- LCP 성능 최적화: 대표 이미지를 1순위로 즉시 로딩 -->
+<link rel="preload" as="image" href={imageURL} />
+
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="description" content={description} />

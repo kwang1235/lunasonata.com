@@ -17,13 +17,19 @@ const posts = (await getCollection('blog')).sort(
 const featuredPost = posts[0];
 const recentPosts = posts.slice(1, 4);
 
-// 공통 이미지 URL 변환 함수 (상대 경로 및 파일명 처리 보완)
-async function getOptimizedBgUrl(heroImage: any) {
+// 공통 이미지 URL 변환 함수 (외부 NAS URL 최우선 처리)
+async function getOptimizedBgUrl(heroImage: any, targetWidth = 600) {
   let bgUrl = '/blog-placeholder-1.jpg';
   if (!heroImage) return bgUrl;
 
+  // 1. 이미 https:// 로 시작하는 외부/NAS 이미지 URL인 경우 즉시 반환
+  if (typeof heroImage === 'string' && heroImage.startsWith('http')) {
+    return heroImage;
+  }
+
+  // 2. Astro 내장 assets 이미지 처리
   if (typeof heroImage === 'object' && heroImage !== null) {
-    const optimized = await getImage({ src: heroImage });
+    const optimized = await getImage({ src: heroImage, width: targetWidth, format: 'webp' });
     return optimized.src;
   } else if (typeof heroImage === 'string') {
     const fileName = heroImage.split('/').pop();
@@ -31,7 +37,7 @@ async function getOptimizedBgUrl(heroImage: any) {
 
     if (images[imagePath]) {
       const imageModule = await images[imagePath]();
-      const optimized = await getImage({ src: imageModule.default });
+      const optimized = await getImage({ src: imageModule.default, width: targetWidth, format: 'webp' });
       return optimized.src;
     }
     return heroImage;
@@ -57,6 +63,8 @@ const processedRecentPosts = await Promise.all(
 <html lang="ko" class="index-html">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <!-- LCP 모바일 속도 최적화: 메인 LATEST 카드 배경 이미지를 1순위로 즉시 로드 -->
+  <link rel="preload" as="image" href={featuredBgUrl} />
   </head>
   <body class="index-body">
     <Header />

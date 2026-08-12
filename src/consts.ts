@@ -11,7 +11,7 @@ export const AUTHOR_NAME = '세광';
 /**
  * 2. 소셜 공유(Open Graph) 기본 옵션
  */
-export const DEFAULT_OG_IMAGE = '/og-default.png'; // public/og-default.jpg에 위치한 기본 공유 이미지
+export const DEFAULT_OG_IMAGE = 'https://image.lunasonata.com/2026/08/sekwanglog_card.webp'; // public/og-default.jpg에 위치한 기본 공유 이미지
 
 /**
  * 3. 소셜 미디어 및 외부 링크

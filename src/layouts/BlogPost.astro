@@ -5,19 +5,24 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE, DEFAULT_OG_IMAGE } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 
-const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in heroImage 
+// 1. 직접 넣은 대표 이미지가 있으면 해당 이미지를 쓰고, 없으면 기본 이미지(sekwanglog_card.webp) 적용
+const rawImage = typeof heroImage === 'object' && heroImage !== null && 'src' in heroImage 
   ? heroImage.src 
   : heroImage;
+
+const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
 ---
 
 <html lang="ko">
   <head>
-    <BaseHead title={title} description={description} />
+    <!-- 글 개별 대표 이미지(또는 기본 대체 이미지)를 메타태그 및 OG 카드에 전달 -->
+    <BaseHead title={title} description={description} image={displayHeroImage} />
   </head>
 
   <body>
@@ -50,6 +55,19 @@ const imageSrc = typeof heroImage === 'object' && heroImage !== null && 'src' in
           </div>
           <h1 class="post-title">{title}</h1>
         </header>
+
+<!-- 📌 대표 이미지 영역 (작성한 이미지가 없으면 기본 대체 이미지 자동 표시) -->
+        <div class="hero-image">
+          <div class="image-hover-wrapper">
+            <img 
+              src={displayHeroImage} 
+              alt={title} 
+              loading="eager" 
+              fetchpriority="high"
+              decoding="async" 
+            />
+          </div>
+        </div>
 
         <!-- 📌 통합 목차 (기본 상단 위치 -> PC 스크롤 시 좌측 플로팅 전환) -->
         <nav id="toc-container" class="toc-container" aria-label="목차">
