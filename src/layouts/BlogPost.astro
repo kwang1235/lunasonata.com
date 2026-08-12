@@ -33,28 +33,30 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
 
     <main class="article-container">
       <article>
-        <header class="post-header">
-          <div class="post-meta-row">
-            <span class="post-date">
-              <FormattedDate date={pubDate} />
-              {updatedDate && (
-                <span class="last-updated">
-                  (수정: <FormattedDate date={updatedDate} />)
-                </span>
-              )}
-            </span>
-            <span class="meta-divider">•</span>
-            <!-- 읽기 시간 표기 영역 -->
-            <span class="reading-time">
-              <svg class="reading-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              <span id="reading-time-text">읽는 중...</span>
-            </span>
-          </div>
-          <h1 class="post-title">{title}</h1>
-        </header>
+        <header 
+  class="post-header" 
+  style={displayHeroImage ? `background-image: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65)), url('${displayHeroImage}');` : ''}
+>
+  <div class="post-meta-row">
+    <span class="post-date">
+      <FormattedDate date={pubDate} />
+      {updatedDate && (
+        <span class="last-updated">
+          (수정: <FormattedDate date={updatedDate} />)
+        </span>
+      )}
+    </span>
+    <span class="meta-divider">•</span>
+    <span class="reading-time">
+      <svg class="reading-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      <span id="reading-time-text">읽는 중...</span>
+    </span>
+  </div>
+  <h1 class="post-title">{title}</h1>
+</header>
 
 
         <!-- 📌 통합 목차 (기본 상단 위치 -> PC 스크롤 시 좌측 플로팅 전환) -->
@@ -142,7 +144,40 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
       .post-header {
         text-align: center;
         margin-bottom: 2.5rem;
+        padding: 4rem 2rem; /* 위아래 여백을 주어 은은하게 배경이 드러나도록 지정 */
+        border-radius: 16px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
       }
+
+/* 💡 배경 위 글자 가독성을 위해 텍스트 색상을 흰색 톤으로 통일 */
+      .post-header .post-meta-row {
+        color: rgba(255, 255, 255, 0.85) !important;
+      }
+
+      .post-header .reading-time {
+        color: #f1f5f9 !important;
+      }
+
+      .post-header .meta-divider {
+        color: rgba(255, 255, 255, 0.4) !important;
+      }
+
+      .post-title {
+        font-size: 2.1rem;
+        font-weight: 800;
+        color: #ffffff !important; /* 글자색을 흰색으로 지정 */
+        line-height: 1.35;
+        letter-spacing: -0.02em;
+        margin: 0;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* 은은한 그림자로 가독성 확보 */
+      }
+
+
 
       .post-meta-row {
         display: inline-flex;
