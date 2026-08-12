@@ -7,6 +7,12 @@ import BaseHead from '../components/BaseHead.astro';
 <html lang="ko">
   <head>
     <BaseHead title="Lunasonata 포스팅 에디터" description="웹 기반 글쓰기 관리자 페이지" />
+    <!-- 구문 강조(VSCode 스타일)를 위한 Prism.js CSS 및 스크립트 추가 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrownight.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ngx-markup/1.0.0/ngx-markup.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codejar@4.2.0/codejar.min.js"></script>
    <style is:global>
   :root {
     --bg-main: #0b0f19;
@@ -723,9 +729,14 @@ import BaseHead from '../components/BaseHead.astro';
       
 
         <div class="form-group">
-          <label for="post-html">HTML / 본문 작성 공간</label>
-          <textarea id="post-html" class="code-area" placeholder="<h2>오늘의 이야기</h2>&#10;<p>여기에 HTML이나 일반 글로 작성해 보세요!</p>"></textarea>
-        </div>
+  <label for="editor-container">HTML / 본문 작성 공간 (VSCode 스타일 구문 강조 적용)</label>
+  <div style="position: relative; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: #1d1f21;">
+    <!-- 실제 화면에 알록달록하게 보일 CodeJar 에디터 영역 -->
+    <div id="editor-container" class="language-markup" style="min-height: 450px; padding: 1rem; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 0.92rem; line-height: 1.6; color: #c5c8c6; outline: none; white-space: pre-wrap; word-break: break-all;"></div>
+    <!-- 기존 스크립트들과 호환성을 유지하기 위한 숨김 입력창 -->
+    <textarea id="post-html" style="display: none;"></textarea>
+  </div>
+</div>
 
         <div class="btn-group">
           <div class="btn-group">
@@ -1148,19 +1159,22 @@ const heroInput = document.getElementById('post-hero') as HTMLInputElement;
 const slugInput = document.getElementById('post-slug') as HTMLInputElement;
 
 // Frontmatter 헤더 생성 함수
+// 변경 후 코드
 function generateFrontmatter(): string {
   const title = titleInput.value.trim() || '제목 없음';
   const description = descInput?.value.trim() || title;
   const heroImage = heroInput?.value.trim() || '';
   const slug = slugInput?.value.trim() || '';
 
-  // 카테고리를 배열 형태 ['일상', '개발'] 로 변환
   const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
   const categoriesFormatted = rawCategories.length > 0 
     ? `\ncategories:\n${rawCategories.map(c => `  - "${c}"`).join('\n')}` 
     : '';
 
   const today = new Date().toISOString().split('T')[0];
+
+  // 💡 [핵심] 줄 맨 앞의 4칸 이상 들여쓰기 공백을 제거하여 마크다운 코드 블록 오작동 방지
+  const cleanedContent = htmlInput.value.replace(/^[ \t]{4,}/gm, '');
 
   return `---
 title: "${title}"
@@ -1170,7 +1184,7 @@ ${slug ? `slug: "${slug}"\n` : ''}${heroImage ? `heroImage: "${heroImage}"\n` : 
 draft: false
 ---
 
-${htmlInput.value}`;
+${cleanedContent}`;
 }
 
 // 복사 버튼 클릭 이벤트 핸들러 업데이트
@@ -1728,6 +1742,7 @@ btnPublishWeb?.addEventListener('click', async () => {
 
       // 페이지 진입 시 실행
       checkAdminAuth();
+
 
     </script>
     <!-- 토스트 알림 메시지 창 -->
