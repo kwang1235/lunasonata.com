@@ -7,658 +7,648 @@ import BaseHead from '../components/BaseHead.astro';
 <html lang="ko">
   <head>
     <BaseHead title="Lunasonata 포스팅 에디터" description="웹 기반 글쓰기 관리자 페이지" />
-    <!-- 구문 강조(VSCode 스타일)를 위한 Prism.js CSS 및 스크립트 추가 -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrownight.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ngx-markup/1.0.0/ngx-markup.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/codejar@4.2.0/codejar.min.js"></script>
-   <style is:global>
-  :root {
-    --bg-main: #0b0f19;
-    --bg-card: #151d2a;
-    --bg-input: #070a12;
-    --border-color: #2a364f;
-    --border-color-glow: rgba(56, 189, 248, 0.4);
-    --primary-color: #38bdf8;
-    --primary-hover: #0284c7;
-    --accent-color: #10b981;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg-main);
-    color: var(--text-main);
-    font-family: 'Pretendard', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .header-bar {
-    background: rgba(21, 29, 42, 0.8);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-color);
-    padding: 0.85rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-bar h1 {
-    margin: 0;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    letter-spacing: -0.02em;
-  }
-
-  .editor-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    max-width: 1700px;
-    margin: 0 auto;
-    min-height: calc(100vh - 70px);
-    box-sizing: border-box;
-  }
-
-  .card {
-    background: var(--bg-card);
-    border-radius: 14px;
-    padding: 1.5rem;
-    border: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  }
-
-  .stats-bar {
-    display: flex;
-    gap: 1rem;
-    background: var(--bg-input);
-    padding: 0.75rem 1rem;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    font-size: 0.85rem;
-    color: var(--text-muted);
-  }
-
-  .stats-bar span strong {
-    color: var(--primary-color);
-  }
-
-  .toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    background: var(--bg-input);
-    padding: 0.6rem;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-  }
-
-  .tool-btn {
-    background: #1e293b;
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    padding: 0.45rem 0.8rem;
-    border-radius: 7px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .tool-btn:hover {
-    background: var(--primary-color);
-    color: #0b0f19;
-    border-color: var(--primary-color);
-    transform: translateY(-1px);
-  }
-
-  .tool-btn.highlight {
-    background: #0284c7;
-    color: #ffffff;
-    border-color: #38bdf8;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-muted);
-  }
-
-  input, select, textarea {
-    background: var(--bg-input);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 0.92rem;
-    transition: all 0.2s ease;
-  }
-
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
-  }
-
-  textarea.code-area {
-    font-family: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
-    min-height: 420px;
-    resize: vertical;
-    line-height: 1.6;
-    tab-size: 2;
-  }
-
-  .btn-group {
-    display: flex;
-    gap: 0.75rem;
-  }
-
-  .btn-submit {
-    flex: 1;
-    background: var(--primary-color);
-    color: #0b0f19;
-    font-weight: 700;
-    padding: 0.875rem 1.25rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-  }
-
-  .btn-submit:hover {
-    background: var(--primary-hover);
-    color: #ffffff;
-    transform: translateY(-1px);
-  }
-
-  .preview-box {
-    background: #ffffff;
-    color: #1e293b;
-    border-radius: 10px;
-    padding: 2rem;
-    min-height: 500px;
-    overflow-y: auto;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-    line-height: 1.8;
-    transition: background-color 0.3s, color 0.3s;
-  }
-
-  .preview-box h2 {
-    font-size: 1.5rem;
-    color: #0f172a;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 0.4rem;
-  }
-
-  .preview-box h3 {
-    font-size: 1.25rem;
-    color: #1e293b;
-    margin-top: 1.25rem;
-  }
-
-  .preview-box p {
-    margin-bottom: 1rem;
-  }
-
-  .preview-box img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin: 1rem 0;
-  }
-
-  .preview-box code {
-    background: #f1f5f9;
-    color: #0f172a;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    font-family: monospace;
-  }
-
-  .preview-title {
-    font-size: 1.85rem;
-    font-weight: 800;
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    color: #0f172a;
-    border-bottom: 2px solid #38bdf8;
-    padding-bottom: 0.75rem;
-    word-break: break-word;
-  }
-
-  /* 모달 레이아웃 */
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(7, 10, 18, 0.85);
-    backdrop-filter: blur(8px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-
-  .modal-box {
-    background: #151d2a !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 16px;
-    width: 95%;
-    max-width: 1100px;
-    height: 85vh;
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
-  }
-
-  .filter-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 1rem;
-  }
-
-  .filter-btn-group {
-    display: flex;
-    background: var(--bg-input);
-    padding: 3px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-  }
-
-  .filter-btn {
-    background: transparent;
-    color: var(--text-muted);
-    border: none;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .filter-btn.active {
-    background: #0284c7 !important;
-    color: #ffffff !important;
-  }
-
-  .alt-input-box {
-    background: var(--bg-input);
-    border: 1px solid var(--border-color);
-    padding: 0.4rem 0.75rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex: 1;
-    min-width: 240px;
-  }
-
-  .alt-input-box label {
-    white-space: nowrap;
-    color: var(--primary-color);
-    font-size: 0.8rem;
-  }
-
-  .alt-input-box input {
-    flex: 1;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-    border: none;
-  }
-
-  .modal-grid {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
-    gap: 1.25rem !important;
-    overflow-y: auto !important;
-    padding-right: 0.5rem !important;
-    flex: 1 !important;
-    align-content: start !important;
-  }
-
-  .modal-item {
-    background: var(--bg-input) !important;
-    border: 2px solid var(--border-color) !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative !important;
-    display: flex !important;
-    flex-direction: column !important;
-    height: 200px !important;
-    box-sizing: border-box !important;
-  }
-
-  .modal-item:hover {
-    transform: translateY(-3px) !important;
-    border-color: #64748b !important;
-  }
-
-  .modal-item.selected {
-    border-color: var(--primary-color) !important;
-    box-shadow: 0 0 16px rgba(56, 189, 248, 0.5) !important;
-    background: #0f172a !important;
-  }
-
-  .modal-item-thumb-wrapper {
-    position: relative !important;
-    width: 100% !important;
-    height: 115px !important;
-    background: #000000 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    overflow: hidden !important;
-  }
-
-  .modal-item-thumb-wrapper img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-  }
-
-  .badge-used {
-    position: absolute !important;
-    top: 6px !important;
-    left: 6px !important;
-    background: rgba(16, 185, 129, 0.9) !important;
-    color: #ffffff !important;
-    font-size: 0.65rem !important;
-    font-weight: 700 !important;
-    padding: 2px 6px !important;
-    border-radius: 4px !important;
-    z-index: 2 !important;
-  }
-
-  .badge-unused {
-    position: absolute !important;
-    top: 6px !important;
-    left: 6px !important;
-    background: rgba(244, 63, 94, 0.9) !important;
-    color: #ffffff !important;
-    font-size: 0.65rem !important;
-    font-weight: 700 !important;
-    padding: 2px 6px !important;
-    border-radius: 4px !important;
-    z-index: 2 !important;
-  }
-
-  .badge-selected-check {
-    position: absolute !important;
-    top: 6px !important;
-    right: 6px !important;
-    background: var(--primary-color) !important;
-    color: #0b0f19 !important;
-    font-size: 0.85rem !important;
-    font-weight: 900 !important;
-    width: 22px !important;
-    height: 22px !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.6) !important;
-    z-index: 3 !important;
-  }
-
-  .modal-item-info {
-    padding: 0.5rem !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    height: 81px !important;
-    background: #151d2a !important;
-    box-sizing: border-box !important;
-  }
-
-  .modal-item-name {
-    font-size: 0.72rem !important;
-    font-weight: 500 !important;
-    color: #cbd5e1 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
-
-  .modal-item-actions {
-    display: flex !important;
-    gap: 0.25rem !important;
-  }
-
-  .btn-card-mini {
-    flex: 1 !important;
-    background: #1e293b !important;
-    color: #f8fafc !important;
-    border: none !important;
-    padding: 0.35rem 0.1rem !important;
-    font-size: 0.62rem !important;
-    font-weight: 600 !important;
-    border-radius: 4px !important;
-    cursor: pointer !important;
-    transition: all 0.2s !important;
-    text-align: center !important;
-  }
-
-  .btn-card-mini:hover {
-    background: var(--primary-color) !important;
-    color: #0b0f19 !important;
-  }
-
-  .btn-card-mini-danger {
-    flex: 1 !important;
-    background: rgba(244, 63, 94, 0.2) !important;
-    color: #f43f5e !important;
-    border: none !important;
-    padding: 0.35rem 0.1rem !important;
-    font-size: 0.62rem !important;
-    font-weight: 600 !important;
-    border-radius: 4px !important;
-    cursor: pointer !important;
-    transition: all 0.2s !important;
-    text-align: center !important;
-  }
-
-  .btn-card-mini-danger:hover {
-    background: #f43f5e !important;
-    color: #ffffff !important;
-  }
-
-  /* 라이트박스 모달 */
-  .lightbox-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(7, 10, 18, 0.95);
-    backdrop-filter: blur(10px);
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-
-  .lightbox-img-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 85vw;
-    max-height: 70vh;
-  }
-
-  .lightbox-img {
-    max-width: 85vw;
-    max-height: 70vh;
-    object-fit: contain;
-    border-radius: 12px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-  }
-
-  .lightbox-nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(21, 29, 42, 0.85);
-    color: var(--primary-color);
-    border: 1px solid var(--border-color);
-    font-size: 1.8rem;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    z-index: 10;
-    user-select: none;
-  }
-
-  .lightbox-nav-btn:hover {
-    background: #0284c7;
-    color: #fff;
-  }
-
-  .lightbox-nav-btn.prev { left: -65px; }
-  .lightbox-nav-btn.next { right: -65px; }
-
-  .lightbox-caption {
-    margin-top: 1rem;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-  }
-
-  .lightbox-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1rem;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: #0284c7;
-    color: #fff;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 10000;
-  }
-
-  .toast.show {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  /* 실시간 미리보기 다크모드 토글 */
-  .preview-box.dark-mode {
-    background: #0b0f19 !important;
-    color: #f8fafc !important;
-  }
-  .preview-box.dark-mode h1,
-  .preview-box.dark-mode h2,
-  .preview-box.dark-mode h3 {
-    color: #f8fafc !important;
-  }
-  .preview-box.dark-mode h2 {
-    border-bottom-color: var(--border-color) !important;
-  }
-  .preview-box.dark-mode code {
-    background: #1e293b !important;
-    color: var(--primary-color) !important;
-  }
-
-  /* 반응형 모바일 그리드 처리 */
-  @media (max-width: 1024px) {
-    .editor-grid {
-      grid-template-columns: 1fr;
-      padding: 1rem;
-    }
-    .lightbox-nav-btn.prev { left: 10px; }
-    .lightbox-nav-btn.next { right: 10px; }
-  }
-</style>
+    
+    <!-- 💡 VSCode의 핵심 엔진(Monaco Editor) CDN 로드 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/editor/vscode.min.css" />
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+
+    <style is:global>
+      :root {
+        --bg-main: #0b0f19;
+        --bg-card: #151d2a;
+        --bg-input: #070a12;
+        --border-color: #2a364f;
+        --border-color-glow: rgba(56, 189, 248, 0.4);
+        --primary-color: #38bdf8;
+        --primary-hover: #0284c7;
+        --accent-color: #10b981;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        font-family: 'Pretendard', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .header-bar {
+        background: rgba(21, 29, 42, 0.8);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-color);
+        padding: 0.85rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-bar h1 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        letter-spacing: -0.02em;
+      }
+
+      .editor-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        max-width: 1700px;
+        margin: 0 auto;
+        min-height: calc(100vh - 70px);
+        box-sizing: border-box;
+      }
+
+      .card {
+        background: var(--bg-card);
+        border-radius: 14px;
+        padding: 1.5rem;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      }
+
+      .stats-bar {
+        display: flex;
+        gap: 1rem;
+        background: var(--bg-input);
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      .stats-bar span strong {
+        color: var(--primary-color);
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        background: var(--bg-input);
+        padding: 0.6rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+      }
+
+      .tool-btn {
+        background: #1e293b;
+        color: var(--text-main);
+        border: 1px solid var(--border-color);
+        padding: 0.45rem 0.8rem;
+        border-radius: 7px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .tool-btn:hover {
+        background: var(--primary-color);
+        color: #0b0f19;
+        border-color: var(--primary-color);
+        transform: translateY(-1px);
+      }
+
+      .tool-btn.highlight {
+        background: #0284c7;
+        color: #ffffff;
+        border-color: #38bdf8;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+
+      input, select {
+        background: var(--bg-input);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        color: #ffffff;
+        font-family: inherit;
+        font-size: 0.92rem;
+        transition: all 0.2s ease;
+      }
+
+      input:focus, select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .btn-submit {
+        flex: 1;
+        background: var(--primary-color);
+        color: #0b0f19;
+        font-weight: 700;
+        padding: 0.875rem 1.25rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+      }
+
+      .btn-submit:hover {
+        background: var(--primary-hover);
+        color: #ffffff;
+        transform: translateY(-1px);
+      }
+
+      .preview-box {
+        background: #ffffff;
+        color: #1e293b;
+        border-radius: 10px;
+        padding: 2rem;
+        min-height: 500px;
+        overflow-y: auto;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        line-height: 1.8;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .preview-box h2 {
+        font-size: 1.5rem;
+        color: #0f172a;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 0.4rem;
+      }
+
+      .preview-box h3 {
+        font-size: 1.25rem;
+        color: #1e293b;
+        margin-top: 1.25rem;
+      }
+
+      .preview-box p {
+        margin-bottom: 1rem;
+      }
+
+      .preview-box img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 1rem 0;
+      }
+
+      .preview-box code {
+        background: #f1f5f9;
+        color: #0f172a;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .preview-title {
+        font-size: 1.85rem;
+        font-weight: 800;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        color: #0f172a;
+        border-bottom: 2px solid #38bdf8;
+        padding-bottom: 0.75rem;
+        word-break: break-word;
+      }
+
+      /* 모달 레이아웃 */
+      .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(7, 10, 18, 0.85);
+        backdrop-filter: blur(8px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+      }
+
+      .modal-box {
+        background: #151d2a !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 16px;
+        width: 95%;
+        max-width: 1100px;
+        height: 85vh;
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1rem;
+      }
+
+      .filter-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 1rem;
+      }
+
+      .filter-btn-group {
+        display: flex;
+        background: var(--bg-input);
+        padding: 3px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+      }
+
+      .filter-btn {
+        background: transparent;
+        color: var(--text-muted);
+        border: none;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .filter-btn.active {
+        background: #0284c7 !important;
+        color: #ffffff !important;
+      }
+
+      .alt-input-box {
+        background: var(--bg-input);
+        border: 1px solid var(--border-color);
+        padding: 0.4rem 0.75rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 240px;
+      }
+
+      .alt-input-box label {
+        white-space: nowrap;
+        color: var(--primary-color);
+        font-size: 0.8rem;
+      }
+
+      .alt-input-box input {
+        flex: 1;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+        border: none;
+      }
+
+      .modal-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+        gap: 1.25rem !important;
+        overflow-y: auto !important;
+        padding-right: 0.5rem !important;
+        flex: 1 !important;
+        align-content: start !important;
+      }
+
+      .modal-item {
+        background: var(--bg-input) !important;
+        border: 2px solid var(--border-color) !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 200px !important;
+        box-sizing: border-box !important;
+      }
+
+      .modal-item:hover {
+        transform: translateY(-3px) !important;
+        border-color: #64748b !important;
+      }
+
+      .modal-item.selected {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.5) !important;
+        background: #0f172a !important;
+      }
+
+      .modal-item-thumb-wrapper {
+        position: relative !important;
+        width: 100% !important;
+        height: 115px !important;
+        background: #000000 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+      }
+
+      .modal-item-thumb-wrapper img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+      }
+
+      .badge-used {
+        position: absolute !important;
+        top: 6px !important;
+        left: 6px !important;
+        background: rgba(16, 185, 129, 0.9) !important;
+        color: #ffffff !important;
+        font-size: 0.65rem !important;
+        font-weight: 700 !important;
+        padding: 2px 6px !important;
+        border-radius: 4px !important;
+        z-index: 2 !important;
+      }
+
+      .badge-unused {
+        position: absolute !important;
+        top: 6px !important;
+        left: 6px !important;
+        background: rgba(244, 63, 94, 0.9) !important;
+        color: #ffffff !important;
+        font-size: 0.65rem !important;
+        font-weight: 700 !important;
+        padding: 2px 6px !important;
+        border-radius: 4px !important;
+        z-index: 2 !important;
+      }
+
+      .badge-selected-check {
+        position: absolute !important;
+        top: 6px !important;
+        right: 6px !important;
+        background: var(--primary-color) !important;
+        color: #0b0f19 !important;
+        font-size: 0.85rem !important;
+        font-weight: 900 !important;
+        width: 22px !important;
+        height: 22px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.6) !important;
+        z-index: 3 !important;
+      }
+
+      .modal-item-info {
+        padding: 0.5rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        height: 81px !important;
+        background: #151d2a !important;
+        box-sizing: border-box !important;
+      }
+
+      .modal-item-name {
+        font-size: 0.72rem !important;
+        font-weight: 500 !important;
+        color: #cbd5e1 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+
+      .modal-item-actions {
+        display: flex !important;
+        gap: 0.25rem !important;
+      }
+
+      .btn-card-mini {
+        flex: 1 !important;
+        background: #1e293b !important;
+        color: #f8fafc !important;
+        border: none !important;
+        padding: 0.35rem 0.1rem !important;
+        font-size: 0.62rem !important;
+        font-weight: 600 !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        transition: all 0.2s !important;
+        text-align: center !important;
+      }
+
+      .btn-card-mini:hover {
+        background: var(--primary-color) !important;
+        color: #0b0f19 !important;
+      }
+
+      .btn-card-mini-danger {
+        flex: 1 !important;
+        background: rgba(244, 63, 94, 0.2) !important;
+        color: #f43f5e !important;
+        border: none !important;
+        padding: 0.35rem 0.1rem !important;
+        font-size: 0.62rem !important;
+        font-weight: 600 !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        transition: all 0.2s !important;
+        text-align: center !important;
+      }
+
+      .btn-card-mini-danger:hover {
+        background: #f43f5e !important;
+        color: #ffffff !important;
+      }
+
+      /* 라이트박스 모달 */
+      .lightbox-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(7, 10, 18, 0.95);
+        backdrop-filter: blur(10px);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .lightbox-img-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 85vw;
+        max-height: 70vh;
+      }
+
+      .lightbox-img {
+        max-width: 85vw;
+        max-height: 70vh;
+        object-fit: contain;
+        border-radius: 12px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      }
+
+      .lightbox-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(21, 29, 42, 0.85);
+        color: var(--primary-color);
+        border: 1px solid var(--border-color);
+        font-size: 1.8rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        z-index: 10;
+        user-select: none;
+      }
+
+      .lightbox-nav-btn:hover {
+        background: #0284c7;
+        color: #fff;
+      }
+
+      .lightbox-nav-btn.prev { left: -65px; }
+      .lightbox-nav-btn.next { right: -65px; }
+
+      .lightbox-caption {
+        margin-top: 1rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      .lightbox-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: #0284c7;
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 10000;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* 실시간 미리보기 다크모드 토글 */
+      .preview-box.dark-mode {
+        background: #0b0f19 !important;
+        color: #f8fafc !important;
+      }
+      .preview-box.dark-mode h1,
+      .preview-box.dark-mode h2,
+      .preview-box.dark-mode h3 {
+        color: #f8fafc !important;
+      }
+      .preview-box.dark-mode h2 {
+        border-bottom-color: var(--border-color) !important;
+      }
+      .preview-box.dark-mode code {
+        background: #1e293b !important;
+        color: var(--primary-color) !important;
+      }
+
+      @media (max-width: 1024px) {
+        .editor-grid {
+          grid-template-columns: 1fr;
+          padding: 1rem;
+        }
+        .lightbox-nav-btn.prev { left: 10px; }
+        .lightbox-nav-btn.next { right: 10px; }
+      }
+    </style>
   </head>
   <body>
-  <!-- 🔒 관리자 인증 잠금 화면 (여기 <body> 바로 밑에 추가합니다) -->
-  <div id="auth-overlay" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); z-index: 99999; display: flex; align-items: center; justify-content: center;">
-    <div style="background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 2.5rem; max-width: 380px; width: 90%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
-      <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
-      <h2 style="color: #f8fafc; margin-bottom: 0.5rem; font-size: 1.4rem; font-weight: 700;">관리자 인증</h2>
-      <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.4;">이 페이지는 관리자 전용 공간입니다.<br/>비밀번호를 입력해 주세요.</p>
-      
-      <input 
-        type="password" 
-        id="auth-password-input" 
-        placeholder="비밀번호 입력..." 
-        style="width: 100%; padding: 0.8rem 1rem; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 0.95rem; margin-bottom: 1rem; box-sizing: border-box; outline: none;" 
-      />
-      
-      <button 
-        type="button" 
-        id="auth-login-btn" 
-        style="width: 100%; padding: 0.8rem; border-radius: 8px; border: none; background: #3b82f6; color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background 0.2s;"
-      >
-        접속하기
-      </button>
-      
-      <p id="auth-error-msg" style="color: #f87171; font-size: 0.85rem; margin-top: 1rem; display: none;"></p>
+    <!-- 🔒 관리자 인증 잠금 화면 -->
+    <div id="auth-overlay" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); z-index: 99999; display: flex; align-items: center; justify-content: center;">
+      <div style="background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 2.5rem; max-width: 380px; width: 90%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+        <h2 style="color: #f8fafc; margin-bottom: 0.5rem; font-size: 1.4rem; font-weight: 700;">관리자 인증</h2>
+        <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.4;">이 페이지는 관리자 전용 공간입니다.<br/>비밀번호를 입력해 주세요.</p>
+        
+        <form id="auth-form" onsubmit="return false;">
+          <input 
+            type="password" 
+            id="auth-password-input" 
+            placeholder="비밀번호 입력..." 
+            style="width: 100%; padding: 0.8rem 1rem; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-size: 0.95rem; margin-bottom: 1rem; box-sizing: border-box; outline: none;" 
+          />
+          
+          <button 
+            type="button" 
+            id="auth-login-btn" 
+            style="width: 100%; padding: 0.8rem; border-radius: 8px; border: none; background: #3b82f6; color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background 0.2s;"
+          >
+            접속하기
+          </button>
+        </form>
+        
+        <p id="auth-error-msg" style="color: #f87171; font-size: 0.85rem; margin-top: 1rem; display: none;"></p>
+      </div>
     </div>
-  </div>
-
-  <!-- 기존의 admin.astro 본문 내용들... -->
 
     <header class="header-bar">
       <h1>✨ Lunasonata 포스팅 에디터</h1>
@@ -667,46 +657,43 @@ import BaseHead from '../components/BaseHead.astro';
 
     <main class="editor-grid">
       <section class="card">
-        <!-- 기존 stats-bar 코드를 아래와 같이 교체해 주세요 -->
-<div class="stats-bar" style="justify-content: space-between; align-items: center;">
-  <div>
-    <span>글자 수: <strong id="char-count">0</strong> 자</span>
-    <span>•</span>
-    <span>예상 읽기 시간: <strong id="read-time">0</strong> 분</span>
-  </div>
-  <div style="display: flex; gap: 0.5rem; align-items: center;">
-    <span id="save-status" style="font-size: 0.75rem; color: #10b981;">작성 내용 자동 저장됨</span>
-    <button type="button" id="btn-reset-draft" class="tool-btn" style="background: #e11d48; padding: 0.2rem 0.5rem; font-size: 0.75rem;">🗑️ 내용 비우기</button>
-  </div>
-</div>
+        <div class="stats-bar" style="justify-content: space-between; align-items: center;">
+          <div>
+            <span>글자 수: <strong id="char-count">0</strong> 자</span>
+            <span>•</span>
+            <span>예상 읽기 시간: <strong id="read-time">0</strong> 분</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <span id="save-status" style="font-size: 0.75rem; color: #10b981;">작성 내용 자동 저장됨</span>
+            <button type="button" id="btn-reset-draft" class="tool-btn" style="background: #e11d48; padding: 0.2rem 0.5rem; font-size: 0.75rem;">🗑️ 내용 비우기</button>
+          </div>
+        </div>
 
         <div class="form-group">
           <label for="post-title">포스트 제목</label>
           <input type="text" id="post-title" placeholder="글 제목을 입력하세요..." />
         </div>
 
-        <!-- 포스트 제목 바로 아래에 추가할 메타데이터 입력 구역 -->
-<div class="form-group">
-  <label for="post-desc">포스트 요약 (Description)</label>
-  <input type="text" id="post-desc" placeholder="글의 주요 내용을 한 줄로 요약해 주세요..." />
-</div>
+        <div class="form-group">
+          <label for="post-desc">포스트 요약 (Description)</label>
+          <input type="text" id="post-desc" placeholder="글의 주요 내용을 한 줄로 요약해 주세요..." />
+        </div>
 
-<!-- 슬러그 입력 필드 추가 -->
-<div class="form-group">
-  <label for="post-slug">포스트 슬러그 (URL 영문 주소)</label>
-  <input type="text" id="post-slug" placeholder="예: my-first-post (영문, 숫자, 하이픈 사용)" />
-</div>
+        <div class="form-group">
+          <label for="post-slug">포스트 슬러그 (URL 영문 주소)</label>
+          <input type="text" id="post-slug" placeholder="예: my-first-post (영문, 숫자, 하이픈 사용)" />
+        </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-  <div class="form-group">
-    <label for="post-category">카테고리 (쉼표로 구분)</label>
-    <input type="text" id="post-category" placeholder="예: 일상, 개발, 여행" />
-  </div>
-  <div class="form-group">
-    <label for="post-hero">대표 이미지 URL (Hero Image)</label>
-    <input type="text" id="post-hero" placeholder="갤러리에서 이미지 URL을 복사해 넣으세요" />
-  </div>
-</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="post-category">카테고리 (쉼표로 구분)</label>
+            <input type="text" id="post-category" placeholder="예: 일상, 개발, 여행" />
+          </div>
+          <div class="form-group">
+            <label for="post-hero">대표 이미지 URL (Hero Image)</label>
+            <input type="text" id="post-hero" placeholder="갤러리에서 이미지 URL을 복사해 넣으세요" />
+          </div>
+        </div>
 
         <div class="toolbar">
           <button type="button" class="tool-btn" data-tag="h2">H2 소제목</button>
@@ -720,39 +707,35 @@ import BaseHead from '../components/BaseHead.astro';
           <button type="button" class="tool-btn" data-action="link">Link</button>
           <button type="button" class="tool-btn" data-tag="code">코드(code)</button>
           <button type="button" class="tool-btn" id="btn-tmpl-callout">💡 안내 상자</button>
-<button type="button" class="tool-btn" id="btn-tmpl-quote">💬 인용구</button>
-<button type="button" class="tool-btn" id="btn-tmpl-figure">🖼️ 이미지+캡션</button>
+          <button type="button" class="tool-btn" id="btn-tmpl-quote">💬 인용구</button>
+          <button type="button" class="tool-btn" id="btn-tmpl-figure">🖼️ 이미지+캡션</button>
           <button type="button" class="tool-btn highlight" id="btn-open-gallery">🖼️ NAS 이미지 선택 & 관리</button>
-          <!-- 기존 tool-btn highlight 버튼 위치 근처에 아래 버튼을 추가해 주세요 -->
-<button type="button" class="tool-btn highlight" id="btn-open-posts" style="background: #8b5cf6; border-color: #a78bfa;">📂 기존 글 불러오기 / 수정</button>
+          <button type="button" class="tool-btn highlight" id="btn-open-posts" style="background: #8b5cf6; border-color: #a78bfa;">📂 기존 글 불러오기 / 수정</button>
         </div>
-      
 
+        <!-- 💡 진짜 VSCode 엔진(Monaco Editor) 전용 컨테이너 -->
         <div class="form-group">
-  <label for="editor-container">HTML / 본문 작성 공간 (VSCode 스타일 구문 강조 적용)</label>
-  <div style="position: relative; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: #1d1f21;">
-    <!-- 실제 화면에 알록달록하게 보일 CodeJar 에디터 영역 -->
-    <div id="editor-container" class="language-markup" style="min-height: 450px; padding: 1rem; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 0.92rem; line-height: 1.6; color: #c5c8c6; outline: none; white-space: pre-wrap; word-break: break-all;"></div>
-    <!-- 기존 스크립트들과 호환성을 유지하기 위한 숨김 입력창 -->
-    <textarea id="post-html" style="display: none;"></textarea>
-  </div>
-</div>
+          <label for="monaco-editor">HTML / 본문 작성 공간 (VSCode 코드 하이라이팅 적용)</label>
+          <div style="border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+            <div id="monaco-editor" style="height: 500px; width: 100%;"></div>
+          </div>
+        </div>
 
         <div class="btn-group">
           <div class="btn-group">
-  <button type="button" class="btn-submit" id="btn-publish-web" style="background: #0284c7; color: #ffffff; flex: 1.5;">🚀 바로 웹에 게시하기</button>
-  <button type="button" class="btn-submit" id="copy-btn">📋 코드 전체 복사</button>
-  <button type="button" class="btn-submit" id="download-btn" style="background: #10b981; color: #ffffff;">📥 .md 파일 다운로드</button>
-</div>
+            <button type="button" class="btn-submit" id="btn-publish-web" style="background: #0284c7; color: #ffffff; flex: 1.5;">🚀 바로 웹에 게시하기</button>
+            <button type="button" class="btn-submit" id="copy-btn">📋 코드 전체 복사</button>
+            <button type="button" class="btn-submit" id="download-btn" style="background: #10b981; color: #ffffff;">📥 .md 파일 다운로드</button>
+          </div>
         </div>
       </section>
 
       <section class="card">
-  <div style="display: flex; justify-content: space-between; align-items: center;">
-    <label>👀 실시간 미리보기</label>
-    <button type="button" id="btn-toggle-pv-theme" class="tool-btn" style="font-size: 0.75rem;">🌙 다크모드 보기</button>
-  </div>
-  <div class="preview-box">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label>👀 실시간 미리보기</label>
+          <button type="button" id="btn-toggle-pv-theme" class="tool-btn" style="font-size: 0.75rem;">🌙 다크모드 보기</button>
+        </div>
+        <div class="preview-box">
           <h1 id="pv-title" class="preview-title">제목을 입력하면 여기에 나타납니다</h1>
           <div id="pv-body">
             <p style="color: #94a3b8; text-align: center; margin-top: 4rem;">
@@ -821,28 +804,27 @@ import BaseHead from '../components/BaseHead.astro';
     </div>
 
     <!-- 기존 글 목록 불러오기 모달 -->
-<div id="posts-modal" class="modal-backdrop">
-  <div class="modal-box" style="max-width: 800px;">
-    <div class="modal-header">
-      <h3 style="margin:0; color:#a78bfa;">📂 작성된 글 목록 (수정할 글 선택)</h3>
-      <button type="button" id="btn-close-posts" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;" title="닫기 (Esc)">✕</button>
-    </div>
+    <div id="posts-modal" class="modal-backdrop">
+      <div class="modal-box" style="max-width: 800px;">
+        <div class="modal-header">
+          <h3 style="margin:0; color:#a78bfa;">📂 작성된 글 목록 (수정할 글 선택)</h3>
+          <button type="button" id="btn-close-posts" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;" title="닫기 (Esc)">✕</button>
+        </div>
 
-    <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
-      <input type="text" id="posts-search" placeholder="🔍 글 제목 또는 영문 슬러그 검색..." style="width: 100%; box-sizing: border-box;" />
-    </div>
+        <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
+          <input type="text" id="posts-search" placeholder="🔍 글 제목 또는 영문 슬러그 검색..." style="width: 100%; box-sizing: border-box;" />
+        </div>
 
-    <div id="posts-list-container" style="overflow-y: auto; flex: 1; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
-      <p style="color:var(--text-muted); text-align:center; padding:2rem;">글 목록을 불러오는 중입니다...</p>
+        <div id="posts-list-container" style="overflow-y: auto; flex: 1; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <p style="color:var(--text-muted); text-align:center; padding:2rem;">글 목록을 불러오는 중입니다...</p>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
-    <div id="toast" class="toast">클립보드에 복사되었습니다!</div>
 
     <script>
+      declare const require: any;
+
       const titleInput = document.getElementById('post-title') as HTMLInputElement;
-      const htmlInput = document.getElementById('post-html') as HTMLTextAreaElement;
       const pvTitle = document.getElementById('pv-title');
       const pvBody = document.getElementById('pv-body');
       const charCount = document.getElementById('char-count');
@@ -887,6 +869,50 @@ import BaseHead from '../components/BaseHead.astro';
       let currentUsageFilter = 'all';
       let currentLbIndex = 0;
 
+      // 💡 VSCode Monaco Editor 글로벌 객체 변수
+      let monacoEditor: any = null;
+
+      // 1. Monaco Editor 모듈 세팅 및 로드
+      if (typeof require !== 'undefined') {
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
+        require(['vs/editor/editor.main'], function () {
+          const container = document.getElementById('monaco-editor');
+          if (container) {
+            monacoEditor = (window as any).monaco.editor.create(container, {
+              value: '',
+              language: 'html',
+              theme: 'vs-dark',
+              automaticLayout: true,
+              fontSize: 14,
+              minimap: { enabled: false },
+              wordWrap: 'on',
+              lineNumbers: 'on',
+              scrollBeyondLastLine: false,
+              padding: { top: 12, bottom: 12 }
+            });
+
+            // 타이핑 시 실시간 미리보기 및 자동저장 연결
+            monacoEditor.onDidChangeModelContent(() => {
+              updatePreview();
+              saveDraft();
+            });
+
+            // 에디터 생성 후 이전 작성 저장글 자동 복구
+            loadDraft();
+          }
+        });
+      }
+
+      function getEditorValue(): string {
+        return monacoEditor ? monacoEditor.getValue() : '';
+      }
+
+      function setEditorValue(value: string) {
+        if (monacoEditor) {
+          monacoEditor.setValue(value);
+        }
+      }
+
       function showToast(msg: string) {
         if (!toast) return;
         toast.innerText = msg;
@@ -904,8 +930,8 @@ import BaseHead from '../components/BaseHead.astro';
       }
 
       function updatePreview() {
-        const titleText = titleInput.value.trim();
-        const htmlText = htmlInput.value;
+        const titleText = titleInput ? titleInput.value.trim() : '';
+        const htmlText = getEditorValue();
 
         if (pvTitle) {
           pvTitle.textContent = titleText || '제목을 입력하면 여기에 나타납니다';
@@ -931,22 +957,23 @@ import BaseHead from '../components/BaseHead.astro';
       }
 
       function insertTag(tagName: string, customContent?: string) {
-        const start = htmlInput.selectionStart;
-        const end = htmlInput.selectionEnd;
-        const text = htmlInput.value;
-        const selectedText = text.substring(start, end);
-        let replacement = customContent || `<${tagName}>${selectedText || '내용'}</${tagName}>`;
+        if (!monacoEditor) return;
 
-        htmlInput.value = text.substring(0, start) + replacement + text.substring(end);
-        htmlInput.focus();
-        
-        const newCursorPos = start + replacement.length;
-        htmlInput.setSelectionRange(newCursorPos, newCursorPos);
-        
+        const selection = monacoEditor.getSelection();
+        const selectedText = monacoEditor.getModel().getValueInRange(selection);
+        const replacement = customContent || `<${tagName}>${selectedText || '내용'}</${tagName}>`;
+
+        monacoEditor.executeEdits('', [{
+          range: selection,
+          text: replacement,
+          forceMoveMarkers: true
+        }]);
+
+        monacoEditor.focus();
         updatePreview();
+        saveDraft();
       }
 
-      // 이미지 데이터 가져오기 로직 (HTTPS 정식 단일 엔드포인트 호출)
       async function fetchGalleryData() {
         if (!galleryGrid) return;
         galleryGrid.innerHTML = `<p style="color:var(--text-muted); text-align:center; grid-column: 1/-1;">이미지 목록을 불러오는 중입니다...</p>`;
@@ -1036,7 +1063,6 @@ import BaseHead from '../components/BaseHead.astro';
             </div>
           `;
 
-          // 카드 선택 토글
           card.addEventListener('click', (e) => {
             const target = e.target as HTMLElement;
             if (target.tagName === 'BUTTON') return;
@@ -1050,13 +1076,11 @@ import BaseHead from '../components/BaseHead.astro';
             renderFilteredGallery();
           });
 
-          // 크게보기 버튼
           card.querySelector('.btn-view-big')?.addEventListener('click', (e) => {
             e.stopPropagation();
             openLightbox(index);
           });
 
-          // 복사 버튼
           card.querySelector('.btn-copy-html')?.addEventListener('click', (e) => {
             e.stopPropagation();
             const altValue = modalAltInput.value.trim() || item.name;
@@ -1066,7 +1090,6 @@ import BaseHead from '../components/BaseHead.astro';
             });
           });
 
-          // 삭제 버튼
           card.querySelector('.btn-del')?.addEventListener('click', async (e) => {
             e.stopPropagation();
             if (confirm(`'${item.name}' 파일을 정말 삭제하시겠습니까?`)) {
@@ -1113,14 +1136,13 @@ import BaseHead from '../components/BaseHead.astro';
         }
       }
 
-      // 삭제 처리 로직 (단일 HTTPS 엔드포인트 호출)
       async function deleteFilesApi(files: string[]) {
         try {
           const res = await fetch('https://api.lunasonata.com/api/delete', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              password: '88gustprhkd!', // app.py의 GALLERY_PASSWORD[cite: 6]
+              password: '88gustprhkd!',
               files: files
             })
           });
@@ -1141,9 +1163,7 @@ import BaseHead from '../components/BaseHead.astro';
         }
       }
 
-      // 이벤트 등록
       titleInput?.addEventListener('input', updatePreview);
-      htmlInput?.addEventListener('input', updatePreview);
 
       toolButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -1152,31 +1172,27 @@ import BaseHead from '../components/BaseHead.astro';
         });
       });
 
-      // 추가된 입력 필드 엘리먼트 가져오기
-const descInput = document.getElementById('post-desc') as HTMLInputElement;
-const categoryInput = document.getElementById('post-category') as HTMLInputElement;
-const heroInput = document.getElementById('post-hero') as HTMLInputElement;
-const slugInput = document.getElementById('post-slug') as HTMLInputElement;
+      const descInput = document.getElementById('post-desc') as HTMLInputElement;
+      const categoryInput = document.getElementById('post-category') as HTMLInputElement;
+      const heroInput = document.getElementById('post-hero') as HTMLInputElement;
+      const slugInput = document.getElementById('post-slug') as HTMLInputElement;
 
-// Frontmatter 헤더 생성 함수
-// 변경 후 코드
-function generateFrontmatter(): string {
-  const title = titleInput.value.trim() || '제목 없음';
-  const description = descInput?.value.trim() || title;
-  const heroImage = heroInput?.value.trim() || '';
-  const slug = slugInput?.value.trim() || '';
+      function generateFrontmatter(): string {
+        const title = titleInput ? titleInput.value.trim() : '제목 없음';
+        const description = descInput?.value.trim() || title;
+        const heroImage = heroInput?.value.trim() || '';
+        const slug = slugInput?.value.trim() || '';
 
-  const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
-  const categoriesFormatted = rawCategories.length > 0 
-    ? `\ncategories:\n${rawCategories.map(c => `  - "${c}"`).join('\n')}` 
-    : '';
+        const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
+        const categoriesFormatted = rawCategories.length > 0 
+          ? `\ncategories:\n${rawCategories.map(c => `  - "${c}"`).join('\n')}` 
+          : '';
 
-  const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
+        const rawContent = getEditorValue();
+        const cleanedContent = rawContent.replace(/^[ \t]{4,}/gm, '');
 
-  // 💡 [핵심] 줄 맨 앞의 4칸 이상 들여쓰기 공백을 제거하여 마크다운 코드 블록 오작동 방지
-  const cleanedContent = htmlInput.value.replace(/^[ \t]{4,}/gm, '');
-
-  return `---
+        return `---
 title: "${title}"
 description: "${description}"
 pubDate: ${today}
@@ -1185,15 +1201,14 @@ draft: false
 ---
 
 ${cleanedContent}`;
-}
+      }
 
-// 복사 버튼 클릭 이벤트 핸들러 업데이트
-copyBtn?.addEventListener('click', () => {
-  const fullPost = generateFrontmatter();
-  navigator.clipboard.writeText(fullPost).then(() => {
-    showToast('✨ Frontmatter가 포함된 완성형 블로그 포스트 코드가 복사되었습니다!');
-  });
-});
+      copyBtn?.addEventListener('click', () => {
+        const fullPost = generateFrontmatter();
+        navigator.clipboard.writeText(fullPost).then(() => {
+          showToast('✨ Frontmatter가 포함된 완성형 블로그 포스트 코드가 복사되었습니다!');
+        });
+      });
 
       btnOpenGallery?.addEventListener('click', openModal);
       btnCloseGallery?.addEventListener('click', closeModal);
@@ -1278,233 +1293,132 @@ copyBtn?.addEventListener('click', () => {
         }
       });
 
-      // --- 💾 자동 저장 (LocalStorage) 로직 ---
-const saveStatus = document.getElementById('save-status');
-const btnResetDraft = document.getElementById('btn-reset-draft');
-const DRAFT_KEY = 'lunasonata_admin_draft';
+      const saveStatus = document.getElementById('save-status');
+      const btnResetDraft = document.getElementById('btn-reset-draft');
+      const DRAFT_KEY = 'lunasonata_admin_draft';
 
-// 1. 저장된 임시 글 불러오기
-function loadDraft() {
-  const savedData = localStorage.getItem(DRAFT_KEY);
-  if (savedData) {
-    try {
-      const { title, content } = JSON.parse(savedData);
-      if (titleInput && title) titleInput.value = title;
-      if (htmlInput && content) htmlInput.value = content;
-      updatePreview();
-      if (saveStatus) saveStatus.textContent = '💾 이전 작성글 복구됨';
-    } catch (e) {
-      console.error('임시 저장 데이터 로드 실패', e);
-    }
-  }
-}
-
-// 2. 입력할 때마다 브라우저에 자동 저장
-function saveDraft() {
-  const draftData = {
-    title: titleInput.value,
-    content: htmlInput.value,
-    updatedAt: new Date().toISOString()
-  };
-  localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
-  if (saveStatus) {
-    saveStatus.textContent = '✅ 자동 저장 완료';
-    saveStatus.style.color = '#10b981';
-  }
-}
-
-// 3. 내용 비우기 (새 글 작성 시)
-btnResetDraft?.addEventListener('click', () => {
-  if (confirm('작성 중인 내용을 모두 지우고 새 글을 작성하시겠습니까?')) {
-    titleInput.value = '';
-    htmlInput.value = '';
-    localStorage.removeItem(DRAFT_KEY);
-    updatePreview();
-    if (saveStatus) saveStatus.textContent = '✨ 새 글 작성 준비됨';
-  }
-});
-
-// 입력 이벤트 발생 시 자동 저장 실행
-titleInput?.addEventListener('input', saveDraft);
-htmlInput?.addEventListener('input', saveDraft);
-
-// 페이지 들어왔을 때 저장된 글 복구 실행
-loadDraft();
-
-// --- 🎨 디자인 블록 원클릭 삽입 로직 ---
-document.getElementById('btn-tmpl-callout')?.addEventListener('click', () => {
-  const calloutTmpl = `<div style="background: #0f172a; border-left: 4px solid #38bdf8; padding: 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0;">\n  💡 <strong>참고:</strong> 여기에 안내하고 싶은 핵심 내용을 적어주세요.\n</div>\n`;
-  insertTag('', calloutTmpl);
-});
-
-document.getElementById('btn-tmpl-quote')?.addEventListener('click', () => {
-  const quoteTmpl = `<blockquote style="border-left: 3px solid #64748b; padding-left: 1rem; color: #cbd5e1; font-style: italic; margin: 1rem 0;">\n  "기억하고 싶은 한 줄 문장이나 인용구를 적어주세요."\n</blockquote>\n`;
-  insertTag('', quoteTmpl);
-});
-
-document.getElementById('btn-tmpl-figure')?.addEventListener('click', () => {
-  const figureTmpl = `<figure style="margin: 1.5rem 0; text-align: center;">\n  <img src="https://image.lunasonata.com/sample.webp" alt="사진 설명" style="border-radius: 8px; max-width: 100%;" />\n  <figcaption style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">▲ 사진에 대한 설명을 적어주세요</figcaption>\n</figure>\n`;
-  insertTag('', figureTmpl);
-});
-
-// --- 🌙 미리보기 다크/라이트 모드 토글 로직 ---
-const btnTogglePvTheme = document.getElementById('btn-toggle-pv-theme');
-const previewBox = document.querySelector('.preview-box');
-
-btnTogglePvTheme?.addEventListener('click', () => {
-  if (!previewBox) return;
-  const isDark = previewBox.classList.toggle('dark-mode');
-  btnTogglePvTheme.textContent = isDark ? '☀️ 라이트모드 보기' : '🌙 다크모드 보기';
-});
-
-// --- 🚀 원클릭 웹 게시 (NAS API 호출) 로직 ---
-const btnPublishWeb = document.getElementById('btn-publish-web');
-
-btnPublishWeb?.addEventListener('click', async () => {
-  const slug = slugInput?.value.trim();
-  
-  // 1. 필수 값(슬러그) 입력 검증
-  if (!slug) {
-    alert('포스트 슬러그(URL 영문 주소)를 먼저 입력해 주세요!\n예: my-first-post');
-    slugInput?.focus();
-    return;
-  }
-
-  // 2. 전체 Frontmatter 포스트 데이터 생성
-  const fullContent = generateFrontmatter();
-
-  if (!confirm(`'${slug}.md' 글을 블로그 웹사이트에 바로 게시하시겠습니까?`)) {
-    return;
-  }
-
-  showToast('📡 NAS 서버로 글을 전송 중입니다...');
-
-  try {
-    // NAS의 Flask 게시 API 호출
-    const res = await fetch('https://api.lunasonata.com/api/save-post', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        password: '88gustprhkd!', // app.py의 GALLERY_PASSWORD
-        slug: slug,
-        content: fullContent
-      })
-    });
-
-    const data = await res.json();
-
-    if (res.ok && data.success) {
-      showToast(data.message || '🚀 글 작성이 완료되어 게시(배포)가 시작되었습니다!');
-    } else {
-      alert(`게시 실패: ${data.message || data.error || '오류가 발생했습니다.'}`);
-    }
-  } catch (e) {
-    console.error('포스트 게시 요청 에러:', e);
-    alert('게시 요청 중 NAS 서버 연결에 실패했습니다.');
-  }
-});
-
-// 1. 주요 에디터 요소 가져오기
-  const editor = document.querySelector('textarea.code-area') as HTMLTextAreaElement;
-  const saveBtn = document.querySelector('.btn-submit') as HTMLButtonElement;
-
-  // 2. [단축키] Ctrl + S (또는 Cmd + S) 누르면 자동 저장/발행 실행
-  window.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
-      e.preventDefault(); // 브라우저 기본 저장창 뜨는 것 방지
-      
-      if (saveBtn) {
-        saveBtn.click(); // '저장 및 배포' 버튼 클릭 효과
+      function loadDraft() {
+        const savedData = localStorage.getItem(DRAFT_KEY);
+        if (savedData) {
+          try {
+            const { title, content } = JSON.parse(savedData);
+            if (titleInput && title) titleInput.value = title;
+            if (content) {
+              setEditorValue(content);
+            }
+            updatePreview();
+            if (saveStatus) saveStatus.textContent = '💾 이전 작성글 복구됨';
+          } catch (e) {
+            console.error('임시 저장 데이터 로드 실패', e);
+          }
+        }
       }
-    }
-  });
 
-  // 3. [탭 키] 에디터에서 Tab 키 입력 시 2칸 공백 들여쓰기
-  if (editor) {
-    editor.addEventListener('keydown', (e) => {
-      if (e.key === 'Tab') {
-        e.preventDefault(); // 다음 선택 상자로 넘어가지 않게 방지
-        const start = editor.selectionStart;
-        const end = editor.selectionEnd;
-
-        // 현재 커서 위치에 공백 2개 넣기
-        editor.value = editor.value.substring(0, start) + "  " + editor.value.substring(end);
-
-        // 커서 위치를 공백 바로 뒤로 이동
-        editor.selectionStart = editor.selectionEnd = start + 2;
-
-        // 실시간 미리보기 갱신 이벤트 호출
-        editor.dispatchEvent(new Event('input'));
+      function saveDraft() {
+        const draftData = {
+          title: titleInput ? titleInput.value : '',
+          content: getEditorValue(),
+          updatedAt: new Date().toISOString()
+        };
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
+        if (saveStatus) {
+          saveStatus.textContent = '✅ 자동 저장 완료';
+          saveStatus.style.color = '#10b981';
+        }
       }
-    });
-  }
 
-  // 4. [서식 도구] 마크다운 문법 감싸기/삽입 도 도우미 함수
-  function applyFormatting(prefix: string, suffix: string = '', defaultText: string = '') {
-    if (!editor) return;
-
-    const start = editor.selectionStart;
-    const end = editor.selectionEnd;
-    const selectedText = editor.value.substring(start, end) || defaultText;
-
-    const replacement = prefix + selectedText + suffix;
-    editor.value = editor.value.substring(0, start) + replacement + editor.value.substring(end);
-
-    // 커서 포커스 및 범위 재설정
-    editor.focus();
-    if (selectedText === defaultText) {
-      editor.setSelectionRange(start + prefix.length, start + prefix.length + selectedText.length);
-    } else {
-      editor.setSelectionRange(start + prefix.length + selectedText.length + suffix.length, start + prefix.length + selectedText.length + suffix.length);
-    }
-
-    // 미리보기 갱신
-    editor.dispatchEvent(new Event('input'));
-  }
-
-  // 5. 툴바 버튼 클릭 이벤트 자동 연결
-  document.addEventListener('DOMContentLoaded', () => {
-    const toolButtons = document.querySelectorAll('.tool-btn');
-    
-    toolButtons.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const action = (btn as HTMLElement).dataset.action;
-
-        switch (action) {
-          case 'h2':
-            applyFormatting('<h2>', '</h2>', '제목 2');
-            break;
-          case 'h3':
-            applyFormatting('<h3>', '</h3>', '제목 3');
-            break;
-          case 'bold':
-            applyFormatting('<b>', '</b>', '굵은 텍스트');
-            break;
-          case 'italic':
-            applyFormatting('<i>', '</i>', '기울인 텍스트');
-            break;
-          case 'code':
-            applyFormatting('<code>', '</code>', '코드');
-            break;
-          case 'codeblock':
-            applyFormatting('<pre><code>\n', '\n</code></pre>', '// 코드를 입력하세요');
-            break;
-          case 'quote':
-            applyFormatting('<blockquote>', '</blockquote>', '인용구 내용');
-            break;
-          case 'link':
-            applyFormatting('<a href="https://">', '</a>', '링크 이름');
-            break;
+      btnResetDraft?.addEventListener('click', () => {
+        if (confirm('작성 중인 내용을 모두 지우고 새 글을 작성하시겠습니까?')) {
+          if (titleInput) titleInput.value = '';
+          setEditorValue('');
+          localStorage.removeItem(DRAFT_KEY);
+          updatePreview();
+          if (saveStatus) saveStatus.textContent = '✨ 새 글 작성 준비됨';
         }
       });
-    });
-  });
 
-// --- 📂 기존 작성 글 목록 불러오기 기능 ---
+      titleInput?.addEventListener('input', saveDraft);
+
+      document.getElementById('btn-tmpl-callout')?.addEventListener('click', () => {
+        const calloutTmpl = `<div style="background: #0f172a; border-left: 4px solid #38bdf8; padding: 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0;">\n  💡 <strong>참고:</strong> 여기에 안내하고 싶은 핵심 내용을 적어주세요.\n</div>\n`;
+        insertTag('', calloutTmpl);
+      });
+
+      document.getElementById('btn-tmpl-quote')?.addEventListener('click', () => {
+        const quoteTmpl = `<blockquote style="border-left: 3px solid #64748b; padding-left: 1rem; color: #cbd5e1; font-style: italic; margin: 1rem 0;">\n  "기억하고 싶은 한 줄 문장이나 인용구를 적어주세요."\n</blockquote>\n`;
+        insertTag('', quoteTmpl);
+      });
+
+      document.getElementById('btn-tmpl-figure')?.addEventListener('click', () => {
+        const figureTmpl = `<figure style="margin: 1.5rem 0; text-align: center;">\n  <img src="https://image.lunasonata.com/sample.webp" alt="사진 설명" style="border-radius: 8px; max-width: 100%;" />\n  <figcaption style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">▲ 사진에 대한 설명을 적어주세요</figcaption>\n</figure>\n`;
+        insertTag('', figureTmpl);
+      });
+
+      const btnTogglePvTheme = document.getElementById('btn-toggle-pv-theme');
+      const previewBox = document.querySelector('.preview-box');
+
+      btnTogglePvTheme?.addEventListener('click', () => {
+        if (!previewBox) return;
+        const isDark = previewBox.classList.toggle('dark-mode');
+        btnTogglePvTheme.textContent = isDark ? '☀️ 라이트모드 보기' : '🌙 다크모드 보기';
+      });
+
+      const btnPublishWeb = document.getElementById('btn-publish-web');
+
+      btnPublishWeb?.addEventListener('click', async () => {
+        const slug = slugInput?.value.trim();
+        
+        if (!slug) {
+          alert('포스트 슬러그(URL 영문 주소)를 먼저 입력해 주세요!\n예: my-first-post');
+          slugInput?.focus();
+          return;
+        }
+
+        const fullContent = generateFrontmatter();
+
+        if (!confirm(`'${slug}.md' 글을 블로그 웹사이트에 바로 게시하시겠습니까?`)) {
+          return;
+        }
+
+        showToast('📡 NAS 서버로 글을 전송 중입니다...');
+
+        try {
+          const res = await fetch('https://api.lunasonata.com/api/save-post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              password: '88gustprhkd!',
+              slug: slug,
+              content: fullContent
+            })
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            showToast(data.message || '🚀 글 작성이 완료되어 게시(배포)가 시작되었습니다!');
+          } else {
+            alert(`게시 실패: ${data.message || data.error || '오류가 발생했습니다.'}`);
+          }
+        } catch (e) {
+          console.error('포스트 게시 요청 에러:', e);
+          alert('게시 요청 중 NAS 서버 연결에 실패했습니다.');
+        }
+      });
+
+      const saveBtn = document.querySelector('.btn-submit') as HTMLButtonElement;
+
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          if (saveBtn) {
+            saveBtn.click();
+          }
+        }
+      });
+
       const API_BASE_URL = 'https://api.lunasonata.com';
 
-      // 1. 글 목록 모달 열기 / 닫기
       function openPostsModal() {
         if (postsModal) postsModal.style.display = 'flex';
         fetchPostsList();
@@ -1514,7 +1428,6 @@ btnPublishWeb?.addEventListener('click', async () => {
         if (postsModal) postsModal.style.display = 'none';
       }
 
-      // 2. 서버에서 작성된 글 목록 가져오기
       async function fetchPostsList() {
         if (!postsContainer) return;
         postsContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:2rem;">글 목록을 불러오는 중입니다...</p>';
@@ -1535,7 +1448,6 @@ btnPublishWeb?.addEventListener('click', async () => {
         }
       }
 
-      // 3. 선택한 글의 원본 내용을 에디터(입력창)로 가져오기 (수정 모드)
       async function loadPostContent(slug: string) {
         try {
           const res = await fetch(`${API_BASE_URL}/api/get-post?slug=${encodeURIComponent(slug)}`);
@@ -1556,7 +1468,9 @@ btnPublishWeb?.addEventListener('click', async () => {
             if (heroMatch && heroInput) heroInput.value = heroMatch[1];
 
             const bodyContent = rawContent.replace(/^---[\s\S]*?---\s*/, '');
-            if (htmlInput) htmlInput.value = bodyContent;
+            
+            // 💡 Monaco Editor 및 미리보기 화면 갱신
+            setEditorValue(bodyContent);
 
             updatePreview();
             closePostsModal();
@@ -1570,7 +1484,6 @@ btnPublishWeb?.addEventListener('click', async () => {
         }
       }
 
-      // 4. 선택한 글 삭제하기 (삭제 기능 추가)
       async function deletePostContent(slug: string) {
         const password = prompt(`🗑️ '${slug}' 글을 정말 삭제하시겠습니까?\n관리자 비밀번호를 입력해 주세요:`);
         if (!password) return;
@@ -1589,7 +1502,7 @@ btnPublishWeb?.addEventListener('click', async () => {
 
           if (result.success) {
             showToast(result.message || `🗑️ '${slug}' 글이 성공적으로 삭제되었습니다.`);
-            fetchPostsList(); // 삭제 후 목록 최신화
+            fetchPostsList();
           } else {
             alert(`❌ 삭제 실패: ${result.message}`);
           }
@@ -1599,7 +1512,6 @@ btnPublishWeb?.addEventListener('click', async () => {
         }
       }
 
-      // 5. 가져온 글 목록을 화면 카드 형태로 출력하기
       function renderPostsList() {
         if (!postsContainer) return;
 
@@ -1646,7 +1558,6 @@ btnPublishWeb?.addEventListener('click', async () => {
             </div>
           `;
 
-          // 버튼 클릭 이벤트 연결
           const btnLoad = item.querySelector('.btn-load-post');
           btnLoad?.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1659,7 +1570,6 @@ btnPublishWeb?.addEventListener('click', async () => {
             deletePostContent(post.slug);
           });
 
-          // 마우스 오버 효과
           item.addEventListener('mouseenter', () => {
             item.style.borderColor = 'var(--primary-color)';
           });
@@ -1671,7 +1581,6 @@ btnPublishWeb?.addEventListener('click', async () => {
         });
       }
 
-      // 6. 이벤트 리스너 등록
       btnOpenPosts?.addEventListener('click', openPostsModal);
       btnClosePosts?.addEventListener('click', closePostsModal);
 
@@ -1681,13 +1590,13 @@ btnPublishWeb?.addEventListener('click', async () => {
 
       postsSearch?.addEventListener('input', renderPostsList);
 
-// --- 🔒 관리자 인증 잠금 기능 ---
+      // --- 🔒 관리자 인증 잠금 기능 ---
       const authOverlay = document.getElementById('auth-overlay');
       const authPasswordInput = document.getElementById('auth-password-input') as HTMLInputElement;
       const authLoginBtn = document.getElementById('auth-login-btn');
       const authErrorMsg = document.getElementById('auth-error-msg');
+      const authForm = document.getElementById('auth-form');
 
-      // 1. 페이지 접속 시 이미 인증되었는지 확인
       function checkAdminAuth() {
         const isAuth = sessionStorage.getItem('admin_authenticated');
         if (isAuth === 'true') {
@@ -1697,7 +1606,6 @@ btnPublishWeb?.addEventListener('click', async () => {
         }
       }
 
-      // 2. 비밀번호 검증 요청
       async function handleAdminLogin() {
         const password = authPasswordInput?.value.trim();
         if (!password) {
@@ -1734,18 +1642,19 @@ btnPublishWeb?.addEventListener('click', async () => {
         }
       }
 
-      // 이벤트 연결 (버튼 클릭 & 엔터키)
       authLoginBtn?.addEventListener('click', handleAdminLogin);
       authPasswordInput?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') handleAdminLogin();
       });
 
-      // 페이지 진입 시 실행
+      authForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleAdminLogin();
+      });
+
       checkAdminAuth();
-
-
     </script>
-    <!-- 토스트 알림 메시지 창 -->
-<div id="toast" class="toast">알림 메시지</div>
+
+    <div id="toast" class="toast">알림 메시지</div>
   </body>
 </html>
