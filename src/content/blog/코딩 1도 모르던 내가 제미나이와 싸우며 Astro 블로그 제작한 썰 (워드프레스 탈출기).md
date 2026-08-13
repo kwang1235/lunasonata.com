@@ -2,7 +2,7 @@
 title: "코딩 1도 모르던 내가 제미나이와 싸우며 Astro 블로그 제작한 썰 (워드프레스 탈출기)"
 description: "네이버, 티스토리, 워드프레스를 거쳐 Astro 정적 블로그와 자체 백엔드 어드민까지! 코딩 지식 제로 상태에서 제미나이 AI와 밤새 씨름하며 나만의 블로그를 무에서 유로 구축한 생생한 개발 일기."
 pubDate: 2026-08-13T21:59:44
-slug: "코딩 1도 모르던 내가 제미나이와 싸우며 Astro 블로그 제작한 썰 (워드프레스 탈출기)"
+slug: "astro-blog-development-story"
 heroImage: "https://image.lunasonata.com/2026/08/blog-thumbnail.webp"
 
 categories:
