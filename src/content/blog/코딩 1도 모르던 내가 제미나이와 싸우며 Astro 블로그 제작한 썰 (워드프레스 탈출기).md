@@ -262,7 +262,7 @@ draft: false
     </p>
 
 <!-- SYSTEM 3 코드 박스 영역 시작 -->
-<div class="sk-code-box-container">
+    <div class="sk-code-box-container">
   <style>
     .sk-code-box-container {
       margin: 24px 0;
@@ -412,8 +412,8 @@ fadeElements.<span class="sk-token-function">forEach</span>(el => observer.<span
 <span class="sk-token-comment">// 2. Interactive Quote Click Effect</span>
 <span class="sk-token-keyword">const</span> quotes = document.<span class="sk-token-function">querySelectorAll</span>(<span class="sk-token-string">'.blog-post-content .post-quote'</span>);</div>
   </div>
+    </div>
 </div>
-
 <!-- 안정적인 전역 실행 스크립트 -->
 <script>
   (function initSkCodeBoxes() {
