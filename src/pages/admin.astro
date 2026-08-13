@@ -1198,28 +1198,30 @@ import BaseHead from '../components/BaseHead.astro';
       const heroInput = document.getElementById('post-hero') as HTMLInputElement;
       const slugInput = document.getElementById('post-slug') as HTMLInputElement;
 
-      // Frontmatter 헤더 생성 함수
+      // Frontmatter 헤더 및 본문 결합 함수
       function generateFrontmatter(): string {
-  const title = titleInput.value.trim() || '제목 없음';
-  const description = descInput?.value.trim() || title;
-  const heroImage = heroInput?.value.trim() || '';
-  const slug = slugInput?.value.trim() || '';
+        const title = titleInput?.value.trim() || '제목 없음';
+        const description = descInput?.value.trim() || title;
+        const heroImage = heroInput?.value.trim() || '';
+        const slug = slugInput?.value.trim() || '';
 
-  // 카테고리를 배열 형태 ['일상', '개발'] 로 변환
-  const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
-  const categoriesFormatted = rawCategories.length > 0 
-    ? `\ncategories:\n${rawCategories.map(c => `  - "${c}"`).join('\n')}` 
-    : '';
+        // 카테고리를 배열 형태 ['일상', '개발'] 로 변환
+        const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
+        const categoriesFormatted = rawCategories.length > 0 
+          ? `\ncategories:\n${rawCategories.map(c => `  - "${c}"`).join('\n')}` 
+          : '';
 
-  // 👈 [추가] 한국 시간 기준 ISO 규격 (YYYY-MM-DDTHH:mm:ss) 생성
-  const now = new Date();
-  const offset = now.getTimezoneOffset() * 60000;
-  const localIso = new Date(now.getTime() - offset).toISOString().slice(0, 19);
+        // 한국 시간 기준 ISO 규격 생성
+        const now = new Date();
+        const offset = now.getTimezoneOffset() * 60000;
+        const localIso = new Date(now.getTime() - offset).toISOString().slice(0, 19);
 
-  // 👈 기존 글 수정 시에는 currentPubDate 유지, 새 글 작성 시에는 localIso(현재 날짜+시간) 입력
-  const pubDateValue = currentPubDate ? currentPubDate : localIso;
+        const pubDateValue = currentPubDate ? currentPubDate : localIso;
 
-  return `---
+        // Monaco Editor에서 현재 본문 값 가져오기
+        const bodyContent = getEditorValue();
+
+        return `---
 title: "${title}"
 description: "${description}"
 pubDate: ${pubDateValue}
@@ -1227,7 +1229,7 @@ ${slug ? `slug: "${slug}"\n` : ''}${heroImage ? `heroImage: "${heroImage}"\n` : 
 draft: false
 ---
 
-${htmlInput.value}`;
+${bodyContent}`;
       }
 
       copyBtn?.addEventListener('click', () => {
