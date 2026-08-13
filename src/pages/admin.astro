@@ -1354,17 +1354,29 @@ ${htmlInput.value}`;
         }
       }
 
-     // 3. 내용 비우기 (새 글 작성 시)
-btnResetDraft?.addEventListener('click', () => {
-  if (confirm('작성 중인 내용을 모두 지우고 새 글을 작성하시겠습니까?')) {
-    titleInput.value = '';
-    htmlInput.value = '';
-    currentPubDate = ''; // 👈 [추가] 새 글 작성을 위해 기존 날짜 변수 초기화!
-    localStorage.removeItem(DRAFT_KEY);
-    updatePreview();
-    if (saveStatus) saveStatus.textContent = '✨ 새 글 작성 준비됨';
-  }
-});
+    // 3. 내용 비우기 (모든 입력창 및 에디터 초기화)
+      btnResetDraft?.addEventListener('click', () => {
+        if (confirm('작성 중인 모든 내용을 지우고 새 글을 작성하시겠습니까?')) {
+          // 1. 모든 텍스트 입력 칸 초기화
+          if (titleInput) titleInput.value = '';
+          if (descInput) descInput.value = '';
+          if (slugInput) slugInput.value = '';
+          if (categoryInput) categoryInput.value = '';
+          if (heroInput) heroInput.value = '';
+
+          // 2. Monaco Editor 본문 내용 초기화
+          setEditorValue('');
+
+          // 3. 작성일자 변수 및 저장소 초기화
+          currentPubDate = '';
+          localStorage.removeItem(DRAFT_KEY);
+
+          // 4. 실시간 미리보기 및 상태 업데이트
+          updatePreview();
+          if (saveStatus) saveStatus.textContent = '✨ 모든 내용이 비워졌습니다';
+          showToast('✨ 모든 입력 내용이 깔끔하게 초기화되었습니다.');
+        }
+      });
 
       titleInput?.addEventListener('input', saveDraft);
 
