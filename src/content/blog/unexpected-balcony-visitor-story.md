@@ -3,6 +3,7 @@ title: "[일상 로그] 집사 인생 최대 위기! 베란다에 불시착한 �
 description: "평화롭던 주말 아침, 베란다에서 들려온 의문의 소리! 평범한 집사의 일상을 180도 바꿔놓은 뜻밖의 방문객과의 식은땀 나는 3시간 대치 현장 기록."
 pubDate: 2026-08-13
 slug: "unexpected-balcony-visitor-story"
+heroImage: "https://image.lunasonata.com/2026/08/IMG_8561.webp"
 
 draft: false
 ---
@@ -18,7 +19,7 @@ draft: false
   </p>
 
   <blockquote class="post-quote">
-“잠깐만... 네가 왜 여기서 나와?”
+“잠깐만... 네가 왜 여기서 나와? 당장 나와!”
   </blockquote>
 
   <!-- Section 1 -->
