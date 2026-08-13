@@ -261,6 +261,7 @@ draft: false
       매번 로컬에서 mdx 파일을 만드는 것도 번거로워서, 아예 웹상에서 HTML을 입력하고 즉시 포스트를 발행할 수 있는 나만의 Admin 사이트를 제작했다. 백엔드는 완전히 초문이라 제미나이가 시키는 대로 무작정 따라 했는데, 시행착오가 정말 엄청났다. VS Code처럼 알록달록하게 구문 하이라이팅이 들어간 에디터 구현, 비밀번호 로그인, 기존 글/이미지 불러오기, 영문 슬러그 생성, 제목 기반 mdx 저장 등 온 정신을 쏟아부었다.
     </p>
     <!-- Admin 전용 코드 박스 (CSS 완벽 격리 버전) -->
+<!-- Admin 전용 코드 박스 (CSS 완벽 격리 버전) -->
 <div class="sk-code-box-container">
   <style>
     /* 1. 최외각 컨테이너 강제 초기화 */
@@ -432,6 +433,61 @@ fadeElements.<span class="sk-token-function">forEach</span>(el =&gt; observer.<s
 <span class="sk-token-keyword">const</span> quotes = document.<span class="sk-token-function">querySelectorAll</span>(<span class="sk-token-string">'.blog-post-content .post-quote'</span>);</div>
   </div>
 </div>
+
+<!-- 안정적인 자바스크립트 실행부 -->
+<script>
+  (function setupSkCodeBox() {
+    function init() {
+      const codeBoxes = document.querySelectorAll('.sk-code-box-container');
+      codeBoxes.forEach(function(codeBox) {
+        const copyBtn = codeBox.querySelector('.sk-js-copy-btn');
+        const codeContent = codeBox.querySelector('.sk-js-code-content');
+        const lineNumbersContainer = codeBox.querySelector('.sk-js-line-numbers');
+        if (!codeContent || !lineNumbersContainer) return;
+
+        const copyTextSpan = copyBtn ? copyBtn.querySelector('.sk-copy-text') : null;
+
+        function updateLineNumbers() {
+          const codeText = codeContent.innerText;
+          const lines = codeText.split(/\r\n|\r|\n/);
+          const lineCount = Math.max(1, lines.length);
+
+          lineNumbersContainer.innerHTML = '';
+          for (let i = 1; i <= lineCount; i++) {
+            const span = document.createElement('span');
+            span.className = 'sk-code-line-number-item';
+            span.textContent = i;
+            lineNumbersContainer.appendChild(span);
+          }
+        }
+
+        function copyCode() {
+          const textToCopy = codeContent.innerText;
+          navigator.clipboard.writeText(textToCopy).then(function() {
+            if (copyBtn && copyTextSpan) {
+              copyBtn.classList.add('sk-copied');
+              copyTextSpan.textContent = '복사됨';
+              setTimeout(function() {
+                copyBtn.classList.remove('sk-copied');
+                copyTextSpan.textContent = '복사';
+              }, 2000);
+            }
+          });
+        }
+
+        codeContent.addEventListener('input', updateLineNumbers);
+        if (copyBtn) copyBtn.addEventListener('click', copyCode);
+        updateLineNumbers();
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
 
 <!-- 안정적인 자바스크립트 실행부 -->
 <script>
