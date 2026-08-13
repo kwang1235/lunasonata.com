@@ -1541,24 +1541,53 @@ ${bodyContent}`;
         }
       }
 
-      async function deletePostContent(slug: string) {
-        const password = prompt(`🗑️ '${slug}' 글을 정말 삭제하시겠습니까?\n관리자 비밀번호를 입력해 주세요:`);
-        if (!password) return;
+     // 삭제 모달 관련 요소 참조
+      const deleteModal = document.getElementById('delete-confirm-modal');
+      const deleteModalTitle = document.getElementById('delete-modal-target-title');
+      const deleteModalPassword = document.getElementById('delete-modal-password') as HTMLInputElement;
+      const btnDeleteModalCancel = document.getElementById('btn-delete-modal-cancel');
+      const btnDeleteModalConfirm = document.getElementById('btn-delete-modal-confirm');
+      let pendingDeleteSlug = '';
 
-        if (!confirm(`⚠️ [최종 확인] 삭제된 파일은 복구할 수 없습니다.\n정말로 '${slug}' 포스트를 삭제하시겠습니까?`)) {
+      function closeDeleteModal() {
+        if (deleteModal) deleteModal.style.display = 'none';
+        if (deleteModalPassword) deleteModalPassword.value = '';
+        pendingDeleteSlug = '';
+      }
+
+      function deletePostContent(slug: string) {
+        pendingDeleteSlug = slug;
+        if (deleteModalTitle) {
+          deleteModalTitle.textContent = `'${slug}' 글을 정말 삭제하시겠습니까?`;
+        }
+        if (deleteModalPassword) deleteModalPassword.value = '';
+        if (deleteModal) deleteModal.style.display = 'flex';
+        deleteModalPassword?.focus();
+      }
+
+      async function confirmDeletePost() {
+        if (!pendingDeleteSlug) return;
+        const password = deleteModalPassword?.value.trim();
+
+        if (!password) {
+          alert('비밀번호를 입력해 주세요.');
+          deleteModalPassword?.focus();
           return;
         }
+
+        const slugToDelete = pendingDeleteSlug;
 
         try {
           const res = await fetch(`${API_BASE_URL}/api/delete-post`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ slug, password })
+            body: JSON.stringify({ slug: slugToDelete, password })
           });
           const result = await res.json();
 
           if (result.success) {
-            showToast(result.message || `🗑️ '${slug}' 글이 성공적으로 삭제되었습니다.`);
+            closeDeleteModal();
+            showToast(result.message || `🗑️ '${slugToDelete}' 글이 성공적으로 삭제되었습니다.`);
             fetchPostsList();
           } else {
             alert(`❌ 삭제 실패: ${result.message}`);
@@ -1568,6 +1597,15 @@ ${bodyContent}`;
           alert('❌ 서버 통신 중 오류가 발생했습니다.');
         }
       }
+
+      btnDeleteModalCancel?.addEventListener('click', closeDeleteModal);
+      btnDeleteModalConfirm?.addEventListener('click', confirmDeletePost);
+      deleteModalPassword?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') confirmDeletePost();
+      });
+      deleteModal?.addEventListener('click', (e) => {
+        if (e.target === deleteModal) closeDeleteModal();
+      });
 
       function renderPostsList() {
         if (!postsContainer) return;
@@ -1778,5 +1816,28 @@ ${bodyContent}`;
     </script>
 
     <div id="toast" class="toast">알림 메시지</div>
+
+    <!-- 🔒 글 삭제 확인 전용 모달 (비밀번호 마스킹) -->
+    <div id="delete-confirm-modal" class="modal-backdrop">
+      <div class="modal-box" style="max-width: 420px; height: auto; text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🗑️</div>
+        <h3 style="color: #f8fafc; margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">글 삭제 확인</h3>
+        <p id="delete-modal-target-title" style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.25rem; word-break: break-all;"></p>
+        
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <input 
+            type="password" 
+            id="delete-modal-password" 
+            placeholder="관리자 비밀번호 입력..." 
+            style="width: 100%; box-sizing: border-box; text-align: center;"
+          />
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" id="btn-delete-modal-cancel" class="tool-btn" style="flex: 1; padding: 0.7rem;">취소</button>
+          <button type="button" id="btn-delete-modal-confirm" class="btn-card-mini-danger" style="flex: 1; padding: 0.7rem; font-size: 0.85rem;">삭제하기</button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
