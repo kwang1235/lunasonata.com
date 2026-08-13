@@ -949,10 +949,10 @@ import BaseHead from '../components/BaseHead.astro';
         fetchGalleryData();
       }
 
-    // 💡 하나로 통합된 깔끔한 실시간 미리보기 업데이트 함수
+      // 💡 하나로 통합된 깔끔한 실시간 미리보기 업데이트 함수
       function updatePreview() {
         const titleText = titleInput ? titleInput.value.trim() : '';
-        const htmlText = monacoEditor ? monacoEditor.getValue() : (htmlInput ? htmlInput.value : '');
+        const htmlText = getEditorValue();
 
         if (pvTitle) {
           pvTitle.textContent = titleText || '제목을 입력하면 여기에 나타납니다';
@@ -966,6 +966,13 @@ import BaseHead from '../components/BaseHead.astro';
               </p>`;
           } else {
             pvBody.innerHTML = htmlText;
+
+            // 💡 [핵심 추가] 미리보기 내 fade-up 애니메이션 요소들을 강제로 보이게(opacity: 1) 설정
+            const fadeElements = pvBody.querySelectorAll('.fade-up');
+            fadeElements.forEach((el) => {
+              (el as HTMLElement).style.opacity = '1';
+              (el as HTMLElement).style.transform = 'none';
+            });
           }
         }
 
