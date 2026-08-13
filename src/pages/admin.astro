@@ -1427,9 +1427,16 @@ ${bodyContent}`;
 
       const btnPublishWeb = document.getElementById('btn-publish-web');
 
-      btnPublishWeb?.addEventListener('click', async () => {
+btnPublishWeb?.addEventListener('click', async () => {
         const slug = slugInput?.value.trim();
+        const title = titleInput?.value.trim();
         
+        if (!title) {
+          alert('포스트 제목을 먼저 입력해 주세요!');
+          titleInput?.focus();
+          return;
+        }
+
         if (!slug) {
           alert('포스트 슬러그(URL 영문 주소)를 먼저 입력해 주세요!\n예: my-first-post');
           slugInput?.focus();
@@ -1438,7 +1445,7 @@ ${bodyContent}`;
 
         const fullContent = generateFrontmatter();
 
-        if (!confirm(`'${slug}.md' 글을 블로그 웹사이트에 바로 게시하시겠습니까?`)) {
+        if (!confirm(`'${title}.md' 글을 블로그 웹사이트에 바로 게시하시겠습니까?`)) {
           return;
         }
 
@@ -1450,6 +1457,7 @@ ${bodyContent}`;
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               password: '88gustprhkd!',
+              title: title,
               slug: slug,
               content: fullContent
             })
