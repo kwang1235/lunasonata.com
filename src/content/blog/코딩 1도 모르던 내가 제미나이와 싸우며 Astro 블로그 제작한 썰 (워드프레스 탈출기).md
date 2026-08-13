@@ -2,7 +2,7 @@
 title: "코딩 1도 모르던 내가 제미나이와 싸우며 Astro 블로그 제작한 썰 (워드프레스 탈출기)"
 description: "네이버, 티스토리, 워드프레스를 거쳐 Astro 정적 블로그와 자체 백엔드 어드민까지! 코딩 지식 제로 상태에서 제미나이 AI와 밤새 씨름하며 나만의 블로그를 무에서 유로 구축한 생생한 개발 일기."
 pubDate: 2026-08-13T21:59:44
-slug: "astro-blog-development-story"
+slug: "코딩 1도 모르던 내가 제미나이와 싸우며 Astro 블로그 제작한 썰 (워드프레스 탈출기)"
 heroImage: "https://image.lunasonata.com/2026/08/blog-thumbnail.webp"
 
 categories:
@@ -261,11 +261,9 @@ draft: false
       매번 로컬에서 mdx 파일을 만드는 것도 번거로워서, 아예 웹상에서 HTML을 입력하고 즉시 포스트를 발행할 수 있는 나만의 Admin 사이트를 제작했다. 백엔드는 완전히 초문이라 제미나이가 시키는 대로 무작정 따라 했는데, 시행착오가 정말 엄청났다. VS Code처럼 알록달록하게 구문 하이라이팅이 들어간 에디터 구현, 비밀번호 로그인, 기존 글/이미지 불러오기, 영문 슬러그 생성, 제목 기반 mdx 저장 등 온 정신을 쏟아부었다.
     </p>
 
-    <div class="sk-code-box-container">
+<!-- SYSTEM 3 코드 박스 영역 시작 -->
+<div class="sk-code-box-container">
   <style>
-    /* ==========================================
-       코드 박스 전체 스타일
-       ========================================== */
     .sk-code-box-container {
       margin: 24px 0;
       border-radius: 10px;
@@ -274,12 +272,8 @@ draft: false
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
       -webkit-font-smoothing: antialiased;
     }
-
-    /* ==========================================
-       1. 코드 박스 헤더 (제목 표시줄)
-       ========================================== */
     .sk-code-header {
-      background-color: #252526; /* 다크 테마 헤더 배경 */
+      background-color: #252526;
       color: #cccccc;
       padding: 10px 16px;
       display: flex;
@@ -287,20 +281,17 @@ draft: false
       align-items: center;
       border-bottom: 1px solid #3e3e42;
     }
-
     .sk-code-title-group {
       display: flex;
       align-items: center;
       gap: 8px;
     }
-
     .sk-code-icon {
       width: 16px;
       height: 16px;
-      color: #007acc; /* VSCode 블루 */
+      color: #007acc;
       flex-shrink: 0;
     }
-
     .sk-code-title {
       font-size: 14px;
       font-weight: 500;
@@ -309,7 +300,6 @@ draft: false
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .sk-code-copy-btn {
       background: none;
       border: none;
@@ -323,87 +313,58 @@ draft: false
       font-size: 13px;
       transition: background-color 0.2s, color 0.2s;
     }
-
     .sk-code-copy-btn:hover {
       background-color: rgba(255, 255, 255, 0.1);
       color: #ffffff;
     }
-
     .sk-code-copy-btn.sk-copied {
-      color: #4ec9b0; /* 연한 그린 (성공 색상) */
+      color: #4ec9b0;
     }
-
     .sk-code-copy-icon {
       width: 16px;
       height: 16px;
     }
-
-    /* ==========================================
-       2. 코드 박스 바디 (라인 번호 + 코드 내용)
-       ========================================== */
     .sk-code-body {
-      background-color: #1e1e1e; /* 다크 테마 본문 배경 */
+      background-color: #1e1e1e;
       display: flex;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; /* 모노스페이스 폰트 */
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
       font-size: 14px;
       line-height: 1.6;
       tab-size: 4;
     }
-
-    /* 2-1. 라인 번호 영역 */
     .sk-code-line-numbers {
       padding: 16px 0;
       background-color: #1e1e1e;
-      color: #858585; /* 그레이 텍스트 */
+      color: #858585;
       text-align: right;
-      user-select: none; /* 드래그 방지 */
+      user-select: none;
       border-right: 1px solid #3e3e42;
       flex-shrink: 0;
     }
-
     .sk-code-line-number-item {
       padding: 0 16px;
       display: block;
     }
-
-    /* 2-2. 실제 코드 내용 영역 */
     .sk-code-content {
       padding: 16px;
-      color: #d4d4d4; /* 기본 라이트 그레이 텍스트 */
-      overflow-x: auto; /* 가로 스크롤 대응 */
+      color: #d4d4d4;
+      overflow-x: auto;
       flex-grow: 1;
       outline: none;
-      white-space: pre; /* 줄바꿈, 공백 유지 */
+      white-space: pre;
     }
-
-    /* contenteditable 영역 focus 스타일 */
     .sk-code-content:focus {
       background-color: rgba(255, 255, 255, 0.02);
     }
-
-    /* ==========================================
-       3. VSCode 다크 테마 구문 강조 스타일
-       ========================================== */
-    /* 주석 (그린) */
     .sk-token-comment { color: #6a9955; }
-    /* 키워드, 제어문 (블루) */
     .sk-token-keyword { color: #569cd6; }
-    /* 문자열 (오렌지-브라운) */
     .sk-token-string { color: #ce9178; }
-    /* 함수명 (노랑) */
     .sk-token-function { color: #dcdcaa; }
-    /* 변수명, 속성명 (연한 블루) */
     .sk-token-variable { color: #9cdcfe; }
-    /* 숫자 (그린-옐로우) */
     .sk-token-number { color: #b5cea8; }
-    /* 연산자, 기호 (그레이) */
     .sk-token-operator { color: #d4d4d4; }
-    /* 클래스명, 인터페이스 (연한 그린) */
     .sk-token-class { color: #4ec9b0; }
 
-    /* ==========================================
-       4. 모바일 반응형 처리
-       ========================================== */
     @media (max-width: 600px) {
       .sk-code-header { padding: 8px 12px; }
       .sk-code-title { font-size: 13px; }
@@ -419,17 +380,13 @@ draft: false
   <!-- 1. 코드 박스 헤더 -->
   <div class="sk-code-header">
     <div class="sk-code-title-group">
-      <!-- 코드 SVG 아이콘 -->
       <svg class="sk-code-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="16 18 22 12 16 6"></polyline>
         <polyline points="8 6 2 12 8 18"></polyline>
       </svg>
-      <!-- 수정 가능한 제목 -->
       <span class="sk-code-title" contenteditable="true" spellcheck="false">HTML / 본문 작성 공간 (VSCode 코드 하이라이팅 적용)</span>
     </div>
-    <!-- 복사하기 버튼 -->
     <button class="sk-code-copy-btn sk-js-copy-btn" title="코드 복사">
-      <!-- 복사 SVG 아이콘 -->
       <svg class="sk-code-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -440,11 +397,7 @@ draft: false
 
   <!-- 2. 코드 박스 바디 -->
   <div class="sk-code-body">
-    <!-- 라인 번호 영역 (JS로 자동 생성) -->
     <div class="sk-code-line-numbers sk-js-line-numbers"></div>
-    
-    <!-- 실제 코드 내용 영역 (수정 가능, 예시 코드 포함) -->
-    <!-- ⚠️ 편집 시 span 태그 구조를 유지해야 하이라이팅이 유지됩니다. -->
     <div class="sk-code-content sk-js-code-content" contenteditable="true" spellcheck="false"><span class="sk-token-keyword">const</span> observer = <span class="sk-token-keyword">new</span> <span class="sk-token-function">IntersectionObserver</span>((entries, observer) => {
     entries.<span class="sk-token-function">forEach</span>(entry => {
         <span class="sk-token-keyword">if</span> (entry.isIntersecting) {
@@ -459,77 +412,75 @@ fadeElements.<span class="sk-token-function">forEach</span>(el => observer.<span
 <span class="sk-token-comment">// 2. Interactive Quote Click Effect</span>
 <span class="sk-token-keyword">const</span> quotes = document.<span class="sk-token-function">querySelectorAll</span>(<span class="sk-token-string">'.blog-post-content .post-quote'</span>);</div>
   </div>
-
-  <script>
-    (function() {
-      const codeBox = document.currentScript.closest('.sk-code-box-container');
-      const copyBtn = codeBox.querySelector('.sk-js-copy-btn');
-      const codeContent = codeBox.querySelector('.sk-js-code-content');
-      const lineNumbersContainer = codeBox.querySelector('.sk-js-line-numbers');
-      const copyTextSpan = copyBtn.querySelector('.sk-copy-text');
-
-      // ==========================================
-      // 1. 라인 번호 업데이트 함수
-      // ==========================================
-      function updateLineNumbers() {
-        // 코드 내용의 텍스트를 가져와서 줄 수 계산
-        const codeText = codeContent.innerText;
-        const lines = codeText.split(/\r\n|\r|\n/);
-        const lineCount = Math.max(1, lines.length); // 최소 1줄 표시
-
-        // 기존 라인 번호 초기화
-        lineNumbersContainer.innerHTML = '';
-
-        // 라인 번호 생성 및 추가
-        for (let i = 1; i <= lineCount; i++) {
-          const lineNumberSpan = document.createElement('span');
-          lineNumberSpan.className = 'sk-code-line-number-item';
-          lineNumberSpan.textContent = i;
-          lineNumbersContainer.appendChild(lineNumberSpan);
-        }
-      }
-
-      // ==========================================
-      // 2. 복사 기능 함수
-      // ==========================================
-      function copyCode() {
-        // 코드 내용 텍스트 추출 (라인 번호 제외)
-        const textToCopy = codeContent.innerText;
-
-        // 클립보드에 복사
-        navigator.clipboard.writeText(textToCopy).then(() => {
-          // 성공 시 UI 변경
-          copyBtn.classList.add('sk-copied');
-          copyTextSpan.textContent = '복사됨';
-
-          // 2초 후 원상복구
-          setTimeout(() => {
-            copyBtn.classList.remove('sk-copied');
-            copyTextSpan.textContent = '복사';
-          }, 2000);
-        }).catch(err => {
-          console.error('복사 실패:', err);
-          alert('코드 복사에 실패했습니다.');
-        });
-      }
-
-      // ==========================================
-      // 3. 이벤트 리스너 등록
-      // ==========================================
-      // 코드 편집 시 라인 번호 실시간 업데이트
-      codeContent.addEventListener('input', updateLineNumbers);
-      
-      // 복사 버튼 클릭 이벤트
-      copyBtn.addEventListener('click', copyCode);
-
-      // ==========================================
-      // 4. 초기화
-      // ==========================================
-      updateLineNumbers(); // 초기 라인 번호 생성
-    })();
-  </script>
 </div>
-  </div>
+
+<!-- 안정적인 전역 실행 스크립트 -->
+<script>
+  (function initSkCodeBoxes() {
+    function setupCodeBoxes() {
+      const codeBoxes = document.querySelectorAll('.sk-code-box-container');
+      
+      codeBoxes.forEach(codeBox => {
+        const copyBtn = codeBox.querySelector('.sk-js-copy-btn');
+        const codeContent = codeBox.querySelector('.sk-js-code-content');
+        const lineNumbersContainer = codeBox.querySelector('.sk-js-line-numbers');
+        
+        if (!codeContent || !lineNumbersContainer) return;
+
+        const copyTextSpan = copyBtn ? copyBtn.querySelector('.sk-copy-text') : null;
+
+        function updateLineNumbers() {
+          const codeText = codeContent.innerText;
+          const lines = codeText.split(/\r\n|\r|\n/);
+          const lineCount = Math.max(1, lines.length);
+
+          lineNumbersContainer.innerHTML = '';
+
+          for (let i = 1; i <= lineCount; i++) {
+            const lineNumberSpan = document.createElement('span');
+            lineNumberSpan.className = 'sk-code-line-number-item';
+            lineNumberSpan.textContent = i;
+            lineNumbersContainer.appendChild(lineNumberSpan);
+          }
+        }
+
+        function copyCode() {
+          const textToCopy = codeContent.innerText;
+
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            if (copyBtn && copyTextSpan) {
+              copyBtn.classList.add('sk-copied');
+              copyTextSpan.textContent = '복사됨';
+
+              setTimeout(() => {
+                copyBtn.classList.remove('sk-copied');
+                copyTextSpan.textContent = '복사';
+              }, 2000);
+            }
+          }).catch(err => {
+            console.error('복사 실패:', err);
+            alert('코드 복사에 실패했습니다.');
+          });
+        }
+
+        // 이미 이벤트가 등록되었는지 확인 후 등록
+        if (!codeContent.dataset.initialized) {
+          codeContent.addEventListener('input', updateLineNumbers);
+          if (copyBtn) copyBtn.addEventListener('click', copyCode);
+          codeContent.dataset.initialized = 'true';
+        }
+
+        updateLineNumbers();
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupCodeBoxes);
+    } else {
+      setupCodeBoxes();
+    }
+  })();
+</script>
 
   <h2 class="post-h2 fade-up">
     제미나이와의 사투, 그리고 아내의 한마디
