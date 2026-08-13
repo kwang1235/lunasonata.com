@@ -1330,8 +1330,12 @@ ${bodyContent}`;
         const savedData = localStorage.getItem(DRAFT_KEY);
         if (savedData) {
           try {
-            const { title, content } = JSON.parse(savedData);
-            if (titleInput && title) titleInput.value = title;
+            const { title, desc, slug, category, hero, content } = JSON.parse(savedData);
+            if (titleInput && title !== undefined) titleInput.value = title;
+            if (descInput && desc !== undefined) descInput.value = desc;
+            if (slugInput && slug !== undefined) slugInput.value = slug;
+            if (categoryInput && category !== undefined) categoryInput.value = category;
+            if (heroInput && hero !== undefined) heroInput.value = hero;
             if (content) {
               setEditorValue(content);
             }
@@ -1346,6 +1350,10 @@ ${bodyContent}`;
       function saveDraft() {
         const draftData = {
           title: titleInput ? titleInput.value : '',
+          desc: descInput ? descInput.value : '',
+          slug: slugInput ? slugInput.value : '',
+          category: categoryInput ? categoryInput.value : '',
+          hero: heroInput ? heroInput.value : '',
           content: getEditorValue(),
           updatedAt: new Date().toISOString()
         };
@@ -1381,6 +1389,10 @@ ${bodyContent}`;
       });
 
       titleInput?.addEventListener('input', saveDraft);
+      descInput?.addEventListener('input', saveDraft);
+      slugInput?.addEventListener('input', saveDraft);
+      categoryInput?.addEventListener('input', saveDraft);
+      heroInput?.addEventListener('input', saveDraft);
 
       document.getElementById('btn-tmpl-callout')?.addEventListener('click', () => {
         const calloutTmpl = `<div style="background: #0f172a; border-left: 4px solid #38bdf8; padding: 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0;">\n  💡 <strong>참고:</strong> 여기에 안내하고 싶은 핵심 내용을 적어주세요.\n</div>\n`;
