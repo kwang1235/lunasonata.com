@@ -413,7 +413,6 @@ fadeElements.<span class="sk-token-function">forEach</span>(el => observer.<span
 <span class="sk-token-keyword">const</span> quotes = document.<span class="sk-token-function">querySelectorAll</span>(<span class="sk-token-string">'.blog-post-content .post-quote'</span>);</div>
   </div>
     </div>
-</div>
 <!-- 안정적인 전역 실행 스크립트 -->
 <script>
   (function initSkCodeBoxes() {
@@ -481,7 +480,7 @@ fadeElements.<span class="sk-token-function">forEach</span>(el => observer.<span
     }
   })();
 </script>
-
+</div>
   <h2 class="post-h2 fade-up">
     제미나이와의 사투, 그리고 아내의 한마디
   </h2>
