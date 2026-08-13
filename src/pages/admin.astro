@@ -891,6 +891,7 @@ import BaseHead from '../components/BaseHead.astro';
       let selectedRelPaths = new Set<string>();
       let currentUsageFilter = 'all';
       let currentLbIndex = 0;
+      let currentPubDate = '';
 
       let monacoEditor: any = null;
 
@@ -1197,30 +1198,36 @@ import BaseHead from '../components/BaseHead.astro';
       const heroInput = document.getElementById('post-hero') as HTMLInputElement;
       const slugInput = document.getElementById('post-slug') as HTMLInputElement;
 
+      // Frontmatter 헤더 생성 함수
       function generateFrontmatter(): string {
-        const title = titleInput ? titleInput.value.trim() : '제목 없음';
-        const description = descInput?.value.trim() || title;
-        const heroImage = heroInput?.value.trim() || '';
-        const slug = slugInput?.value.trim() || '';
+  const title = titleInput.value.trim() || '제목 없음';
+  const description = descInput?.value.trim() || title;
+  const heroImage = heroInput?.value.trim() || '';
+  const slug = slugInput?.value.trim() || '';
 
-        const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
-        const categoriesFormatted = rawCategories.length > 0 
-          ? `\ncategories:\n${rawCategories.map(c => `  - "${c}"`).join('\n')}` 
-          : '';
+  // 카테고리를 배열 형태 ['일상', '개발'] 로 변환
+  const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
+  const categoriesFormatted = rawCategories.length > 0 
+    ? `\ncategories:\n${rawCategories.map(c => `  - "${c}"`).join('\n')}` 
+    : '';
 
-        const today = new Date().toISOString().split('T')[0];
-        const rawContent = getEditorValue();
-        const cleanedContent = rawContent.replace(/^[ \t]{4,}/gm, '');
+  // 👈 [추가] 한국 시간 기준 ISO 규격 (YYYY-MM-DDTHH:mm:ss) 생성
+  const now = new Date();
+  const offset = now.getTimezoneOffset() * 60000;
+  const localIso = new Date(now.getTime() - offset).toISOString().slice(0, 19);
 
-        return `---
+  // 👈 기존 글 수정 시에는 currentPubDate 유지, 새 글 작성 시에는 localIso(현재 날짜+시간) 입력
+  const pubDateValue = currentPubDate ? currentPubDate : localIso;
+
+  return `---
 title: "${title}"
 description: "${description}"
-pubDate: ${today}
+pubDate: ${pubDateValue}
 ${slug ? `slug: "${slug}"\n` : ''}${heroImage ? `heroImage: "${heroImage}"\n` : ''}${categoriesFormatted}
 draft: false
 ---
 
-${cleanedContent}`;
+${htmlInput.value}`;
       }
 
       copyBtn?.addEventListener('click', () => {
@@ -1347,15 +1354,17 @@ ${cleanedContent}`;
         }
       }
 
-      btnResetDraft?.addEventListener('click', () => {
-        if (confirm('작성 중인 내용을 모두 지우고 새 글을 작성하시겠습니까?')) {
-          if (titleInput) titleInput.value = '';
-          setEditorValue('');
-          localStorage.removeItem(DRAFT_KEY);
-          updatePreview();
-          if (saveStatus) saveStatus.textContent = '✨ 새 글 작성 준비됨';
-        }
-      });
+     // 3. 내용 비우기 (새 글 작성 시)
+btnResetDraft?.addEventListener('click', () => {
+  if (confirm('작성 중인 내용을 모두 지우고 새 글을 작성하시겠습니까?')) {
+    titleInput.value = '';
+    htmlInput.value = '';
+    currentPubDate = ''; // 👈 [추가] 새 글 작성을 위해 기존 날짜 변수 초기화!
+    localStorage.removeItem(DRAFT_KEY);
+    updatePreview();
+    if (saveStatus) saveStatus.textContent = '✨ 새 글 작성 준비됨';
+  }
+});
 
       titleInput?.addEventListener('input', saveDraft);
 
@@ -1486,6 +1495,9 @@ ${cleanedContent}`;
 
             const heroMatch = rawContent.match(/^heroImage:\s*["']?(.*?)["']?$/m);
             if (heroMatch && heroInput) heroInput.value = heroMatch[1];
+
+            const pubDateMatch = rawContent.match(/^pubDate:\s*["']?(.*?)["']?$/m);
+            currentPubDate = pubDateMatch ? pubDateMatch[1].trim() : '';
 
             const bodyContent = rawContent.replace(/^---[\s\S]*?---\s*/, '');
             

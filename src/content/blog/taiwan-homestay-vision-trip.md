@@ -1,7 +1,7 @@
 ---
 title: "[대만 일심교회 홈스테이] 언어는 달라도 마음은 통한 1박 2일간의 거대한 환대"
 description: "사귐의교회 대만 선교팀 일심교회의 한국 비전트립 홈스테이 참여 후기! 작게 시작한 마음이 안방을 내어주기까지, 환대와 감동이 넘쳤던 특별한 하룻밤의 이야기."
-pubDate: 2026-08-13
+pubDate: 2026-08-12
 slug: "taiwan-homestay-vision-trip"
 heroImage: "https://image.lunasonata.com/2026/08/IMG_8561.webp"
 
