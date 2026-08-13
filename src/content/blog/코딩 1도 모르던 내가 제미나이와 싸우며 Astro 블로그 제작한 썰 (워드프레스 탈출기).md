@@ -260,263 +260,233 @@ draft: false
     <p class="post-p">
       매번 로컬에서 mdx 파일을 만드는 것도 번거로워서, 아예 웹상에서 HTML을 입력하고 즉시 포스트를 발행할 수 있는 나만의 Admin 사이트를 제작했다. 백엔드는 완전히 초문이라 제미나이가 시키는 대로 무작정 따라 했는데, 시행착오가 정말 엄청났다. VS Code처럼 알록달록하게 구문 하이라이팅이 들어간 에디터 구현, 비밀번호 로그인, 기존 글/이미지 불러오기, 영문 슬러그 생성, 제목 기반 mdx 저장 등 온 정신을 쏟아부었다.
     </p>
-    <div id="sk-code-box-wrapper" class="sk-code-box-container">
+    <!-- Admin 전용 코드 박스 (CSS 완벽 격리 버전) -->
+<div class="sk-code-box-container">
   <style>
-    /* ==========================================
-       코드 박스 전체 컨테이너
-       ========================================== */
-    #sk-code-box-wrapper.sk-code-box-container {
-      width: 100%;
-      margin: 24px 0;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      box-sizing: border-box;
-      background-color: #1e1e1e;
+    /* 1. 최외각 컨테이너 강제 초기화 */
+    .blog-post-content .sk-code-box-container,
+    .prose .sk-code-box-container,
+    .sk-code-box-container {
+      margin: 28px 0 !important;
+      border-radius: 10px !important;
+      overflow: hidden !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+      background-color: #1e1e1e !important;
+      border: 1px solid #3e3e42 !important;
+      display: block !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
     }
 
-    #sk-code-box-wrapper * {
-      box-sizing: border-box;
+    /* 2. 헤더 영역 레이아웃 강제 정렬 */
+    .sk-code-box-container .sk-code-header {
+      background-color: #252526 !important;
+      color: #cccccc !important;
+      padding: 10px 16px !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      border-bottom: 1px solid #3e3e42 !important;
+      height: auto !important;
+      margin: 0 !important;
     }
 
-    /* ==========================================
-       1. 헤더 (상단 제목 및 복사 버튼)
-       ========================================== */
-    #sk-code-box-wrapper .sk-code-header {
-      background-color: #252526;
-      color: #cccccc;
-      padding: 10px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #3e3e42;
+    .sk-code-box-container .sk-code-title-group {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
-    #sk-code-box-wrapper .sk-code-title-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
+    .sk-code-box-container .sk-code-icon {
+      width: 16px !important;
+      height: 16px !important;
+      color: #007acc !important;
+      flex-shrink: 0 !important;
+      display: inline-block !important;
     }
 
-    #sk-code-box-wrapper .sk-code-icon {
-      width: 16px;
-      height: 16px;
-      color: #007acc;
-      flex-shrink: 0;
+    .sk-code-box-container .sk-code-title {
+      font-size: 13px !important;
+      font-weight: 500 !important;
+      color: #cccccc !important;
+      line-height: 1.2 !important;
     }
 
-    #sk-code-box-wrapper .sk-code-title {
-      font-size: 13px;
-      font-weight: 500;
-      color: #cccccc;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    /* 3. 복사 버튼 스타일 */
+    .sk-code-box-container .sk-code-copy-btn {
+      background: transparent !important;
+      border: none !important;
+      padding: 5px 10px !important;
+      color: #aaaaaa !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      border-radius: 4px !important;
+      font-size: 12px !important;
+      line-height: 1 !important;
+      transition: background-color 0.2s, color 0.2s !important;
     }
 
-    #sk-code-box-wrapper .sk-code-copy-btn {
-      background: none;
-      border: none;
-      padding: 6px 10px;
-      color: #aaaaaa;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      border-radius: 4px;
-      font-size: 12px;
-      transition: background-color 0.2s, color 0.2s;
-      flex-shrink: 0;
+    .sk-code-box-container .sk-code-copy-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+      color: #ffffff !important;
     }
 
-    #sk-code-box-wrapper .sk-code-copy-btn:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
+    .sk-code-box-container .sk-code-copy-btn.sk-copied {
+      color: #4ec9b0 !important;
     }
 
-    #sk-code-box-wrapper .sk-code-copy-btn.sk-copied {
-      color: #4ec9b0;
+    .sk-code-box-container .sk-code-copy-icon {
+      width: 14px !important;
+      height: 14px !important;
+      display: inline-block !important;
     }
 
-    #sk-code-box-wrapper .sk-code-copy-icon {
-      width: 14px;
-      height: 14px;
+    /* 4. 본문(바디) 좌우 가로 배치 유지 (핵심: flex-direction row) */
+    .sk-code-box-container .sk-code-body {
+      background-color: #1e1e1e !important;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: stretch !important;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace !important;
+      font-size: 13px !important;
+      line-height: 1.6 !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
-    /* ==========================================
-       2. 코드 본문 (라인 번호 + 구문 강조 코드)
-       ========================================== */
-    #sk-code-box-wrapper .sk-code-body {
-      background-color: #1e1e1e;
-      display: flex;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Monaco, Courier, monospace;
-      font-size: 13px;
-      line-height: 1.6;
-      tab-size: 4;
+    /* 5. 라인 번호 수직 고정 */
+    .sk-code-box-container .sk-code-line-numbers {
+      padding: 16px 0 !important;
+      background-color: #1e1e1e !important;
+      color: #858585 !important;
+      text-align: right !important;
+      user-select: none !important;
+      border-right: 1px solid #3e3e42 !important;
+      flex-shrink: 0 !important;
+      min-width: 42px !important;
+      box-sizing: border-box !important;
     }
 
-    /* 2-1. 라인 번호 */
-    #sk-code-box-wrapper .sk-code-line-numbers {
-      padding: 16px 0;
-      background-color: #1e1e1e;
-      color: #858585;
-      text-align: right;
-      user-select: none;
-      border-right: 1px solid #3e3e42;
-      flex-shrink: 0;
+    .sk-code-box-container .sk-code-line-number-item {
+      padding: 0 10px !important;
+      display: block !important;
+      line-height: 1.6 !important;
     }
 
-    #sk-code-box-wrapper .sk-code-line-number-item {
-      padding: 0 14px;
-      display: block;
+    /* 6. 실제 코드 영역 스크롤 및 개행 처리 */
+    .sk-code-box-container .sk-code-content {
+      padding: 16px !important;
+      color: #d4d4d4 !important;
+      overflow-x: auto !important;
+      flex-grow: 1 !important;
+      white-space: pre !important;
+      word-break: normal !important;
+      word-wrap: normal !important;
+      outline: none !important;
+      margin: 0 !important;
     }
 
-    /* 2-2. 코드 텍스트 영역 (break-all 및 줄바꿈 적용) */
-    #sk-code-box-wrapper .sk-code-content {
-      padding: 16px;
-      color: #d4d4d4;
-      flex-grow: 1;
-      white-space: pre-wrap;
-      word-break: break-all;
-      overflow-x: auto;
-    }
-
-    /* ==========================================
-       3. VSCode 다크 테마 Syntax Highlighting
-       ========================================== */
-    #sk-code-box-wrapper .sk-token-comment { color: #6a9955; }
-    #sk-code-box-wrapper .sk-token-keyword { color: #569cd6; }
-    #sk-code-box-wrapper .sk-token-string { color: #ce9178; }
-    #sk-code-box-wrapper .sk-token-function { color: #dcdcaa; }
-    #sk-code-box-wrapper .sk-token-variable { color: #9cdcfe; }
-    #sk-code-box-wrapper .sk-token-number { color: #b5cea8; }
-    #sk-code-box-wrapper .sk-token-operator { color: #d4d4d4; }
-    #sk-code-box-wrapper .sk-token-class { color: #4ec9b0; }
-
-    /* ==========================================
-       4. 모바일 반응형
-       ========================================== */
-    @media (max-width: 600px) {
-      #sk-code-box-wrapper .sk-code-header {
-        padding: 8px 12px;
-      }
-      #sk-code-box-wrapper .sk-code-title {
-        font-size: 12px;
-      }
-      #sk-code-box-wrapper .sk-code-body {
-        font-size: 12px;
-      }
-      #sk-code-box-wrapper .sk-code-line-numbers {
-        padding: 12px 0;
-      }
-      #sk-code-box-wrapper .sk-code-line-number-item {
-        padding: 0 10px;
-      }
-      #sk-code-box-wrapper .sk-code-content {
-        padding: 12px;
-      }
-    }
+    /* 구문 하이라이트 색상 강제 지정 */
+    .sk-code-box-container .sk-token-comment { color: #6a9955 !important; }
+    .sk-code-box-container .sk-token-keyword { color: #569cd6 !important; }
+    .sk-code-box-container .sk-token-string { color: #ce9178 !important; }
+    .sk-code-box-container .sk-token-function { color: #dcdcaa !important; }
+    .sk-code-box-container .sk-token-variable { color: #9cdcfe !important; }
+    .sk-code-box-container .sk-token-number { color: #b5cea8 !important; }
+    .sk-code-box-container .sk-token-operator { color: #d4d4d4 !important; }
+    .sk-code-box-container .sk-token-class { color: #4ec9b0 !important; }
   </style>
 
-  <!-- 헤더 영역 -->
+  <!-- 1. 헤더 -->
   <div class="sk-code-header">
     <div class="sk-code-title-group">
-      <svg class="sk-code-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="16 18 22 12 16 6"></polyline>
-        <polyline points="8 6 2 12 8 18"></polyline>
-      </svg>
-      <span class="sk-code-title">HTML / 본문 작성 공간 (VSCode 코드 하이라이팅 적용)</span>
+      <svg class="sk-code-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+      <span class="sk-code-title">HTML / 본문 작성 공간 (VSCode 스타일)</span>
     </div>
     <button class="sk-code-copy-btn sk-js-copy-btn" type="button" title="코드 복사">
-      <svg class="sk-code-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-      </svg>
+      <svg class="sk-code-copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
       <span class="sk-copy-text">복사</span>
     </button>
   </div>
 
-  <!-- 코드 본문 영역 -->
+  <!-- 2. 바디 -->
   <div class="sk-code-body">
     <div class="sk-code-line-numbers sk-js-line-numbers"></div>
-    <div class="sk-code-content sk-js-code-content"><span class="sk-token-keyword">const</span> <span class="sk-token-variable">observer</span> = <span class="sk-token-keyword">new</span> <span class="sk-token-class">IntersectionObserver</span>((<span class="sk-token-variable">entries</span>, <span class="sk-token-variable">observer</span>) =&gt; {
-    <span class="sk-token-variable">entries</span>.<span class="sk-token-function">forEach</span>(<span class="sk-token-variable">entry</span> =&gt; {
-        <span class="sk-token-keyword">if</span> (<span class="sk-token-variable">entry</span>.<span class="sk-token-variable">isIntersecting</span>) {
-            <span class="sk-token-variable">entry</span>.<span class="sk-token-variable">target</span>.<span class="sk-token-variable">classList</span>.<span class="sk-token-function">add</span>(<span class="sk-token-string">'visible'</span>);
-            <span class="sk-token-variable">observer</span>.<span class="sk-token-function">unobserve</span>(<span class="sk-token-variable">entry</span>.<span class="sk-token-variable">target</span>);
+    <div class="sk-code-content sk-js-code-content" contenteditable="true" spellcheck="false"><span class="sk-token-keyword">const</span> observer = <span class="sk-token-keyword">new</span> <span class="sk-token-function">IntersectionObserver</span>((entries, observer) =&gt; {
+    entries.<span class="sk-token-function">forEach</span>(entry =&gt; {
+        <span class="sk-token-keyword">if</span> (entry.isIntersecting) {
+            entry.target.classList.<span class="sk-token-function">add</span>(<span class="sk-token-string">'visible'</span>);
+            observer.<span class="sk-token-function">unobserve</span>(entry.target);
         }
     });
-}, <span class="sk-token-variable">observerOptions</span>);
+}, observerOptions);
 
-<span class="sk-token-variable">fadeElements</span>.<span class="sk-token-function">forEach</span>(<span class="sk-token-variable">el</span> =&gt; <span class="sk-token-variable">observer</span>.<span class="sk-token-function">observe</span>(<span class="sk-token-variable">el</span>));
+fadeElements.<span class="sk-token-function">forEach</span>(el =&gt; observer.<span class="sk-token-function">observe</span>(el));
 
-<span class="sk-token-comment">// 2. Interactive Quote Click Effect (인용구 클릭 인터랙션)</span>
-<span class="sk-token-keyword">const</span> <span class="sk-token-variable">quotes</span> = <span class="sk-token-variable">document</span>.<span class="sk-token-function">querySelectorAll</span>(<span class="sk-token-string">'.blog-post-content .post-quote'</span>);
-<span class="sk-token-variable">quotes</span>.<span class="sk-token-function">forEach</span>(<span class="sk-token-variable">quote</span> =&gt; {
-    <span class="sk-token-variable">quote</span>.<span class="sk-token-function">addEventListener</span>(<span class="sk-token-string">'click'</span>, <span class="sk-token-keyword">function</span>() {
-        <span class="sk-token-keyword">this</span>.<span class="sk-token-variable">style</span>.<span class="sk-token-variable">borderLeftColor</span> = <span class="sk-token-string">'#319795'</span>;
-        <span class="sk-token-keyword">this</span>.<span class="sk-token-variable">style</span>.<span class="sk-token-variable">backgroundColor</span> = <span class="sk-token-string">'#e6fffa'</span>;
-        <span class="sk-token-function">setTimeout</span>(() =&gt; {
-            <span class="sk-token-keyword">this</span>.<span class="sk-token-variable">style</span>.<span class="sk-token-variable">borderLeftColor</span> = <span class="sk-token-string">'#3182ce'</span>;
-            <span class="sk-token-keyword">this</span>.<span class="sk-token-variable">style</span>.<span class="sk-token-variable">backgroundColor</span> = <span class="sk-token-string">'#f7fafc'</span>;
-        }, <span class="sk-token-number">400</span>);
-    });
-});
-
-<span class="sk-token-comment">// 3. Link Hover &amp; Click Feedback (링크 인터랙션)</span>
-<span class="sk-token-keyword">const</span> <span class="sk-token-variable">links</span> = <span class="sk-token-variable">document</span>.<span class="sk-token-function">querySelectorAll</span>(<span class="sk-token-string">'.blog-post-content .post-link'</span>);</div>
+<span class="sk-token-comment">// 2. Interactive Quote Click Effect</span>
+<span class="sk-token-keyword">const</span> quotes = document.<span class="sk-token-function">querySelectorAll</span>(<span class="sk-token-string">'.blog-post-content .post-quote'</span>);</div>
   </div>
-
-  <!-- 동적 라인 번호 생성 및 복사 스크립트 -->
-  <script>
-    (function() {
-      const wrapper = document.getElementById('sk-code-box-wrapper');
-      if (!wrapper) return;
-
-      const copyBtn = wrapper.querySelector('.sk-js-copy-btn');
-      const codeContent = wrapper.querySelector('.sk-js-code-content');
-      const lineNumbersContainer = wrapper.querySelector('.sk-js-line-numbers');
-      const copyTextSpan = copyBtn ? copyBtn.querySelector('.sk-copy-text') : null;
-
-      // 라인 번호 계산 및 동적 생성
-      function initLineNumbers() {
-        if (!codeContent || !lineNumbersContainer) return;
-        const text = codeContent.innerText || codeContent.textContent;
-        const lines = text.split(/\r\n|\r|\n/);
-        const count = Math.max(1, lines.length);
-
-        lineNumbersContainer.innerHTML = '';
-        for (let i = 1; i <= count; i++) {
-          const item = document.createElement('span');
-          item.className = 'sk-code-line-number-item';
-          item.textContent = i;
-          lineNumbersContainer.appendChild(item);
-        }
-      }
-
-      // 복사 기능 구현
-      if (copyBtn && codeContent) {
-        copyBtn.addEventListener('click', function() {
-          const textToCopy = codeContent.innerText || codeContent.textContent;
-          navigator.clipboard.writeText(textToCopy).then(function() {
-            copyBtn.classList.add('sk-copied');
-            if (copyTextSpan) copyTextSpan.textContent = '복사됨';
-            setTimeout(function() {
-              copyBtn.classList.remove('sk-copied');
-              if (copyTextSpan) copyTextSpan.textContent = '복사';
-            }, 2000);
-          }).catch(function(err) {
-            console.error('복사 실패:', err);
-          });
-        });
-      }
-
-      initLineNumbers();
-    })();
-  </script>
 </div>
+
+<!-- 안정적인 자바스크립트 실행부 -->
+<script>
+  (function setupSkCodeBox() {
+    function init() {
+      const codeBoxes = document.querySelectorAll('.sk-code-box-container');
+      codeBoxes.forEach(function(codeBox) {
+        const copyBtn = codeBox.querySelector('.sk-js-copy-btn');
+        const codeContent = codeBox.querySelector('.sk-js-code-content');
+        const lineNumbersContainer = codeBox.querySelector('.sk-js-line-numbers');
+        if (!codeContent || !lineNumbersContainer) return;
+
+        const copyTextSpan = copyBtn ? copyBtn.querySelector('.sk-copy-text') : null;
+
+        function updateLineNumbers() {
+          const codeText = codeContent.innerText;
+          const lines = codeText.split(/\r\n|\r|\n/);
+          const lineCount = Math.max(1, lines.length);
+
+          lineNumbersContainer.innerHTML = '';
+          for (let i = 1; i <= lineCount; i++) {
+            const span = document.createElement('span');
+            span.className = 'sk-code-line-number-item';
+            span.textContent = i;
+            lineNumbersContainer.appendChild(span);
+          }
+        }
+
+        function copyCode() {
+          const textToCopy = codeContent.innerText;
+          navigator.clipboard.writeText(textToCopy).then(function() {
+            if (copyBtn && copyTextSpan) {
+              copyBtn.classList.add('sk-copied');
+              copyTextSpan.textContent = '복사됨';
+              setTimeout(function() {
+                copyBtn.classList.remove('sk-copied');
+                copyTextSpan.textContent = '복사';
+              }, 2000);
+            }
+          });
+        }
+
+        codeContent.addEventListener('input', updateLineNumbers);
+        if (copyBtn) copyBtn.addEventListener('click', copyCode);
+        updateLineNumbers();
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
 </div>
   <h2 class="post-h2 fade-up">
     제미나이와의 사투, 그리고 아내의 한마디
