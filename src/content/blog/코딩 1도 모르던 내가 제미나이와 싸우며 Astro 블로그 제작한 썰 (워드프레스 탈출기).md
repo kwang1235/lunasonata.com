@@ -156,7 +156,7 @@ draft: false
   }
 </style>
 
-<!-- 본문 HTML ("~했다" 서술체 어조) -->
+<!-- 본문 HTML -->
 <div class="blog-post-content">
   <p class="post-p fade-up">
     나만의 아늑한 공간을 가꾸는 것을 워낙 좋아하는 편이라, 수년 전부터 소소하게 개인 블로그 활동을 이어왔다. 매일같이 꾸준히 글을 올린 건 아니었지만, 나의 소소한 일상을 기록으로 남겨두는 것 자체가 참 좋았다. 나만의 일기장 같은 개념이었다. 처음에는 네이버 블로그로 시작해서 티스토리 블로그까지 넘어가며 글을 쌓아갔다.
@@ -258,10 +258,9 @@ draft: false
       매번 로컬에서 mdx 파일을 만드는 것도 번거로워서, 아예 웹상에서 HTML을 입력하고 즉시 포스트를 발행할 수 있는 나만의 Admin 사이트를 제작했다. 백엔드는 완전히 초문이라 제미나이가 시키는 대로 무작정 따라 했는데, 시행착오가 정말 엄청났다. VS Code처럼 알록달록하게 구문 하이라이팅이 들어간 에디터 구현, 비밀번호 로그인, 기존 글/이미지 불러오기, 영문 슬러그 생성, 제목 기반 mdx 저장 등 온 정신을 쏟아부었다.
     </p>
     
-    <!-- Admin 전용 코드 박스 (CSS 완벽 격리 및 글자색 강제 고정 버전) -->
+    <!-- Admin 전용 코드 박스 -->
     <div class="sk-code-box-container">
       <style>
-        /* 1. 최외각 컨테이너 강제 초기화 */
         .blog-post-content .sk-code-box-container,
         .prose .sk-code-box-container,
         .sk-code-box-container {
@@ -277,7 +276,6 @@ draft: false
           box-sizing: border-box !important;
         }
 
-        /* 2. 헤더 영역 레이아웃 강제 정렬 */
         .sk-code-box-container .sk-code-header {
           background-color: #252526 !important;
           color: #cccccc !important;
@@ -313,7 +311,6 @@ draft: false
           line-height: 1.2 !important;
         }
 
-        /* 3. 복사 버튼 스타일 */
         .sk-code-box-container .sk-code-copy-btn {
           background: transparent !important;
           border: none !important;
@@ -344,7 +341,6 @@ draft: false
           display: inline-block !important;
         }
 
-        /* 4. 본문(바디) 좌우 가로 배치 유지 (핵심: flex-direction row) */
         .sk-code-box-container .sk-code-body {
           background-color: #1e1e1e !important;
           display: flex !important;
@@ -357,7 +353,6 @@ draft: false
           padding: 0 !important;
         }
 
-        /* 5. 라인 번호 수직 고정 */
         .sk-code-box-container .sk-code-line-numbers {
           padding: 16px 0 !important;
           background-color: #1e1e1e !important;
@@ -376,7 +371,6 @@ draft: false
           line-height: 1.6 !important;
         }
 
-        /* 6. 실제 코드 영역 스크롤 및 개행 처리 (밝은 기본 글자색 선언) */
         .sk-code-box-container .sk-code-content {
           padding: 16px !important;
           color: #d4d4d4 !important;
@@ -390,7 +384,6 @@ draft: false
           margin: 0 !important;
         }
 
-        /* 구문 하이라이트 색상 강제 지정 */
         .sk-code-box-container .sk-token-comment { color: #6a9955 !important; }
         .sk-code-box-container .sk-token-keyword { color: #569cd6 !important; }
         .sk-code-box-container .sk-token-string { color: #ce9178 !important; }
@@ -401,7 +394,6 @@ draft: false
         .sk-code-box-container .sk-token-class { color: #4ec9b0 !important; }
       </style>
 
-      <!-- 1. 헤더 -->
       <div class="sk-code-header">
         <div class="sk-code-title-group">
           <svg class="sk-code-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
@@ -413,7 +405,6 @@ draft: false
         </button>
       </div>
 
-      <!-- 2. 바디 -->
       <div class="sk-code-body">
         <div class="sk-code-line-numbers sk-js-line-numbers"></div>
         <div class="sk-code-content sk-js-code-content" contenteditable="true" spellcheck="false"><span class="sk-token-keyword">const</span> observer = <span class="sk-token-keyword">new</span> <span class="sk-token-function">IntersectionObserver</span>((entries, observer) =&gt; {
@@ -470,7 +461,7 @@ fadeElements.<span class="sk-token-function">forEach</span>(el =&gt; observer.<s
   </p>
 </div>
 
-<!-- 인터랙션 및 애니메이션 JS 스크립트 (중복 제거된 정상 스크립트) -->
+<!-- 인터랙션 스크립트 -->
 <script>
   (function setupSkCodeBox() {
     function init() {
@@ -525,7 +516,6 @@ fadeElements.<span class="sk-token-function">forEach</span>(el =&gt; observer.<s
   })();
 
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. Scroll Fade-up Observer
     const fadeElements = document.querySelectorAll('.blog-post-content .fade-up');
     
     const observerOptions = {
@@ -545,7 +535,6 @@ fadeElements.<span class="sk-token-function">forEach</span>(el =&gt; observer.<s
 
     fadeElements.forEach(el => observer.observe(el));
 
-    // 2. Interactive Quote Click Effect
     const quotes = document.querySelectorAll('.blog-post-content .post-quote');
     quotes.forEach(quote => {
       quote.addEventListener('click', function() {
@@ -558,7 +547,6 @@ fadeElements.<span class="sk-token-function">forEach</span>(el =&gt; observer.<s
       });
     });
 
-    // 3. Link Hover & Click Feedback
     const links = document.querySelectorAll('.blog-post-content .post-link');
     links.forEach(link => {
       link.addEventListener('mouseenter', function() {
