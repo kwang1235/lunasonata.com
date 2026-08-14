@@ -1467,7 +1467,13 @@ ${bodyContent}`;
         fetchGalleryData();
       }
 
+      // ✅ 수정 코드
       btnOpenGallery?.addEventListener('click', openModal);
+      heroInput?.addEventListener('click', () => {
+        openModal();
+        showToast('🖼️ 대표 이미지로 지정할 사진을 선택해 주세요.');
+      });
+      btnCloseGallery?.addEventListener('click', closeModal);
       btnCloseGallery?.addEventListener('click', closeModal);
       modal?.addEventListener('click', (e) => {
         if (e.target === modal) closeModal();
@@ -1546,6 +1552,7 @@ ${bodyContent}`;
             ? `<span class="badge-selected-check">✓</span>`
             : '';
 
+          // ✅ 수정 코드
           card.innerHTML = `
             ${usageBadge}
             ${checkBadge}
@@ -1555,12 +1562,24 @@ ${bodyContent}`;
             <div class="modal-item-info">
               <div class="modal-item-name" title="${item.name}">${item.name}</div>
               <div class="modal-item-actions">
-                <button type="button" class="btn-card-mini btn-view-big">🔍 크게보기</button>
+                <button type="button" class="btn-card-mini btn-set-hero" style="background: #0284c7; color: #ffffff;" title="대표 이미지로 지정">🌟 대표</button>
+                <button type="button" class="btn-card-mini btn-view-big">🔍 크게</button>
                 <button type="button" class="btn-card-mini btn-copy-html">HTML</button>
                 <button type="button" class="btn-card-mini-danger btn-del">삭제</button>
               </div>
             </div>
           `;
+
+          // 💡 [🌟 대표] 버튼 클릭 시 대표 이미지 URL 자동 입력 및 모달 닫기
+          card.querySelector('.btn-set-hero')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (heroInput) {
+              heroInput.value = item.url;
+              saveDraft();
+              closeModal();
+              showToast(`🌟 '${item.name}' 이미지가 대표 이미지로 지정되었습니다!`);
+            }
+          });
 
           card.addEventListener('click', (e) => {
             const target = e.target as HTMLElement;
