@@ -26,23 +26,6 @@ const categories = [
     }).filter(Boolean)
   ),
 ].sort((a, b) => a.localeCompare(b, 'ko'));
-
-// 검색 모달 데이터 (비공개 글 제외된 posts만 사용)
-// ✅ 수정 코드
-const searchData = posts.map((post) => {
-  const cats = Array.isArray(post.data.categories)
-    ? post.data.categories
-    : typeof (post.data as any).category === 'string'
-    ? [(post.data as any).category]
-    : [];
-  return {
-    id: post.id,
-    title: post.data.title,
-    description: post.data.description || '',
-    category: cats.join(', '),
-    pubDate: post.data.pubDate.toISOString().split('T')[0]
-  };
-});
 ---
 
 <!doctype html>
@@ -81,36 +64,6 @@ const searchData = posts.map((post) => {
         color: #1e293b;
         margin: 0;
         letter-spacing: -0.02em;
-      }
-
-      /* 스포트라이트 검색 버튼 (원래 색상 #5c6255 유지) */
-      .search-trigger-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.55rem 1rem;
-        background-color: #f8fafc;
-        border: 1px solid #cbd5e1;
-        border-radius: 20px;
-        color: #64748b;
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      .search-trigger-btn:hover {
-        background-color: #ffffff;
-        border-color: #5c6255;
-        color: #5c6255;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-      }
-      .search-shortcut {
-        font-size: 0.75rem;
-        padding: 0.1rem 0.4rem;
-        background-color: #e2e8f0;
-        border-radius: 6px;
-        color: #475569;
-        font-weight: 600;
       }
 
       /* 카테고리 내비게이션 */
@@ -247,193 +200,6 @@ const searchData = posts.map((post) => {
         overflow: hidden;
       }
 
-      /* 스포트라이트 검색 모달 (기존 원본 스타일 100% 유지) */
-      .spotlight-backdrop {
-        position: fixed;
-        inset: 0;
-        background-color: rgba(15, 23, 42, 0.5);
-        backdrop-filter: blur(8px);
-        z-index: 9999;
-        display: flex;
-        justify-content: center;
-        padding-top: 10vh;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-      }
-      .spotlight-backdrop.open {
-        opacity: 1;
-        pointer-events: auto;
-      }
-      .spotlight-box {
-        width: 100%;
-        max-width: 620px;
-        background: #ffffff;
-        border-radius: 20px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        border: 1px solid #e2e8f0;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        max-height: 70vh;
-        transform: scale(0.96);
-        transition: transform 0.2s ease;
-      }
-      .spotlight-backdrop.open .spotlight-box {
-        transform: scale(1);
-      }
-      .spotlight-input-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid #e2e8f0;
-      }
-      .spotlight-input {
-        flex: 1;
-        border: none;
-        outline: none;
-        font-size: 1.15rem;
-        font-weight: 500;
-        color: #0f172a;
-        background: transparent;
-      }
-      .spotlight-input::placeholder {
-        color: #94a3b8;
-      }
-      .spotlight-close-btn {
-        background: #f1f5f9;
-        border: none;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #64748b;
-        padding: 0.25rem 0.5rem;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-      .spotlight-results {
-        flex: 1;
-        overflow-y: auto;
-        padding: 0.75rem;
-        list-style: none !important;
-        margin: 0 !important;
-      }
-
-      /* 동적 생성 DOM 전용 :global 셀렉터 지정 */
-      :global(.spotlight-item) {
-        margin-bottom: 0.25rem !important;
-        list-style: none !important;
-      }
-
-      :global(.spotlight-item a),
-      :global(.spotlight-item a:visited),
-      :global(.spotlight-item a:hover),
-      :global(.spotlight-item a:active) {
-        text-decoration: none !important;
-        color: inherit !important;
-        border-bottom: none !important;
-      }
-
-      :global(.spotlight-item a) {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 0.35rem !important;
-        padding: 0.85rem 1rem !important;
-        border-radius: 12px !important;
-        background-color: transparent !important;
-        transition: background-color 0.15s ease !important;
-        border: none !important;
-        box-shadow: none !important;
-      }
-
-      :global(.spotlight-item a:hover),
-      :global(.spotlight-item.active a) {
-        background-color: #f1f5f9 !important;
-      }
-
-      :global(.spotlight-item-header) {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 0.75rem !important;
-        width: 100% !important;
-      }
-
-      :global(.spotlight-item-title) {
-        font-size: 1.05rem !important;
-        font-weight: 700 !important;
-        color: #0f172a !important;
-        line-height: 1.4 !important;
-        margin: 0 !important;
-        text-decoration: none !important;
-      }
-
-      :global(.spotlight-item-meta) {
-        display: flex !important;
-        align-items: center !important;
-        gap: 0.5rem !important;
-        flex-shrink: 0 !important;
-      }
-
-      :global(.spotlight-item-category) {
-        font-size: 0.75rem !important;
-        font-weight: 700 !important;
-        color: #2563eb !important;
-        background-color: #eff6ff !important;
-        padding: 0.15rem 0.5rem !important;
-        border-radius: 6px !important;
-      }
-
-      :global(.spotlight-item-date) {
-        font-size: 0.75rem !important;
-        color: #64748b !important;
-        text-decoration: none !important;
-      }
-
-      :global(.spotlight-item-desc) {
-        font-size: 0.875rem !important;
-        color: #64748b !important;
-        margin: 0 !important;
-        line-height: 1.45 !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        text-decoration: none !important;
-      }
-
-      .spotlight-empty {
-        padding: 3rem 1.5rem;
-        text-align: center;
-        color: #94a3b8;
-        font-size: 0.95rem;
-      }
-
-      .spotlight-footer {
-        padding: 0.6rem 1.25rem;
-        background-color: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 1rem;
-        font-size: 0.75rem;
-        color: #64748b;
-      }
-      .spotlight-footer-key {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-      }
-      .spotlight-footer-key kbd {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 4px;
-        padding: 0.05rem 0.3rem;
-        font-size: 0.7rem;
-        color: #475569;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-      }
-
       @media (max-width: 640px) {
         .post-item a {
           flex-direction: column !important;
@@ -446,12 +212,6 @@ const searchData = posts.map((post) => {
         .post-title {
           white-space: normal !important;
         }
-        .spotlight-backdrop {
-          padding-top: 5vh;
-        }
-        .spotlight-footer {
-          display: none;
-        }
       }
     </style>
   </head>
@@ -459,6 +219,7 @@ const searchData = posts.map((post) => {
     <Header />
     <main>
       <!-- 블로그 상단 헤더 영역 -->
+      <!-- ✅ 수정 코드 -->
       <div class="blog-header">
         <div class="title-row">
           <div class="title-wrapper">
@@ -468,16 +229,6 @@ const searchData = posts.map((post) => {
             </svg>
             <h1 class="page-title">전체 글 목록</h1>
           </div>
-
-          <!-- 검색 트리거 버튼 -->
-          <button id="searchTrigger" class="search-trigger-btn" aria-label="검색창 열기">
-            <svg style="width: 16px !important; height: 16px !important; min-width: 16px !important; max-width: 16px !important; stroke: currentColor; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <span>검색...</span>
-            <span class="search-shortcut">⌘K</span>
-          </button>
         </div>
 
         <!-- 동적 카테고리 내비게이션 -->
@@ -545,148 +296,6 @@ const searchData = posts.map((post) => {
         </ul>
       </section>
     </main>
-
-    <!-- 스포트라이트 검색 모달 -->
-    <div id="spotlightBackdrop" class="spotlight-backdrop">
-      <div class="spotlight-box">
-        <div class="spotlight-input-wrapper">
-          <svg style="width: 20px !important; height: 20px !important; min-width: 20px !important; max-width: 20px !important; stroke: #64748b; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="spotlightInput" class="spotlight-input" placeholder="글 제목 또는 내용으로 검색..." autocomplete="off" />
-          <button id="spotlightClose" class="spotlight-close-btn">ESC</button>
-        </div>
-        <ul id="spotlightResults" class="spotlight-results">
-          <div class="spotlight-empty">검색어를 입력하면 목록이 표시됩니다.</div>
-        </ul>
-        <div class="spotlight-footer">
-          <span class="spotlight-footer-key"><kbd>↑</kbd><kbd>↓</kbd> 이동</span>
-          <span class="spotlight-footer-key"><kbd>↵</kbd> 선택</span>
-          <span class="spotlight-footer-key"><kbd>ESC</kbd> 닫기</span>
-        </div>
-      </div>
-    </div>
-
     <Footer />
-
-    <script is:inline define:vars={{ searchData }}>
-      const triggerBtn = document.getElementById('searchTrigger');
-      const backdrop = document.getElementById('spotlightBackdrop');
-      const input = document.getElementById('spotlightInput');
-      const resultsContainer = document.getElementById('spotlightResults');
-      const closeBtn = document.getElementById('spotlightClose');
-
-      let activeIndex = -1;
-
-      function openSpotlight() {
-        backdrop.classList.add('open');
-        input.value = '';
-        renderResults('');
-        setTimeout(() => input.focus(), 50);
-      }
-
-      function closeSpotlight() {
-        backdrop.classList.remove('open');
-      }
-
-      triggerBtn.addEventListener('click', openSpotlight);
-      closeBtn.addEventListener('click', closeSpotlight);
-
-      backdrop.addEventListener('click', (e) => {
-        if (e.target === backdrop) closeSpotlight();
-      });
-
-      window.addEventListener('keydown', (e) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-          e.preventDefault();
-          if (backdrop.classList.contains('open')) {
-            closeSpotlight();
-          } else {
-            openSpotlight();
-          }
-        }
-
-        if (!backdrop.classList.contains('open')) return;
-
-        const items = resultsContainer.querySelectorAll('.spotlight-item');
-
-        if (e.key === 'Escape') {
-          closeSpotlight();
-        } else if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          if (items.length > 0) {
-            activeIndex = (activeIndex + 1) % items.length;
-            updateActiveItem(items);
-          }
-        } else if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          if (items.length > 0) {
-            activeIndex = (activeIndex - 1 + items.length) % items.length;
-            updateActiveItem(items);
-          }
-        } else if (e.key === 'Enter') {
-          if (activeIndex >= 0 && items[activeIndex]) {
-            e.preventDefault();
-            const link = items[activeIndex].querySelector('a');
-            if (link) link.click();
-          }
-        }
-      });
-
-      function updateActiveItem(items) {
-        items.forEach((item, idx) => {
-          if (idx === activeIndex) {
-            item.classList.add('active');
-            item.scrollIntoView({ block: 'nearest' });
-          } else {
-            item.classList.remove('active');
-          }
-        });
-      }
-
-      input.addEventListener('input', (e) => {
-        const query = e.target.value.trim().toLowerCase();
-        renderResults(query);
-      });
-
-      function renderResults(query) {
-        activeIndex = -1;
-        if (!query) {
-          resultsContainer.innerHTML = '<div class="spotlight-empty">검색어를 입력하면 목록이 표시됩니다.</div>';
-          return;
-        }
-
-        const filtered = searchData.filter((post) => 
-          post.title.toLowerCase().includes(query) || 
-          post.description.toLowerCase().includes(query) ||
-          post.category.toLowerCase().includes(query)
-        );
-
-        if (filtered.length === 0) {
-          resultsContainer.innerHTML = `<div class="spotlight-empty">"${escapeHtml(query)}"에 대한 검색 결과가 없습니다.</div>`;
-          return;
-        }
-
-        resultsContainer.innerHTML = filtered.map((post) => `
-          <li class="spotlight-item">
-            <a href="/${post.id}/">
-              <div class="spotlight-item-header">
-                <span class="spotlight-item-title">${escapeHtml(post.title)}</span>
-                <div class="spotlight-item-meta">
-                  ${post.category ? `<span class="spotlight-item-category">${escapeHtml(post.category)}</span>` : ''}
-                  <span class="spotlight-item-date">${escapeHtml(post.pubDate)}</span>
-                </div>
-              </div>
-              ${post.description ? `<p class="spotlight-item-desc">${escapeHtml(post.description)}</p>` : ''}
-            </a>
-          </li>
-        `).join('');
-      }
-
-      function escapeHtml(str) {
-        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      }
-    </script>
   </body>
 </html>
