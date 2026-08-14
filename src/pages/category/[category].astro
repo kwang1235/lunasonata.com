@@ -13,15 +13,16 @@ export async function getStaticPaths() {
   });
 
   // 카테고리 목록 추출
-  const uniqueCategories = [
-    ...new Set(
-      allPosts.flatMap((post) => {
-        if (Array.isArray(post.data.categories)) return post.data.categories;
-        if (typeof (post.data as any).category === 'string') return [(post.data as any).category];
-        return [];
-      }).filter(Boolean)
-    ),
-  ];
+  // ✅ 수정 코드
+const uniqueCategories = [
+  ...new Set(
+    allPosts.flatMap((post) => {
+      if (Array.isArray(post.data.categories)) return post.data.categories;
+      if (typeof (post.data as any).category === 'string') return [(post.data as any).category];
+      return [];
+    }).filter(Boolean)
+  ),
+].sort((a, b) => a.localeCompare(b, 'ko'));
 
   return uniqueCategories.map((category) => {
     const filteredPosts = allPosts.filter((post) => {

@@ -16,16 +16,33 @@ const posts = (await getCollection('blog', ({ data }) => {
 );
 
 // 등록된 글들에서 카테고리 목록을 동적으로 추출
-const categories = [...new Set(posts.map((post) => post.data.category).filter(Boolean))];
+// ✅ 수정 코드
+const categories = [
+  ...new Set(
+    posts.flatMap((post) => {
+      if (Array.isArray(post.data.categories)) return post.data.categories;
+      if (typeof (post.data as any).category === 'string') return [(post.data as any).category];
+      return [];
+    }).filter(Boolean)
+  ),
+].sort((a, b) => a.localeCompare(b, 'ko'));
 
 // 검색 모달 데이터 (비공개 글 제외된 posts만 사용)
-const searchData = posts.map((post) => ({
-  id: post.id,
-  title: post.data.title,
-  description: post.data.description || '',
-  category: post.data.category || '',
-  pubDate: post.data.pubDate.toISOString().split('T')[0]
-}));
+// ✅ 수정 코드
+const searchData = posts.map((post) => {
+  const cats = Array.isArray(post.data.categories)
+    ? post.data.categories
+    : typeof (post.data as any).category === 'string'
+    ? [(post.data as any).category]
+    : [];
+  return {
+    id: post.id,
+    title: post.data.title,
+    description: post.data.description || '',
+    category: cats.join(', '),
+    pubDate: post.data.pubDate.toISOString().split('T')[0]
+  };
+});
 ---
 
 <!doctype html>
@@ -496,11 +513,19 @@ const searchData = posts.map((post) => ({
   }
 </div>
                   <div class="post-content">
-                    <div class="post-meta">
-                      {post.data.category && (
-                        <span class="post-category-tag">{post.data.category}</span>
-                      )}
-                      <svg style="width: 14px !important; height: 14px !important; min-width: 14px !important; max-width: 14px !important; stroke: #64748b; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- ✅ 수정 코드 -->
+<div class="post-meta">
+  {
+    (Array.isArray(post.data.categories)
+      ? post.data.categories
+      : typeof (post.data as any).category === 'string'
+      ? [(post.data as any).category]
+      : []
+    ).map((cat: string) => (
+      <span class="post-category-tag">#{cat}</span>
+    ))
+  }
+  <svg style="width: 14px !important; height: 14px !important; min-width: 14px !important; max-width: 14px !important; stroke: #64748b; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                         <line x1="16" y1="2" x2="16" y2="6"></line>
                         <line x1="8" y1="2" x2="8" y2="6"></line>
