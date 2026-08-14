@@ -1249,6 +1249,36 @@ ${bodyContent}`;
         });
       });
 
+      // 📥 .md 파일 다운로드 기능 추가
+const downloadBtn = document.getElementById('download-btn');
+downloadBtn?.addEventListener('click', () => {
+  const slug = slugInput?.value.trim();
+  const title = titleInput?.value.trim();
+  
+  // 파일 이름: 영문 슬러그 우선, 없으면 글 제목, 둘 다 없으면 'post'
+  const fileName = slug || title || 'post';
+  const cleanFileName = fileName.replace(/[\\/*?:"<>|]/g, '');
+  
+  // Frontmatter가 포함된 전체 본문 가져오기
+  const fullPost = generateFrontmatter();
+  
+  // 브라우저에서 가상의 다운로드 링크를 만들어 즉시 내려받기
+  const blob = new Blob([fullPost], { type: 'text/markdown;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  
+  link.href = url;
+  link.setAttribute('download', `${cleanFileName}.md`);
+  document.body.appendChild(link);
+  link.click();
+  
+  // 메모리 정리
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  
+  showToast(`📥 '${cleanFileName}.md' 다운로드가 완료되었습니다!`);
+});
+
       btnOpenGallery?.addEventListener('click', openModal);
       btnCloseGallery?.addEventListener('click', closeModal);
 
