@@ -13,7 +13,15 @@ type Props = CollectionEntry<'blog'>['data'] & {
 };
 
 // 💡 noindex 변수를 가져오고 기본값을 false로 설정
-const { title, description, pubDate, updatedDate, heroImage, noindex = false } = Astro.props;
+// ✅ 수정 코드
+const { title, description, pubDate, updatedDate, heroImage, noindex = false, categories = [], category = '' } = Astro.props;
+
+// 카테고리 목록을 항상 안전한 배열 형태로 정돈
+const postCategories: string[] = Array.isArray(categories) && categories.length > 0
+  ? categories
+  : typeof category === 'string' && category.trim() !== ''
+  ? [category.trim()]
+  : [];
 
 // 1. 직접 넣은 대표 이미지가 있으면 해당 이미지를 쓰고, 없으면 기본 이미지(sekwanglog_card.webp) 적용
 const rawImage = typeof heroImage === 'object' && heroImage !== null && 'src' in heroImage 
@@ -37,30 +45,39 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
 
     <main class="article-container">
       <article>
-        <header 
-  class="post-header" 
-  style={displayHeroImage ? `background-image: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65)), url('${displayHeroImage}');` : ''}
->
-  <div class="post-meta-row">
-    <span class="post-date">
-      <FormattedDate date={pubDate} />
-      {updatedDate && (
-        <span class="last-updated">
-          (수정: <FormattedDate date={updatedDate} />)
-        </span>
-      )}
-    </span>
-    <span class="meta-divider">•</span>
-    <span class="reading-time">
-      <svg class="reading-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <polyline points="12 6 12 12 16 14"></polyline>
-      </svg>
-      <span id="reading-time-text">읽는 중...</span>
-    </span>
-  </div>
-  <h1 class="post-title">{title}</h1>
-</header>
+      <header 
+          class="post-header" 
+          style={displayHeroImage ? `background-image: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65)), url('${displayHeroImage}');` : ''}
+        >
+          {postCategories.length > 0 && (
+            <div class="post-categories-row">
+              {postCategories.map((cat) => (
+                <a href={`/category/${cat}/`} class="post-header-tag">
+                  #{cat}
+                </a>
+              ))}
+            </div>
+          )}
+          <div class="post-meta-row">
+            <span class="post-date">
+              <FormattedDate date={pubDate} />
+              {updatedDate && (
+                <span class="last-updated">
+                  (수정: <FormattedDate date={updatedDate} />)
+                </span>
+              )}
+            </span>
+            <span class="meta-divider">•</span>
+            <span class="reading-time">
+              <svg class="reading-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span id="reading-time-text">읽는 중...</span>
+            </span>
+          </div>
+          <h1 class="post-title">{title}</h1>
+      </header>
 
 
         <!-- 📌 통합 목차 (기본 상단 위치 -> PC 스크롤 시 좌측 플로팅 전환) -->
@@ -181,7 +198,35 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* 은은한 그림자로 가독성 확보 */
       }
 
+      /* ✅ 추가할 CSS 코드 */
+      .post-categories-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.85rem;
+      }
 
+      .post-header-tag {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        color: #ffffff !important;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-decoration: none !important;
+        transition: all 0.2s ease;
+      }
+
+      .post-header-tag:hover {
+        background: rgba(255, 255, 255, 0.35);
+        border-color: rgba(255, 255, 255, 0.6);
+        transform: translateY(-1px);
+      }
 
       .post-meta-row {
         display: inline-flex;
