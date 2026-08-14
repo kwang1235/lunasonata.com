@@ -1795,21 +1795,36 @@ ${bodyContent}`;
             const heroMatch = rawContent.match(/^heroImage:\s*["']?(.*?)["']?$/m);
             if (heroMatch && heroInput) heroInput.value = heroMatch[1];
 
-            // 💡 카테고리 자동 파싱 및 입력창 반영 (categories 및 category 모두 대응)
-            const catsBlockMatch = rawContent.match(/^categories:\s*\n((?:\s*-\s*["']?.*?["']?\n?)+)/m);
-            if (catsBlockMatch && categoryInput) {
-              const matchedItems = catsBlockMatch[1].match(/-\s*["']?(.*?)["']?$/gm);
-              if (matchedItems) {
-                const cats = matchedItems.map(c => c.replace(/^-\s*["']?|["']?$/g, '').trim()).filter(Boolean);
-                categoryInput.value = cats.join(', ');
-              }
+            // ✅ [완벽 보완] 카테고리 자동 채우기 코드
+            // 1) allPostsData 목록 데이터에서 먼저 카테고리 가져오기
+            const currentPostMeta = allPostsData.find(p => p.filename === identifier || p.slug === identifier || p.title === identifier);
+            let loadedCategories: string[] = [];
+
+            if (currentPostMeta && Array.isArray(currentPostMeta.categories) && currentPostMeta.categories.length > 0) {
+              loadedCategories = currentPostMeta.categories;
             } else {
-              const singleCatMatch = rawContent.match(/^category:\s*["']?(.*?)["']?$/m);
-              if (singleCatMatch && categoryInput) {
-                categoryInput.value = singleCatMatch[1].trim();
-              } else if (categoryInput) {
-                categoryInput.value = '';
+              // 2) 파일 원문에서 모든 형태(줄바꿈 \r\n, 인라인 배열, 단수형) 파싱
+              const inlineCatMatch = rawContent.match(/^categories:\s*\[(.*?)\]/m);
+              if (inlineCatMatch) {
+                loadedCategories = inlineCatMatch[1].split(',').map(c => c.replace(/["'\s]/g, '')).filter(Boolean);
+              } else {
+                const multiCatMatch = rawContent.match(/^categories:\s*\r?\n((?:[ \t]*-[ \t]*[^\r\n]+\r?\n?)+)/m);
+                if (multiCatMatch) {
+                  const items = multiCatMatch[1].match(/-[ \t]*["']?(.*?)["']?$/gm);
+                  if (items) {
+                    loadedCategories = items.map(c => c.replace(/^-[ \t]*["']?|["']?$/g, '').trim()).filter(Boolean);
+                  }
+                } else {
+                  const singleCatMatch = rawContent.match(/^category:\s*["']?(.*?)["']?$/m);
+                  if (singleCatMatch && singleCatMatch[1].trim()) {
+                    loadedCategories = singleCatMatch[1].split(',').map(c => c.trim()).filter(Boolean);
+                  }
+                }
               }
+            }
+
+            if (categoryInput) {
+              categoryInput.value = loadedCategories.join(', ');
             }
 
             const pubDateMatch = rawContent.match(/^pubDate:\s*["']?(.*?)["']?$/m);
