@@ -804,7 +804,7 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         }
       });
 
-      // 3. 본문 이미지 돋보기 힌트 레이어 동적 생성
+      // 3. 본문 이미지 돋보기 힌트 레이어 동적 생성 (p 태그 중첩 해결)
       document.addEventListener('DOMContentLoaded', () => {
         const proseImages = document.querySelectorAll<HTMLImageElement>('.prose img:not(.no-hover-wrap)');
         
@@ -813,8 +813,6 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
           if (parent && !parent.classList.contains('image-hover-wrapper')) {
             const wrapper = document.createElement('div');
             wrapper.className = 'image-hover-wrapper';
-            parent.insertBefore(wrapper, img);
-            wrapper.appendChild(img);
 
             const overlay = document.createElement('div');
             overlay.className = 'zoom-hint-overlay';
@@ -827,7 +825,17 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
               </svg>
               <span>클릭하여 확대</span>
             `;
-            wrapper.appendChild(overlay);
+
+            // 💡 부모가 <p> 태그이고 이미지만 감싸고 있다면 <p> 자체를 <div class="image-hover-wrapper">로 교체
+            if (parent.tagName === 'P' && parent.children.length === 1 && parent.textContent?.trim() === '') {
+              wrapper.appendChild(img);
+              wrapper.appendChild(overlay);
+              parent.replaceWith(wrapper);
+            } else {
+              parent.insertBefore(wrapper, img);
+              wrapper.appendChild(img);
+              wrapper.appendChild(overlay);
+            }
           }
         });
       });
