@@ -1166,30 +1166,33 @@ import BaseHead from '../components/BaseHead.astro';
 
       async function deleteFilesApi(files: string[]) {
         try {
-          const res = await fetch('https://api.lunasonata.com/api/delete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              password: '88gustprhkd!',
-              files: files
-            })
-          });
+    // 세션 저장소 또는 사용자 인증 값에서 비밀번호 참조
+        const savedPassword = sessionStorage.getItem('admin_password') || '';
 
-          const data = await res.json();
+        const res = await fetch('https://api.lunasonata.com/api/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            password: savedPassword,
+            files: files
+      })
+    });
 
-          if (res.ok && data.success) {
+        const data = await res.json();
+
+        if (res.ok && data.success) {
             showToast(`🗑️ ${data.message || files.length + '개 파일 삭제 완료!'}`);
             selectedRelPaths.clear();
             updateDeleteSelectedButton();
             fetchGalleryData();
-          } else {
+      } else {
             alert(`삭제 실패: ${data.message || data.error || '비밀번호를 확인해 주세요.'}`);
           }
-        } catch (e) {
+    } catch (e) {
           console.error('삭제 API 요청 에러:', e);
           alert('삭제 요청 중 서버 연결 실패');
-        }
-      }
+    }
+}
 
       titleInput?.addEventListener('input', updatePreview);
 
@@ -1452,16 +1455,17 @@ btnPublishWeb?.addEventListener('click', async () => {
         showToast('📡 NAS 서버로 글을 전송 중입니다...');
 
         try {
-          const res = await fetch('https://api.lunasonata.com/api/save-post', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              password: '88gustprhkd!',
-              title: title,
-              slug: slug,
-              content: fullContent
-            })
-          });
+          const savedPassword = sessionStorage.getItem('admin_password') || '';
+
+const res = await fetch('https://api.lunasonata.com/api/save-post', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    password: savedPassword,
+    slug: slug,
+    content: fullContent
+  })
+});
 
           const data = await res.json();
 
@@ -1732,11 +1736,12 @@ btnPublishWeb?.addEventListener('click', async () => {
           const result = await res.json();
 
           if (result.success) {
-            sessionStorage.setItem('admin_authenticated', 'true');
-            if (authOverlay) authOverlay.style.display = 'none';
-            if (authErrorMsg) authErrorMsg.style.display = 'none';
-            showToast('🔓 관리자 인증 성공!');
-          } else {
+  sessionStorage.setItem('admin_authenticated', 'true');
+  sessionStorage.setItem('admin_password', password); // 👈 비밀번호 세션 저장 추가
+  if (authOverlay) authOverlay.style.display = 'none';
+  if (authErrorMsg) authErrorMsg.style.display = 'none';
+  showToast('🔓 관리자 인증 성공!');
+} else {
             showAuthError('❌ 비밀번호가 올바르지 않습니다.');
           }
         } catch (err) {
