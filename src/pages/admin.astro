@@ -1639,12 +1639,23 @@ ${bodyContent}`;
         }
       });
 
-      lbCopyUrl?.addEventListener('click', () => {
-        const item = currentFilteredItems[currentLbIndex];
-        if (item) {
-          navigator.clipboard.writeText(item.url).then(() => {
-            showToast(`🔗 URL 복사 완료!`);
-          });
+      // ✅ 수정 코드
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (lbModal && lbModal.style.display === 'flex') {
+            closeLightbox();
+          } else if (modal && modal.style.display === 'flex') {
+            closeModal();
+          } else if (postsModal && postsModal.style.display === 'flex') {
+            closePostsModal();
+          } else if (draftsModal && draftsModal.style.display === 'flex') {
+            draftsModal.style.display = 'none';
+          } else if (deleteModal && deleteModal.style.display === 'flex') {
+            closeDeleteModal();
+          }
+        } else if (lbModal && lbModal.style.display === 'flex') {
+          if (e.key === 'ArrowLeft') navigateLightbox(-1);
+          else if (e.key === 'ArrowRight') navigateLightbox(1);
         }
       });
 
