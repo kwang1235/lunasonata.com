@@ -1,4 +1,5 @@
 ---
+// src/pages/index.astro
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -10,7 +11,10 @@ import '../styles/global.css';
 
 const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/*.{jpeg,jpg,png,gif,webp}');
 
-const posts = (await getCollection('blog')).sort(
+// 💡 draft(비공개 글) 완벽 제외 필터링 적용 (/blog 목록과 100% 일치)
+const posts = (await getCollection('blog', ({ data }) => {
+  return data.draft !== true && String(data.draft).toLowerCase() !== 'true';
+})).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
@@ -81,7 +85,7 @@ const processedRecentPosts = await Promise.all(
           </p>
           {featuredPost && (
             <div class="featured-wrapper fade-in delay-1">
-              <a href={`/${featuredPost.id}/`} class="main-featured-card">
+              <a href={`/${featuredPost.data.slug || featuredPost.id}/`} class="main-featured-card">
                 <div class="featured-bg" style={`background-image: url('${featuredBgUrl}');`}></div>
                 <div class="featured-overlay"></div>
                 <div class="featured-content">
@@ -105,7 +109,7 @@ const processedRecentPosts = await Promise.all(
           <div class="recent-grid">
             {processedRecentPosts.map((post, index) => (
               <article class={`recent-card-blur fade-in delay-${index + 1}`}>
-                <a href={`/${post.id}/`}>
+                <a href={`/${post.data.slug || post.id}/`}>
                   {/* 흐릿한 배경 이미지 레이어 */}
                   <div 
                     class="card-bg" 
