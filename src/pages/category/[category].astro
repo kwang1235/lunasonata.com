@@ -1,0 +1,184 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+
+export async function getStaticPaths() {
+  // 💡 draft: true (비공개 글)는 목록 페이지 생성 대상에서 완벽 제외
+  const allPosts = await getCollection('blog', ({ data }) => {
+    return data.draft !== true && String(data.draft).toLowerCase() !== 'true';
+  });
+
+  // 카테고리 목록 추출
+  const uniqueCategories = [
+    ...new Set(
+      allPosts.flatMap((post) => {
+        if (Array.isArray(post.data.categories)) return post.data.categories;
+        if (typeof (post.data as any).category === 'string') return [(post.data as any).category];
+        return [];
+      }).filter(Boolean)
+    ),
+  ];
+
+  return uniqueCategories.map((category) => {
+    const filteredPosts = allPosts.filter((post) => {
+      const cats = Array.isArray(post.data.categories)
+        ? post.data.categories
+        : typeof (post.data as any).category === 'string'
+        ? [(post.data as any).category]
+        : [];
+      return cats.includes(category);
+    }).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+    return {
+      params: { category },
+      props: { category, posts: filteredPosts, allCategories: uniqueCategories },
+    };
+  });
+}
+
+const { category, posts, allCategories } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <BaseHead title={`#${category} | ${SITE_TITLE}`} description={`${category} 관련 글 목록입니다.`} />
+    <style>
+      main {
+        width: 880px;
+        max-width: calc(100% - 2em);
+        margin: 0 auto;
+        padding: 3em 1em;
+      }
+      .blog-header {
+        margin-bottom: 2.5rem;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 1.25rem;
+      }
+      .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0 0 1.25rem 0;
+        letter-spacing: -0.02em;
+      }
+      .category-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .category-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: #64748b;
+        background-color: #f1f5f9;
+        transition: all 0.2s ease;
+      }
+      .category-btn:hover {
+        background-color: #e2e8f0;
+        color: #0f172a;
+      }
+      .category-btn.active {
+        background-color: #1e293b;
+        color: #ffffff;
+      }
+      .post-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      .post-item a {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 1.5rem !important;
+        text-decoration: none !important;
+        padding: 1.25rem !important;
+        border-radius: 16px !important;
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s ease-in-out !important;
+      }
+      .post-item a:hover {
+        background-color: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08) !important;
+      }
+      .post-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        min-width: 0;
+      }
+      .post-title {
+        font-size: 1.25rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+      }
+      .post-description {
+        font-size: 0.925rem;
+        color: #475569;
+        margin: 0 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <div class="blog-header">
+        <h1 class="page-title">#{category} 글 목록</h1>
+        <nav class="category-nav">
+          <a href="/blog/" class="category-btn">전체</a>
+          {
+            allCategories.map((cat) => (
+              <a
+                href={`/category/${cat}/`}
+                class={`category-btn ${cat === category ? 'active' : ''}`}
+              >
+                #{cat}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+
+      <section>
+        <ul class="post-list">
+          {
+            posts.map((post) => (
+              <li class="post-item">
+                <a href={`/${post.data.slug || post.id}/`}>
+                  <div class="post-content">
+                    <h2 class="post-title">{post.data.title}</h2>
+                    {post.data.description && (
+                      <p class="post-description">{post.data.description}</p>
+                    )}
+                  </div>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

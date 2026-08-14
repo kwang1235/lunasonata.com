@@ -7,15 +7,18 @@ import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { SITE_TITLE, SITE_URL, DEFAULT_OG_IMAGE } from '../consts';
 import { Font } from 'astro:assets';
 
+// 💡 noindex 속성을 받을 수 있도록 타입 정의 추가
 interface Props {
   title: string;
   description: string;
   image?: ImageMetadata | string;
+  noindex?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || SITE_URL);
 
-const { title, description, image = DEFAULT_OG_IMAGE } = Astro.props;
+// 💡 noindex 변수를 가져오고 기본값을 false로 설정
+const { title, description, image = DEFAULT_OG_IMAGE, noindex = false } = Astro.props;
 
 // 이미지 경로 가공 (절대 경로 URL 및 상대 경로 대응)
 let imageURL: URL;
@@ -63,6 +66,8 @@ if (typeof image === 'string') {
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 
 <!-- LCP 성능 최적화: 대표 이미지를 1순위로 즉시 로딩 -->
 <link rel="preload" as="image" href={imageURL} />

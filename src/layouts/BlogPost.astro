@@ -7,9 +7,13 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_TITLE, DEFAULT_OG_IMAGE } from '../consts';
 
-type Props = CollectionEntry<'blog'>['data'];
+// 💡 noindex 속성을 받을 수 있도록 타입 정의 추가
+type Props = CollectionEntry<'blog'>['data'] & {
+  noindex?: boolean;
+};
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+// 💡 noindex 변수를 가져오고 기본값을 false로 설정
+const { title, description, pubDate, updatedDate, heroImage, noindex = false } = Astro.props;
 
 // 1. 직접 넣은 대표 이미지가 있으면 해당 이미지를 쓰고, 없으면 기본 이미지(sekwanglog_card.webp) 적용
 const rawImage = typeof heroImage === 'object' && heroImage !== null && 'src' in heroImage 
@@ -22,7 +26,7 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
 <html lang="ko">
   <head>
     <!-- 글 개별 대표 이미지(또는 기본 대체 이미지)를 메타태그 및 OG 카드에 전달 -->
-    <BaseHead title={title} description={description} image={displayHeroImage} />
+    <BaseHead title={title} description={description} image={displayHeroImage} noindex={noindex} />
   </head>
 
   <body>

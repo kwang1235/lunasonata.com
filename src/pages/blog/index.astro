@@ -7,14 +7,17 @@ import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION, DEFAULT_OG_IMAGE } from '../../consts';
 
-const posts = (await getCollection('blog')).sort(
+// 💡 draft: true (비공개 글) 완벽 제외 필터링 적용
+const posts = (await getCollection('blog', ({ data }) => {
+  return data.draft !== true && String(data.draft).toLowerCase() !== 'true';
+})).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
 // 등록된 글들에서 카테고리 목록을 동적으로 추출
 const categories = [...new Set(posts.map((post) => post.data.category).filter(Boolean))];
 
-// 검색 모달 데이터
+// 검색 모달 데이터 (비공개 글 제외된 posts만 사용)
 const searchData = posts.map((post) => ({
   id: post.id,
   title: post.data.title,
