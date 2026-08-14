@@ -17,10 +17,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || SITE_URL);
 
 const { title, description, image = DEFAULT_OG_IMAGE } = Astro.props;
 
-// 이미지 경로 가공 (Astro ImageMetadata 또는 문자열 경로 대응)
-const imageURL = typeof image === 'string'
-  ? new URL(image, Astro.site || SITE_URL)
-  : new URL(image.src, Astro.site || SITE_URL);
+// 이미지 경로 가공 (절대 경로 URL 및 상대 경로 대응)
+let imageURL: URL;
+
+if (typeof image === 'string') {
+  if (image.startsWith('http://') || image.startsWith('https://')) {
+    imageURL = new URL(image);
+  } else {
+    imageURL = new URL(image, Astro.site || SITE_URL);
+  }
+} else {
+  imageURL = new URL(image.src, Astro.site || SITE_URL);
+}
 ---
 
 <!-- 브라우저 캐싱 힌트 및 리소스 도메인 사전 연결 -->
