@@ -71,25 +71,34 @@ const { category, posts, allCategories } = Astro.props;
     margin: 0 0 1.25rem 0;
     letter-spacing: -0.02em;
   }
-  .category-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-  .category-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.4rem 0.9rem;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-decoration: none;
-    color: #64748b;
-    background-color: #f1f5f9;
-    transition: all 0.2s ease;
-  }
+  /* ✅ 수정 코드 */
+      .category-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        overflow-x: auto;
+        padding-bottom: 0.4rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .category-nav::-webkit-scrollbar {
+        display: none;
+      }
+      .category-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: #64748b;
+        background-color: #f1f5f9;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+      }
   .category-btn:hover {
     background-color: #e2e8f0;
     color: #0f172a;

@@ -67,11 +67,18 @@ const categories = [
       }
 
       /* 카테고리 내비게이션 */
+      /* ✅ 수정 코드 */
       .category-nav {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        flex-wrap: wrap;
+        overflow-x: auto;
+        padding-bottom: 0.4rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .category-nav::-webkit-scrollbar {
+        display: none;
       }
       .category-btn {
         display: inline-flex;
@@ -84,6 +91,8 @@ const categories = [
         text-decoration: none;
         color: #64748b;
         background-color: #f1f5f9;
+        white-space: nowrap;
+        flex-shrink: 0;
         transition: all 0.2s ease;
       }
       .category-btn:hover {
