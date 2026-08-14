@@ -1855,6 +1855,7 @@ ${bodyContent}`;
         if (e.target === deleteModal) closeDeleteModal();
       });
 
+      // ✅ 수정 코드
       function renderPostsList() {
         if (!postsContainer) return;
         const query = postsSearch?.value.toLowerCase().trim() || '';
@@ -1882,14 +1883,23 @@ ${bodyContent}`;
           `;
 
           const targetName = post.filename || post.title || post.slug;
+          
+          // 💡 상태별 뱃지 생성 (발행됨 vs 비공개 Draft)
+          const statusBadge = post.draft
+            ? `<span style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.25rem;">🔒 비공개 (Draft)</span>`
+            : `<span style="background: rgba(2, 132, 199, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.25rem;">🚀 발행됨 (Public)</span>`;
+
           item.innerHTML = `
-            <div>
-              <div style="font-weight: 700; color: #f8fafc; font-size: 1rem; margin-bottom: 0.25rem;">${post.title}</div>
+            <div style="flex: 1; min-width: 0; padding-right: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                <span style="font-weight: 700; color: #f8fafc; font-size: 1rem;">${post.title}</span>
+                ${statusBadge}
+              </div>
               <div style="font-size: 0.8rem; color: var(--text-muted);">
                 <span style="color: var(--primary-color);">slug: ${post.slug}</span> | 작성일: ${post.pubDate || '날짜 없음'}
               </div>
             </div>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0;">
               <button type="button" class="tool-btn highlight btn-load-post" style="font-size:0.8rem; padding: 0.4rem 0.8rem;">
                 ✏️ 수정
               </button>
