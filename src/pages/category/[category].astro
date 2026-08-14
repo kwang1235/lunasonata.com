@@ -50,12 +50,15 @@ const { category, posts, allCategories } = Astro.props;
   <head>
     <BaseHead title={`#${category} | ${SITE_TITLE}`} description={`${category} 관련 글 목록입니다.`} />
     <style>
-  main {
-    width: 880px;
-    max-width: calc(100% - 2em);
-    margin: 0 auto;
-    padding: 3em 1em;
-  }
+  /* ✅ 수정 코드 */
+      main {
+        width: 880px;
+        max-width: calc(100% - 2em);
+        margin: 0 auto;
+        padding: 3em 1em;
+        min-height: calc(100vh - 350px);
+      }
+      
   .blog-header {
     margin-bottom: 2.5rem;
     border-bottom: 2px solid #e2e8f0;
