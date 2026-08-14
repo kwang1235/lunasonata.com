@@ -1457,12 +1457,14 @@ btnPublishWeb?.addEventListener('click', async () => {
         try {
           const savedPassword = sessionStorage.getItem('admin_password') || '';
 
+// admin.astro 내 btnPublishWeb 클릭 이벤트 내부 fetch 요청 부분
 const res = await fetch('https://api.lunasonata.com/api/save-post', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
     password: savedPassword,
-    slug: slug,
+    title: title, // 👈 글 제목(한글 파일명이 됨)
+    slug: slug,   // 👈 영문 슬러그(URL 주소가 됨)
     content: fullContent
   })
 });
@@ -1522,43 +1524,48 @@ const res = await fetch('https://api.lunasonata.com/api/save-post', {
         }
       }
 
-      async function loadPostContent(slug: string) {
-        try {
-          const res = await fetch(`${API_BASE_URL}/api/get-post?slug=${encodeURIComponent(slug)}`);
-          const result = await res.json();
+      // admin.astro 내 loadPostContent 함수 수정
+async function loadPostContent(identifier: string) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/get-post?slug=${encodeURIComponent(identifier)}`);
+    const result = await res.json();
 
-          if (result.success) {
-            const rawContent = result.content;
+    if (result.success) {
+      const rawContent = result.content;
 
-            if (slugInput) slugInput.value = result.slug;
-
-            const titleMatch = rawContent.match(/^title:\s*["']?(.*?)["']?$/m);
-            if (titleMatch && titleInput) titleInput.value = titleMatch[1];
-
-            const descMatch = rawContent.match(/^description:\s*["']?(.*?)["']?$/m);
-            if (descMatch && descInput) descInput.value = descMatch[1];
-
-            const heroMatch = rawContent.match(/^heroImage:\s*["']?(.*?)["']?$/m);
-            if (heroMatch && heroInput) heroInput.value = heroMatch[1];
-
-            const pubDateMatch = rawContent.match(/^pubDate:\s*["']?(.*?)["']?$/m);
-            currentPubDate = pubDateMatch ? pubDateMatch[1].trim() : '';
-
-            const bodyContent = rawContent.replace(/^---[\s\S]*?---\s*/, '');
-            
-            setEditorValue(bodyContent);
-
-            updatePreview();
-            closePostsModal();
-            showToast(`✅ '${result.slug}' 글을 성공적으로 불러왔습니다!`);
-          } else {
-            alert(`❌ 글을 불러오지 못했습니다: ${result.message}`);
-          }
-        } catch (err) {
-          console.error('글 내용 로드 오류:', err);
-          alert('❌ 서버 통신 중 오류가 발생했습니다.');
-        }
+      // slug 파싱
+      const slugMatch = rawContent.match(/^slug:\s*["']?(.*?)["']?$/m);
+      if (slugInput) {
+        slugInput.value = slugMatch ? slugMatch[1].trim() : result.slug;
       }
+
+      const titleMatch = rawContent.match(/^title:\s*["']?(.*?)["']?$/m);
+      if (titleMatch && titleInput) titleInput.value = titleMatch[1];
+
+      const descMatch = rawContent.match(/^description:\s*["']?(.*?)["']?$/m);
+      if (descMatch && descInput) descInput.value = descMatch[1];
+
+      const heroMatch = rawContent.match(/^heroImage:\s*["']?(.*?)["']?$/m);
+      if (heroMatch && heroInput) heroInput.value = heroMatch[1];
+
+      const pubDateMatch = rawContent.match(/^pubDate:\s*["']?(.*?)["']?$/m);
+      currentPubDate = pubDateMatch ? pubDateMatch[1].trim() : '';
+
+      const bodyContent = rawContent.replace(/^---[\s\S]*?---\s*/, '');
+      
+      setEditorValue(bodyContent);
+
+      updatePreview();
+      closePostsModal();
+      showToast(`✅ '${identifier}' 글을 성공적으로 불러왔습니다!`);
+    } else {
+      alert(`❌ 글을 불러오지 못했습니다: ${result.message}`);
+    }
+  } catch (err) {
+    console.error('글 내용 로드 오류:', err);
+    alert('❌ 서버 통신 중 오류가 발생했습니다.');
+  }
+}
 
      // 삭제 모달 관련 요소 참조
       const deleteModal = document.getElementById('delete-confirm-modal');
@@ -1626,7 +1633,8 @@ const res = await fetch('https://api.lunasonata.com/api/save-post', {
         if (e.target === deleteModal) closeDeleteModal();
       });
 
-      function renderPostsList() {
+      // admin.astro 내 renderPostsList 함수 수정
+function renderPostsList() {
         if (!postsContainer) return;
 
         const query = postsSearch?.value.toLowerCase().trim() || '';
@@ -1655,6 +1663,9 @@ const res = await fetch('https://api.lunasonata.com/api/save-post', {
             transition: all 0.2s ease;
           `;
 
+          // 💡 실제 저장된 한글 파일명을 삭제/불러오기 대상으로 지정
+          const targetName = post.filename || post.title || post.slug;
+
           item.innerHTML = `
             <div>
               <div style="font-weight: 700; color: #f8fafc; font-size: 1rem; margin-bottom: 0.25rem;">${post.title}</div>
@@ -1675,13 +1686,13 @@ const res = await fetch('https://api.lunasonata.com/api/save-post', {
           const btnLoad = item.querySelector('.btn-load-post');
           btnLoad?.addEventListener('click', (e) => {
             e.stopPropagation();
-            loadPostContent(post.slug);
+            loadPostContent(targetName); // 👈 한글 이름 전달
           });
 
           const btnDelete = item.querySelector('.btn-delete-post');
           btnDelete?.addEventListener('click', (e) => {
             e.stopPropagation();
-            deletePostContent(post.slug);
+            deletePostContent(targetName); // 👈 한글 이름 전달
           });
 
           item.addEventListener('mouseenter', () => {
