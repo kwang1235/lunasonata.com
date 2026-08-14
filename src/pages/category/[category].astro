@@ -4,7 +4,8 @@ import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+// ✅ 수정 코드
+import { SITE_TITLE, SITE_DESCRIPTION, DEFAULT_OG_IMAGE } from '../../consts';
 
 export async function getStaticPaths() {
   // 💡 draft: true (비공개 글)는 목록 페이지 생성 대상에서 완벽 제외
@@ -49,97 +50,165 @@ const { category, posts, allCategories } = Astro.props;
   <head>
     <BaseHead title={`#${category} | ${SITE_TITLE}`} description={`${category} 관련 글 목록입니다.`} />
     <style>
-      main {
-        width: 880px;
-        max-width: calc(100% - 2em);
-        margin: 0 auto;
-        padding: 3em 1em;
-      }
-      .blog-header {
-        margin-bottom: 2.5rem;
-        border-bottom: 2px solid #e2e8f0;
-        padding-bottom: 1.25rem;
-      }
-      .page-title {
-        font-size: 2rem;
-        font-weight: 800;
-        color: #1e293b;
-        margin: 0 0 1.25rem 0;
-        letter-spacing: -0.02em;
-      }
-      .category-nav {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-      }
-      .category-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        padding: 0.4rem 0.9rem;
-        border-radius: 20px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        text-decoration: none;
-        color: #64748b;
-        background-color: #f1f5f9;
-        transition: all 0.2s ease;
-      }
-      .category-btn:hover {
-        background-color: #e2e8f0;
-        color: #0f172a;
-      }
-      .category-btn.active {
-        background-color: #1e293b;
-        color: #ffffff;
-      }
-      .post-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1.25rem;
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-      }
-      .post-item a {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 1.5rem !important;
-        text-decoration: none !important;
-        padding: 1.25rem !important;
-        border-radius: 16px !important;
-        background-color: #ffffff !important;
-        border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-        transition: all 0.2s ease-in-out !important;
-      }
-      .post-item a:hover {
-        background-color: #f8fafc !important;
-        border-color: #cbd5e1 !important;
-        transform: translateY(-2px) !important;
-        box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08) !important;
-      }
-      .post-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-        min-width: 0;
-      }
-      .post-title {
-        font-size: 1.25rem !important;
-        font-weight: 700 !important;
-        color: #0f172a !important;
-        margin: 0 !important;
-      }
-      .post-description {
-        font-size: 0.925rem;
-        color: #475569;
-        margin: 0 !important;
-      }
-    </style>
+  main {
+    width: 880px;
+    max-width: calc(100% - 2em);
+    margin: 0 auto;
+    padding: 3em 1em;
+  }
+  .blog-header {
+    margin-bottom: 2.5rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 1.25rem;
+  }
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 1.25rem 0;
+    letter-spacing: -0.02em;
+  }
+  .category-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .category-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #64748b;
+    background-color: #f1f5f9;
+    transition: all 0.2s ease;
+  }
+  .category-btn:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
+  }
+  .category-btn.active {
+    background-color: #1e293b;
+    color: #ffffff;
+  }
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  .post-item a {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    text-decoration: none !important;
+    padding: 1.25rem !important;
+    border-radius: 16px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.2s ease-in-out !important;
+  }
+  .post-item a:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08) !important;
+  }
+  .thumbnail-wrapper {
+    flex-shrink: 0;
+    width: 200px;
+    height: 125px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f1f5f9;
+  }
+  .thumbnail-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .post-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #64748b;
+  }
+  .post-category-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #2563eb;
+    background-color: #eff6ff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+  }
+  :global(.post-item h2),
+  .post-title {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-left: none !important;
+    background: transparent !important;
+    line-height: 1.4 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  :global(.post-item h2::before),
+  :global(.post-item h2::after),
+  .post-title::before,
+  .post-title::after {
+    content: none !important;
+    display: none !important;
+    border: none !important;
+  }
+  .post-item a:hover :global(.post-title),
+  .post-item a:hover .post-title {
+    color: var(--accent-color, #2563eb) !important;
+  }
+  .post-description {
+    font-size: 0.925rem;
+    color: #475569;
+    margin: 0 !important;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  @media (max-width: 640px) {
+    .post-item a {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+    .thumbnail-wrapper {
+      width: 100%;
+      height: 180px;
+    }
+    .post-title {
+      white-space: normal !important;
+    }
+  }
+</style>
   </head>
   <body>
     <Header />
@@ -161,13 +230,39 @@ const { category, posts, allCategories } = Astro.props;
         </nav>
       </div>
 
+      <!-- ✅ 수정 코드 -->
       <section>
         <ul class="post-list">
           {
             posts.map((post) => (
               <li class="post-item">
                 <a href={`/${post.data.slug || post.id}/`}>
+                  <div class="thumbnail-wrapper">
+                    <img 
+                      src={post.data.heroImage || DEFAULT_OG_IMAGE} 
+                      alt={post.data.title} 
+                    />
+                  </div>
                   <div class="post-content">
+                    <div class="post-meta">
+                      {
+                        (Array.isArray(post.data.categories)
+                          ? post.data.categories
+                          : typeof (post.data as any).category === 'string'
+                          ? [(post.data as any).category]
+                          : []
+                        ).map((cat: string) => (
+                          <span class="post-category-tag">#{cat}</span>
+                        ))
+                      }
+                      <svg style="width: 14px !important; height: 14px !important; min-width: 14px !important; max-width: 14px !important; stroke: #64748b; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                      </svg>
+                      <FormattedDate date={post.data.pubDate} />
+                    </div>
                     <h2 class="post-title">{post.data.title}</h2>
                     {post.data.description && (
                       <p class="post-description">{post.data.description}</p>
