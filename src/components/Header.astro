@@ -1,25 +1,41 @@
 ---
 // src/components/Header.astro
+// ✅ 수정 코드
 import { getCollection } from 'astro:content';
 
-// 1. Content Collection에서 글 데이터 가져오기
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+// 1. Content Collection에서 비공개(draft) 글 제외하고 가져오기
+const posts = (
+  await getCollection('blog', ({ data }) => {
+    return data.draft !== true && String(data.draft).toLowerCase() !== 'true';
+  })
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-// 카테고리 목록 추출
+// 2. 카테고리 목록 추출 (배열/문자열 모두 지원 및 가나다순 정렬)
 const allCategories = [
-  ...new Set(posts.map((post) => post.data.category).filter(Boolean))
-];
+  ...new Set(
+    posts.flatMap((post) => {
+      if (Array.isArray(post.data.categories)) return post.data.categories;
+      if (typeof (post.data as any).category === 'string') return [(post.data as any).category];
+      return [];
+    }).filter(Boolean)
+  ),
+].sort((a, b) => a.localeCompare(b, 'ko'));
 
-// 검색용 데이터 구조화
-const searchData = posts.map((post) => ({
-  id: post.id,
-  title: post.data.title,
-  description: post.data.description || '',
-  category: post.data.category || '',
-  pubDate: post.data.pubDate.toISOString().split('T')[0]
-}));
+// 3. 검색용 데이터 구조화
+const searchData = posts.map((post) => {
+  const cats = Array.isArray(post.data.categories)
+    ? post.data.categories
+    : typeof (post.data as any).category === 'string'
+    ? [(post.data as any).category]
+    : [];
+  return {
+    id: post.data.slug || post.id,
+    title: post.data.title,
+    description: post.data.description || '',
+    category: cats.join(', '),
+    pubDate: post.data.pubDate.toISOString().split('T')[0]
+  };
+});
 ---
 
 <header class="site-header">
@@ -29,16 +45,17 @@ const searchData = posts.map((post) => ({
       세광로그
     </a>
 
+   <!-- ✅ 완벽하게 수정된 PC 네비게이션 코드 -->
     <!-- PC 네비게이션 -->
     <nav class="desktop-nav">
       <div class="nav-item dropdown">
         <button class="dropdown-btn">블로그 <span class="arrow">▾</span></button>
         <div class="dropdown-menu">
-          <a href="/blog">전체글</a>
+          <a href="/blog/">전체글</a>
           <div class="category-subheader">카테고리</div>
           {allCategories.length > 0 ? (
             allCategories.map((category) => (
-              <a href={`/category/${category}`} class="category-item">
+              <a href={`/category/${category}/`} class="category-item">
                 - {category}
               </a>
             ))
@@ -83,14 +100,14 @@ const searchData = posts.map((post) => ({
     <div class="sheet-handle"></div>
   </div>
   <div class="sheet-content">
-    <a href="/blog" class="mobile-link">전체글</a>
+    <a href="/blog/" class="mobile-link">전체글</a>
     
     <div class="mobile-category-group">
       <span class="mobile-category-title">카테고리</span>
       <div class="mobile-category-chips">
         {allCategories.length > 0 ? (
           allCategories.map((category) => (
-            <a href={`/category/${category}`} class="category-chip">
+            <a href={`/category/${category}/`} class="category-chip">
               #{category}
             </a>
           ))
