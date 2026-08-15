@@ -1,0 +1,236 @@
+---
+// src/components/LikeShare.astro
+interface Props {
+  title?: string;
+}
+
+const { title = '' } = Astro.props;
+---
+
+<div class="interaction-container">
+  <!-- 1. 좋아요 버튼 -->
+  <button id="like-btn" class="action-btn like-btn" aria-label="좋아요">
+    <svg id="like-icon" class="action-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+    </svg>
+    <span class="btn-text">좋아요</span>
+    <span id="like-count" class="like-count">0</span>
+  </button>
+
+  <!-- 2. 공유하기 버튼 -->
+  <button id="share-btn" class="action-btn share-btn" aria-label="글 공유하기" data-title={title}>
+    <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="18" cy="5" r="3"></circle>
+      <circle cx="6" cy="12" r="3"></circle>
+      <circle cx="18" cy="19" r="3"></circle>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+    </svg>
+    <span class="btn-text">공유하기</span>
+  </button>
+
+  <!-- 링크 복사 안내 토스트 팝업 -->
+  <div id="toast-message" class="toast-message">링크가 클립보드에 복사되었습니다! 🎉</div>
+</div>
+
+<style>
+  .interaction-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 3.5rem 0 2rem 0;
+    padding-top: 2rem;
+    border-top: 1px dashed rgba(92, 98, 85, 0.2);
+    position: relative;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--bg-card, #ffffff);
+    color: var(--heading-color, #1e293b);
+    border: 1.5px solid rgba(92, 98, 85, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+  }
+
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border-color: var(--accent-color, #5c6255);
+  }
+
+  .action-btn:active {
+    transform: scale(0.96);
+  }
+
+  /* 좋아요 활성화 스타일 */
+  .like-btn.liked {
+    background-color: #ffe4e6;
+    border-color: #fb7185;
+    color: #e11d48;
+  }
+
+  .like-btn.liked svg {
+    fill: #e11d48;
+    stroke: #e11d48;
+    animation: heartPop 0.35s ease;
+  }
+
+  .like-count {
+    background: rgba(92, 98, 85, 0.1);
+    padding: 0.15rem 0.55rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .like-btn.liked .like-count {
+    background: rgba(225, 29, 72, 0.15);
+    color: #e11d48;
+  }
+
+  /* 공유 버튼 */
+  .share-btn:hover {
+    background-color: #f8fafc;
+    color: var(--accent-color, #5c6255);
+  }
+
+  /* 토스트 알림 */
+  .toast-message {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    z-index: 10;
+  }
+
+  .toast-message.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @keyframes heartPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+</style>
+
+<script>
+  function initLikeShare() {
+    // 💡 로컬/실서버 구분 없이 항상 NAS의 Flask 백엔드 도메인으로 통신
+    const API_BASE = 'https://image.lunasonata.com';
+    
+    // 1) 글 고유 ID(slug) 추출
+    const rawPath = window.location.pathname;
+    const cleanPath = decodeURIComponent(rawPath).replace(/\/+$/, '');
+    const pathParts = cleanPath.split('/').filter(Boolean);
+    const postSlug = pathParts[pathParts.length - 1] || 'default';
+
+    const likeBtn = document.getElementById('like-btn');
+    const likeCountSpan = document.getElementById('like-count');
+    const shareBtn = document.getElementById('share-btn');
+    const toast = document.getElementById('toast-message');
+
+    if (!likeBtn || !likeCountSpan) return;
+
+    const storageKey = `liked_${postSlug}`;
+
+    // 2) 서버에서 최신 좋아요 수 가져오기 (GET)
+    async function fetchLikeCount() {
+      try {
+        const res = await fetch(`${API_BASE}/api/like?slug=${encodeURIComponent(postSlug)}`);
+        const data = await res.json();
+        if (data.success && typeof data.likes === 'number') {
+          likeCountSpan.textContent = String(data.likes);
+        }
+      } catch (err) {
+        console.warn('좋아요 수 조회 실패:', err);
+      }
+    }
+
+    // 로컬스토리지에 좋아요 기록이 있으면 버튼을 활성화 상태로 유지
+    if (localStorage.getItem(storageKey)) {
+      likeBtn.classList.add('liked');
+    }
+
+    fetchLikeCount();
+
+    // 3) 좋아요 클릭 이벤트 (POST)
+    likeBtn.addEventListener('click', async () => {
+      // 이미 좋아요를 누른 상태라면 추가 클릭 방지
+      if (localStorage.getItem(storageKey)) return;
+
+      // 화면 즉시 반영 (+1)
+      likeBtn.classList.add('liked');
+      localStorage.setItem(storageKey, 'true');
+      const currentVal = parseInt(likeCountSpan.textContent || '0', 10);
+      likeCountSpan.textContent = String(currentVal + 1);
+
+      try {
+        const res = await fetch(`${API_BASE}/api/like`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: postSlug }),
+        });
+        const data = await res.json();
+        if (data.success && typeof data.likes === 'number') {
+          likeCountSpan.textContent = String(data.likes);
+        }
+      } catch (err) {
+        console.error('좋아요 서버 저장 실패:', err);
+      }
+    });
+
+    // 4) 공유하기 클릭 이벤트
+    shareBtn?.addEventListener('click', async () => {
+      const shareTitle = shareBtn.getAttribute('data-title') || document.title;
+      const shareUrl = window.location.href;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: shareTitle,
+            url: shareUrl,
+          });
+          return;
+        } catch (err) {}
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        if (toast) {
+          toast.classList.add('show');
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 2200);
+        }
+      } catch (err) {
+        alert('링크 복사에 실패했습니다.');
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initLikeShare);
+</script>
