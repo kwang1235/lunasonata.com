@@ -65,7 +65,7 @@ const today = new Date();
   .site-footer {
     background-color: var(--footer-bg, #f8f9fa);
     border-top: 1px solid var(--border-color, #ebeae6);
-    padding: 3.5rem 1.5rem 2rem;
+    padding: 3.5rem 1.5rem calc(4rem + env(safe-area-inset-bottom));
     margin-top: 1rem;
     color: var(--text-color, #334155);
     font-size: 0.95rem;
