@@ -696,6 +696,17 @@ import BaseHead from '../components/BaseHead.astro';
           </div>
         </div>
 
+        <!-- 🌐 다중 사이트 선택기 -->
+<div class="form-group" style="background: rgba(56, 189, 248, 0.08); padding: 0.85rem; border-radius: 10px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 0.5rem;">
+  <label for="site-select" style="color: var(--primary-color); font-weight: 700;">🌐 작성 및 발행 대상 사이트 선택</label>
+  <select id="site-select" style="font-weight: 700; color: var(--primary-color); background: #070a12; border-color: rgba(56, 189, 248, 0.4); width: 100%;">
+    <option value="blog" selected>📝 블로그 (blog.lunasonata.com)</option>
+    <option value="info">ℹ️ 정보 사이트 (info.lunasonata.com)</option>
+    <option value="piano">🎹 피아노 (piano.lunasonata.com)</option>
+    <option value="sekwang">👤 세광 개인 (sekwang.lunasonata.com)</option>
+  </select>
+</div>
+
         <div class="form-group">
           <label for="post-title">포스트 제목</label>
           <input type="text" id="post-title" placeholder="글 제목을 입력하세요..." />
@@ -837,9 +848,15 @@ import BaseHead from '../components/BaseHead.astro';
           <button type="button" id="btn-close-posts" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;" title="닫기 (Esc)">✕</button>
         </div>
 
-        <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
-          <input type="text" id="posts-search" placeholder="🔍 글 제목 또는 영문 슬러그 검색..." style="width: 100%; box-sizing: border-box;" />
-        </div>
+        <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); display: flex; gap: 0.75rem; align-items: center;">
+      <select id="modal-site-filter" style="padding: 0.5rem 0.8rem; font-size: 0.85rem; border-color: #8b5cf6; color: #c084fc; background: #0f172a;">
+        <option value="blog">📝 블로그</option>
+        <option value="info">ℹ️ 정보 사이트</option>
+        <option value="piano">🎹 피아노</option>
+        <option value="sekwang">👤 세광 개인</option>
+      </select>
+      <input type="text" id="posts-search" placeholder="🔍 글 제목 또는 영문 슬러그 검색..." style="flex: 1; box-sizing: border-box;" />
+    </div>
 
         <div id="posts-list-container" style="overflow-y: auto; flex: 1; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
           <p style="color:var(--text-muted); text-align:center; padding:2rem;">글 목록을 불러오는 중입니다...</p>
@@ -859,6 +876,11 @@ import BaseHead from '../components/BaseHead.astro';
 
       // 입력창 요소
       const titleInput = document.getElementById('post-title') as HTMLInputElement;
+
+      // 🌐 다중 사이트 선택 요소
+      const siteSelect = document.getElementById('site-select') as HTMLSelectElement;
+      const modalSiteFilter = document.getElementById('modal-site-filter') as HTMLSelectElement;
+
       const descInput = document.getElementById('post-desc') as HTMLInputElement;
       const slugInput = document.getElementById('post-slug') as HTMLInputElement;
       const categoryInput = document.getElementById('post-category') as HTMLInputElement;
@@ -1414,6 +1436,7 @@ ${bodyContent}`;
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               password: savedPassword,
+              site: currentTargetSite,
               title: title,
               slug: slug,
               content: fullContent
@@ -1773,13 +1796,14 @@ ${bodyContent}`;
         if (e.target === postsModal) closePostsModal();
       });
       postsSearch?.addEventListener('input', renderPostsList);
-
+      modalSiteFilter?.addEventListener('change', fetchPostsList);
       async function fetchPostsList() {
         if (!postsContainer) return;
-        postsContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:2rem;">글 목록을 불러오는 중입니다...</p>';
+        const targetSite = modalSiteFilter?.value || siteSelect?.value || 'blog';
+        postsContainer.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:2rem;">[${targetSite}] 글 목록을 불러오는 중입니다...</p>`;
 
         try {
-          const res = await fetch(`${API_BASE_URL}/api/posts`);
+          const res = await fetch(`${API_BASE_URL}/api/posts?site=${encodeURIComponent(targetSite)}`);
           const result = await res.json();
 
           if (result.success && result.data) {
