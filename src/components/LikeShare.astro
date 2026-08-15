@@ -140,7 +140,7 @@ const { title = '' } = Astro.props;
 <script>
   function initLikeShare() {
     // 💡 로컬/실서버 구분 없이 항상 NAS의 Flask 백엔드 도메인으로 통신
-    const API_BASE = 'https://image.lunasonata.com';
+    const API_BASE = 'https://api.lunasonata.com';
     
     // 1) 글 고유 ID(slug) 추출
     const rawPath = window.location.pathname;
