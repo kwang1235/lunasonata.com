@@ -48,8 +48,6 @@ body {
   word-break: keep-all;
   overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
-  padding-bottom: env(safe-area-inset-bottom);
-  box-sizing: border-box;
 }
 
 /* 4. 헤딩 및 타이포그래피 */
