@@ -1405,6 +1405,7 @@ ${bodyContent}`;
       });
 
       async function publishPostToServer(isDraft: boolean) {
+        const currentTargetSite = siteSelect ? siteSelect.value : 'blog';
         const slug = slugInput?.value.trim();
         const title = titleInput?.value.trim();
         
@@ -1421,12 +1422,12 @@ ${bodyContent}`;
         }
 
         const modeText = isDraft ? '비공개 미리보기(초안)' : '공식 공개 발행';
-        if (!confirm(`'${title}' 글을 [${modeText}] 상태로 서버에 저장하시겠습니까?`)) {
+        if (!confirm(`[${currentTargetSite}] 사이트에 '${title}' 글을 [${modeText}] 상태로 저장하시겠습니까?`)) {
           return;
         }
 
         const fullContent = generateFrontmatter(isDraft);
-        showToast(`📡 NAS 서버로 [${modeText}] 글을 전송 중입니다...`);
+        showToast(`📡 [${currentTargetSite}] 서버로 글을 전송 중입니다...`);
 
         try {
           const savedPassword = sessionStorage.getItem('admin_password') || '';
@@ -1446,20 +1447,19 @@ ${bodyContent}`;
           const data = await res.json();
 
           if (res.ok && data.success) {
-  const previewUrl = `https://blog.lunasonata.com/${slug}/`;
-  if (isDraft) {
-    showToast('👀 비공개 초안 저장 완료 (빌드 진행 중)');
-    alert(
-      `✅ 비공개 초안(Draft) 저장이 완료되었습니다!\n\n` +
-      `서버에서 사이트를 빌드 중입니다 (약 20~30초 소요).\n` +
-      `빌드가 끝난 후 아래 비공개 주소로 접속하시면 확인하실 수 있습니다:\n\n` +
-      `${previewUrl}\n\n` +
-      `💡 이 글은 블로그 메인, 목록, 검색창에는 절대 노출되지 않습니다.`
-    );
-  } else {
-    showToast(data.message || '🚀 공식 발행이 완료되어 배포가 시작되었습니다!');
-  }
-} else {
+            const previewUrl = `https://blog.lunasonata.com/${slug}/`;
+            if (isDraft) {
+              showToast('👀 비공개 초안 저장 완료 (빌드 진행 중)');
+              alert(
+                `✅ 비공개 초안(Draft) 저장이 완료되었습니다!\n\n` +
+                `서버에서 사이트를 빌드 중입니다 (약 20~30초 소요).\n` +
+                `빌드가 끝난 후 아래 비공개 주소로 접속하시면 확인하실 수 있습니다:\n\n` +
+                `${previewUrl}`
+              );
+            } else {
+              showToast(data.message || '🚀 공식 발행이 완료되어 배포가 시작되었습니다!');
+            }
+          } else {
             alert(`저장 실패: ${data.message || data.error || '오류가 발생했습니다.'}`);
           }
         } catch (e) {
