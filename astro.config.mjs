@@ -3,6 +3,8 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+// 💡 [필수] 애드센스 본문 플러그인 불러오기
+import rehypeInFeedAds from './src/plugins/rehype-in-feed-ads.mjs';
 
 export default defineConfig({
   site: 'https://blog.lunasonata.com',
