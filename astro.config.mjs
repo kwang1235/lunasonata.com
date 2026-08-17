@@ -9,6 +9,11 @@ export default defineConfig({
   output: 'static',
   integrations: [mdx(), sitemap()],
 
+  // 💡 [추가] 마크다운 본문 파싱 시 <!-- ad -->를 광고로 자동 변환하는 rehype 플러그인 연결
+  markdown: {
+    rehypePlugins: [rehypeInFeedAds],
+  },
+
   // 💡 Astro 이미지 자동 변환 엔진
   image: {
     service: {

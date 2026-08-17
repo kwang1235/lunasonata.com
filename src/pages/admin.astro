@@ -747,6 +747,7 @@ import BaseHead from '../components/BaseHead.astro';
           <button type="button" class="tool-btn" id="btn-tmpl-callout">💡 안내 상자</button>
           <button type="button" class="tool-btn" id="btn-tmpl-quote">💬 인용구</button>
           <button type="button" class="tool-btn" id="btn-tmpl-figure">🖼️ 이미지+캡션</button>
+          <button type="button" class="tool-btn" id="btn-tmpl-ad" style="background: #15803d; border-color: #22c55e; color: #ffffff;">📢 광고 삽입</button>
           <button type="button" class="tool-btn highlight" id="btn-open-gallery">🖼️ NAS 이미지 선택 & 관리</button>
           <button type="button" class="tool-btn highlight" id="btn-open-posts" style="background: #8b5cf6; border-color: #a78bfa;">📂 기존 글 불러오기 / 수정</button>
         </div>
@@ -1093,6 +1094,12 @@ import BaseHead from '../components/BaseHead.astro';
       document.getElementById('btn-tmpl-figure')?.addEventListener('click', () => {
         const figureTmpl = `<figure style="margin: 1.5rem 0; text-align: center;">\n  <img src="https://image.lunasonata.com/sample.webp" alt="사진 설명" style="border-radius: 8px; max-width: 100%;" />\n  <figcaption style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">▲ 사진에 대한 설명을 적어주세요</figcaption>\n</figure>\n`;
         insertTag('', figureTmpl);
+      });
+
+      // 💡 [추가] 📢 광고 삽입 버튼 클릭 시 <!-- ad --> 주석 삽입
+      document.getElementById('btn-tmpl-ad')?.addEventListener('click', () => {
+        const adTmpl = `\n<!-- ad -->\n`;
+        insertTag('', adTmpl);
       });
 
       btnTogglePvTheme?.addEventListener('click', () => {

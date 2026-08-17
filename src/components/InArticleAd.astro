@@ -1,0 +1,24 @@
+---
+// src/components/InArticleAd.astro
+interface Props {
+  slotId?: string;
+}
+
+// 💡 기본 slot ID 또는 전달받은 slot ID 사용
+const { slotId = "XXXXXXXXXX" } = Astro.props;
+---
+
+<div class="ads-wrapper" style="margin: 2rem 0; text-align: center; overflow: hidden; clear: both;">
+  <!-- 구글 애드센스 인피드/인아티클 반응형 광고 단위 -->
+  <ins
+    class="adsbygoogle"
+    style="display: block; text-align: center;"
+    data-ad-layout="in-article"
+    data-ad-format="fluid"
+    data-ad-client="ca-pub-4839414905225875"
+    data-ad-slot={slotId}
+  ></ins>
+  <script is:inline>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
