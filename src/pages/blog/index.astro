@@ -8,7 +8,7 @@ import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import { SITE_TITLE, SITE_DESCRIPTION, DEFAULT_OG_IMAGE } from '../../consts';
 
-// 💡 draft: true (비공개 글) 완벽 제외 필터링 적용
+// 💡 draft: true (비공개 글) 제외 필터링 적용
 const posts = (await getCollection('blog', ({ data }) => {
   return data.draft !== true && String(data.draft).toLowerCase() !== 'true';
 })).sort(
@@ -16,7 +16,6 @@ const posts = (await getCollection('blog', ({ data }) => {
 );
 
 // 등록된 글들에서 카테고리 목록을 동적으로 추출
-// ✅ 수정 코드
 const categories = [
   ...new Set(
     posts.flatMap((post) => {
@@ -31,21 +30,46 @@ const categories = [
 <!doctype html>
 <html lang="ko">
   <head>
-    <BaseHead title={`Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    <BaseHead title={`블로그 글 목록 | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
     <style>
       main {
-        width: 880px;
-        max-width: calc(100% - 2em);
+        width: 860px;
+        max-width: calc(100% - 2rem);
         margin: 0 auto;
-        padding: 3em 1em;
+        padding: 3rem 1rem 5rem 1rem;
+        box-sizing: border-box;
+        position: relative;
       }
 
-      /* 헤더 상단 영역 */
+      /* 배경 은은한 오로라 앰비언트 라이트 */
+      .bg-ambient-light {
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(circle, rgba(92, 98, 85, 0.12) 0%, rgba(92, 98, 85, 0) 70%);
+        top: 60px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        animation: glowBreathe 6s ease-in-out infinite alternate;
+      }
+
+      @keyframes glowBreathe {
+        0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.4; }
+        100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.85; }
+      }
+
+      /* 블로그 헤더 영역 */
       .blog-header {
         margin-bottom: 2.5rem;
-        border-bottom: 2px solid #e2e8f0;
+        border-bottom: 1.5px solid rgba(92, 98, 85, 0.15);
         padding-bottom: 1.25rem;
+        position: relative;
+        z-index: 1;
       }
+
       .title-row {
         display: flex;
         align-items: center;
@@ -53,21 +77,40 @@ const categories = [
         gap: 1rem;
         margin-bottom: 1.25rem;
       }
+
       .title-wrapper {
         display: flex;
         align-items: center;
         gap: 0.6rem;
       }
+
+      /* 책 아이콘 회전/펄스 지속 애니메이션 */
+      .header-icon {
+        width: 26px !important;
+        height: 26px !important;
+        min-width: 26px !important;
+        max-width: 26px !important;
+        stroke: var(--accent-color, #5c6255);
+        fill: none;
+        display: inline-block;
+        flex-shrink: 0;
+        animation: bookFloat 3s ease-in-out infinite;
+      }
+
+      @keyframes bookFloat {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-3px) rotate(-6deg); }
+      }
+
       .page-title {
-        font-size: 2rem;
+        font-size: 1.85rem;
         font-weight: 800;
-        color: #1e293b;
+        color: var(--heading-color, #1e293b);
         margin: 0;
         letter-spacing: -0.02em;
       }
 
-      /* 카테고리 내비게이션 */
-      /* ✅ 수정 코드 */
+      /* 카테고리 내비게이션 탭 */
       .category-nav {
         display: flex;
         align-items: center;
@@ -77,34 +120,41 @@ const categories = [
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
       }
+
       .category-nav::-webkit-scrollbar {
         display: none;
       }
+
       .category-btn {
         display: inline-flex;
         align-items: center;
         gap: 0.3rem;
-        padding: 0.4rem 0.9rem;
+        padding: 0.4rem 0.95rem;
         border-radius: 20px;
-        font-size: 0.875rem;
+        font-size: 0.85rem;
         font-weight: 600;
-        text-decoration: none;
-        color: #64748b;
+        text-decoration: none !important;
+        color: var(--text-muted, #64748b);
         background-color: #f1f5f9;
+        border: 1px solid transparent;
         white-space: nowrap;
         flex-shrink: 0;
         transition: all 0.2s ease;
       }
+
       .category-btn:hover {
         background-color: #e2e8f0;
         color: #0f172a;
-      }
-      .category-btn.active {
-        background-color: #1e293b;
-        color: #ffffff;
+        transform: translateY(-2px);
       }
 
-      /* 리스트 카드 */
+      .category-btn.active {
+        background-color: var(--accent-color, #5c6255) !important;
+        color: #ffffff !important;
+        box-shadow: 0 3px 8px rgba(92, 98, 85, 0.25);
+      }
+
+      /* 포스트 카드 리스트 */
       .post-list {
         display: flex;
         flex-direction: column;
@@ -112,7 +162,14 @@ const categories = [
         list-style-type: none;
         margin: 0;
         padding: 0;
+        position: relative;
+        z-index: 1;
       }
+
+      .post-item {
+        perspective: 1000px;
+      }
+
       .post-item a {
         display: flex !important;
         flex-direction: row !important;
@@ -123,116 +180,186 @@ const categories = [
         border-radius: 16px !important;
         background-color: #ffffff !important;
         border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-        transition: all 0.2s ease-in-out !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+        box-sizing: border-box;
+        transform-style: preserve-3d;
+        transition: transform 0.2s ease-out, box-shadow 0.2s ease, border-color 0.2s ease !important;
+        will-change: transform;
       }
+
       .post-item a:hover {
-        background-color: #f8fafc !important;
-        border-color: #cbd5e1 !important;
-        transform: translateY(-2px) !important;
-        box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08) !important;
+        border-color: var(--accent-color, #5c6255) !important;
+        box-shadow: 0 12px 24px -4px rgba(92, 98, 85, 0.12) !important;
       }
+
+      /* 썸네일 이미지 박스 */
       .thumbnail-wrapper {
         flex-shrink: 0;
-        width: 200px;
-        height: 125px;
+        width: 210px;
+        height: 130px;
         border-radius: 10px;
         overflow: hidden;
         background-color: #f1f5f9;
+        position: relative;
       }
+
       .thumbnail-wrapper img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
+        transition: transform 0.4s ease;
       }
+
+      .post-item a:hover .thumbnail-wrapper img {
+        transform: scale(1.04);
+      }
+
+      /* 썸네일 위를 스쳐 지나가는 대각선 빛 반사 레이어 */
+      .thumbnail-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.35),
+          transparent
+        );
+        transform: skewX(-25deg);
+        transition: left 0.7s ease;
+      }
+
+      .post-item a:hover .thumbnail-wrapper::after {
+        left: 150%;
+      }
+
+      /* 포스트 텍스트 콘텐츠 */
       .post-content {
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 0.4rem;
+        gap: 0.45rem;
         min-width: 0;
       }
+
       .post-meta {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
         color: #64748b;
+        flex-wrap: wrap;
       }
+
       .post-category-tag {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         font-weight: 700;
-        color: #2563eb;
-        background-color: #eff6ff;
+        color: var(--accent-color, #5c6255);
+        background-color: rgba(92, 98, 85, 0.1);
         padding: 0.15rem 0.5rem;
         border-radius: 6px;
       }
 
+      .meta-date-wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .meta-date-icon {
+        width: 13px !important;
+        height: 13px !important;
+        min-width: 13px !important;
+        stroke: #64748b;
+        fill: none;
+        display: inline-block;
+        animation: floatIcon 2.5s ease-in-out infinite;
+      }
+
+      @keyframes floatIcon {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-2px); }
+      }
+
       :global(.post-item h2),
       .post-title {
-        font-size: 1.25rem !important;
+        font-size: 1.2rem !important;
         font-weight: 700 !important;
-        color: #0f172a !important;
+        color: var(--heading-color, #1e293b) !important;
         margin: 0 !important;
         padding: 0 !important;
         border: none !important;
-        border-left: none !important;
-        background: transparent !important;
         line-height: 1.4 !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
-      }
-      :global(.post-item h2::before),
-      :global(.post-item h2::after),
-      .post-title::before,
-      .post-title::after {
-        content: none !important;
-        display: none !important;
-        border: none !important;
+        transition: color 0.2s ease;
       }
 
-      .post-item a:hover :global(.post-title),
       .post-item a:hover .post-title {
-        color: var(--accent-color, #2563eb) !important;
+        color: var(--accent-color, #5c6255) !important;
       }
 
       .post-description {
-        font-size: 0.925rem;
+        font-size: 0.9rem;
         color: #475569;
         margin: 0 !important;
-        line-height: 1.5;
+        line-height: 1.55;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
 
-      @media (max-width: 640px) {
+      /* 📱 모바일 반응형 (680px 이하) */
+      @media (max-width: 680px) {
+        main {
+          padding: 1.75rem 1rem 3.5rem 1rem;
+        }
+
         .post-item a {
           flex-direction: column !important;
           align-items: flex-start !important;
+          gap: 1rem !important;
+          padding: 1rem !important;
         }
+
         .thumbnail-wrapper {
           width: 100%;
-          height: 180px;
+          height: 190px;
+          border-radius: 8px;
         }
+
         .post-title {
+          font-size: 1.1rem !important;
           white-space: normal !important;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
+
+        .post-description {
+          font-size: 0.85rem;
         }
       }
     </style>
   </head>
   <body>
     <Header />
+
     <main>
+      <!-- 은은한 배경 앰비언트 라이트 -->
+      <div class="bg-ambient-light"></div>
+
       <!-- 블로그 상단 헤더 영역 -->
-      <!-- ✅ 수정 코드 -->
       <div class="blog-header">
         <div class="title-row">
           <div class="title-wrapper">
-            <svg style="width: 28px !important; height: 28px !important; min-width: 28px !important; max-width: 28px !important; stroke: #1e293b; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="header-icon" viewBox="0 0 24 24" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
@@ -259,39 +386,41 @@ const categories = [
           {
             posts.map((post) => (
               <li class="post-item">
-                <a href={`/${post.id}/`}>
+                <a href={`/${post.id}/`} class="interactive-card">
                   <div class="thumbnail-wrapper">
-  {
-    post.data.heroImage && typeof post.data.heroImage === 'object' ? (
-      <Image src={post.data.heroImage} alt={post.data.title} width={200} height={125} />
-    ) : (
-      <img 
-        src={post.data.heroImage || DEFAULT_OG_IMAGE} 
-        alt={post.data.title} 
-      />
-    )
-  }
-</div>
+                    {
+                      post.data.heroImage && typeof post.data.heroImage === 'object' ? (
+                        <Image src={post.data.heroImage} alt={post.data.title} width={420} height={260} />
+                      ) : (
+                        <img 
+                          src={post.data.heroImage || DEFAULT_OG_IMAGE} 
+                          alt={post.data.title} 
+                          loading="lazy"
+                        />
+                      )
+                    }
+                  </div>
                   <div class="post-content">
-                    <!-- ✅ 수정 코드 -->
-<div class="post-meta">
-  {
-    (Array.isArray(post.data.categories)
-      ? post.data.categories
-      : typeof (post.data as any).category === 'string'
-      ? [(post.data as any).category]
-      : []
-    ).map((cat: string) => (
-      <span class="post-category-tag">#{cat}</span>
-    ))
-  }
-  <svg style="width: 14px !important; height: 14px !important; min-width: 14px !important; max-width: 14px !important; stroke: #64748b; fill: none; display: inline-block;" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                      </svg>
-                      <FormattedDate date={post.data.pubDate} />
+                    <div class="post-meta">
+                      {
+                        (Array.isArray(post.data.categories)
+                          ? post.data.categories
+                          : typeof (post.data as any).category === 'string'
+                          ? [(post.data as any).category]
+                          : []
+                        ).map((cat: string) => (
+                          <span class="post-category-tag">#{cat}</span>
+                        ))
+                      }
+                      <span class="meta-date-wrap">
+                        <svg class="meta-date-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <FormattedDate date={post.data.pubDate} />
+                      </span>
                     </div>
                     <h2 class="post-title">{post.data.title}</h2>
                     {post.data.description && (
@@ -305,6 +434,40 @@ const categories = [
         </ul>
       </section>
     </main>
+
     <Footer />
+
+    <!-- 💡 은은하고 부드러운 마우스 반응 스크립트 -->
+    <script is:inline>
+      function initTilt() {
+        const cards = document.querySelectorAll('.interactive-card');
+        
+        cards.forEach((card) => {
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            // 은은한 회전 각도(최대 2도) 및 미세한 스케일 적용
+            const rotateX = ((y - centerY) / centerY) * -2.2;
+            const rotateY = ((x - centerX) / centerX) * 2.2;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px) scale3d(1.005, 1.005, 1.005)`;
+          });
+
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale3d(1, 1, 1)';
+          });
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTilt);
+      } else {
+        initTilt();
+      }
+    </script>
   </body>
 </html>
