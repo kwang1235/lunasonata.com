@@ -34,17 +34,15 @@ if (typeof image === 'string') {
 }
 ---
 
-<!-- 브라우저 캐싱 힌트 및 리소스 도메인 사전 연결 -->
 <meta http-equiv="Cache-Control" content="max-age=31536000, public" />
 <link rel="dns-prefetch" href="https://image.lunasonata.com" />
 <link rel="preconnect" href="https://image.lunasonata.com" crossorigin />
 
-<!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-<!-- 1. 파비콘(Favicon) 연동 (sekwang_favicon.png 지정) -->
 <link rel="icon" type="image/png" href="/sekwang_favicon.png" />
+<link rel="shortcut icon" type="image/png" href="/sekwang_favicon.png" />
 <link rel="apple-touch-icon" href="/sekwang_favicon.png" />
 
 <link rel="sitemap" href="/sitemap-index.xml" />
@@ -57,46 +55,38 @@ if (typeof image === 'string') {
 <meta name="generator" content={Astro.generator} />
 
 <Font cssVariable="--font-atkinson" preload />
-<!-- 폰트 로딩 동안 기본 텍스트를 먼저 보여주어 렌더링 차단 방지 -->
 <style is:inline>
   @font-face {
     font-display: swap;
   }
 </style>
 
-<!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 
-<!-- LCP 성능 최적화: 대표 이미지를 1순위로 즉시 로딩 -->
 <link rel="preload" as="image" href={imageURL} />
 
-<!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="description" content={description} />
 <meta name="author" content="세광" />
 
-<!-- 검색엔진 수집 및 색인 허용 -->
 <meta name="robots" content="index, follow" />
 
-<!-- Open Graph / Facebook / KakaoTalk -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={imageURL} />
-<meta property="og:site_name" content="세광로그" />
+<meta property="og:site_name" content={SITE_TITLE} />
 <meta property="og:locale" content="ko_KR" />
 
-<!-- Twitter Meta Tags -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:url" content={Astro.url} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageURL} />
 
-<!-- Matomo Tracking Code -->
 <script is:inline>
   var _paq = window._paq = window._paq || [];
   _paq.push(['trackPageView']);
@@ -110,7 +100,13 @@ if (typeof image === 'string') {
   })();
 </script>
 
-<!-- 구글 & 네이버 상단 노출을 위한 Article 구조화 데이터 (JSON-LD) -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": SITE_TITLE,
+  "url": SITE_URL
+})} />
+
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -133,7 +129,6 @@ if (typeof image === 'string') {
   }
 })} />
 
-<!-- Google AdSense 기본 스크립트 -->
 <script
   async
   src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4839414905225875"
