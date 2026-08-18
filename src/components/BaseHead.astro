@@ -3,11 +3,9 @@
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
-import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { SITE_TITLE, SITE_URL, DEFAULT_OG_IMAGE } from '../consts';
 import { Font } from 'astro:assets';
 
-// 💡 noindex 속성을 받을 수 있도록 타입 정의 추가
 interface Props {
   title: string;
   description: string;
@@ -16,11 +14,8 @@ interface Props {
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || SITE_URL);
-
-// 💡 noindex 변수를 가져오고 기본값을 false로 설정
 const { title, description, image = DEFAULT_OG_IMAGE, noindex = false } = Astro.props;
 
-// 이미지 경로 가공 (절대 경로 URL 및 상대 경로 대응)
 let imageURL: URL;
 
 if (typeof image === 'string') {
@@ -89,36 +84,7 @@ if (typeof image === 'string') {
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageURL} />
 
-{!noindex && (
-  <>
-    <script is:inline>
-      var _paq = window._paq = window._paq || [];
-      _paq.push(['trackPageView']);
-      _paq.push(['enableLinkTracking']);
-      (function() {
-        var u="https://analytics.kwang1235.synology.me/";
-        _paq.push(['setTrackerUrl', u+'matomo.php']);
-        _paq.push(['setSiteId', '1']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-      })();
-    </script>
-
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": SITE_TITLE,
-      "url": SITE_URL
-    })} />
-
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4839414905225875"
-      crossorigin="anonymous"
-    ></script>
-  </>
-)}
-
+{/* 사이트 구조화 데이터 (검색 최적화) */}
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -148,8 +114,26 @@ if (typeof image === 'string') {
   }
 })} />
 
-<script
-  async
-  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4839414905225875"
-  crossorigin="anonymous"
-></script>
+{/* 인덱싱 허용된 정상 페이지에서만 통계 및 광고 스크립트 로드 */}
+{!noindex && (
+  <>
+    <script is:inline>
+      var _paq = window._paq = window._paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="https://analytics.kwang1235.synology.me/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '1']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4839414905225875"
+      crossorigin="anonymous"
+    ></script>
+  </>
+)}
