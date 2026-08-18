@@ -1219,19 +1219,18 @@ toolButtons.forEach((btn) => {
       // =========================================================
       // [4] Frontmatter 생성 및 단일/다중 로컬 임시저장
       // =========================================================
+// [수정 후]
 function generateFrontmatter(isDraft: boolean = false): string {
   const rawTitle = titleInput?.value.trim() || '제목 없음';
   const rawDescription = descInput?.value.trim() || rawTitle;
-  
-  // 💡 큰따옴표(")가 들어가도 YAML 문법이 깨지지 않도록 안전하게 변환
   const title = rawTitle.replace(/"/g, '\\"');
   const description = rawDescription.replace(/"/g, '\\"');
-  
-  const heroImage = heroInput?.value.trim() || '';
-  // 💡 따옴표나 불필요한 공백 제거
-  const heroImage = rawHero.replace(/^["']|["']$/g, '');
-  const slug = slugInput?.value.trim() || '';
 
+  // 💡 중복을 없애고 1줄로 통합
+  const rawHero = heroInput?.value.trim() || '';
+  const heroImage = rawHero.replace(/^["']|["']$/g, '');
+
+  const slug = slugInput?.value.trim() || '';
   const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
   const categoriesFormatted = rawCategories.length > 0 
     ? `\ncategories:\n${rawCategories.map(c => `  - "${c.replace(/"/g, '\\"')}"`).join('\n')}` 
