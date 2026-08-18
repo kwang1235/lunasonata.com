@@ -49,15 +49,24 @@ import BaseHead from '../components/BaseHead.astro';
       }
 
       .header-bar h1 {
-        margin: 0;
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        letter-spacing: -0.02em;
-      }
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.header-bar h1 a {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.header-bar h1 a:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
 
       .editor-grid {
         display: grid;
@@ -694,9 +703,13 @@ import BaseHead from '../components/BaseHead.astro';
     </div>
 
     <header class="header-bar">
-      <h1>✨ Lunasonata 포스팅 에디터</h1>
-      <span style="color: var(--text-muted); font-size: 0.9rem;">반갑습니다, 세광님! 🎹</span>
-    </header>
+  <h1>
+    <a href="https://blog.lunasonata.com" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+      ✨ Lunasonata 포스팅 에디터
+    </a>
+  </h1>
+  <span style="color: var(--text-muted); font-size: 0.9rem;">반갑습니다, 세광님! 🎹</span>
+</header>
 
     <main class="editor-grid">
       <!-- 💡 왼쪽 카드: 자연스럽게 아래로 길어지며 스크롤되는 영역 -->
