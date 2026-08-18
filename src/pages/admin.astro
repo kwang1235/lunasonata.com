@@ -1228,6 +1228,8 @@ function generateFrontmatter(isDraft: boolean = false): string {
   const description = rawDescription.replace(/"/g, '\\"');
   
   const heroImage = heroInput?.value.trim() || '';
+  // 💡 따옴표나 불필요한 공백 제거
+  const heroImage = rawHero.replace(/^["']|["']$/g, '');
   const slug = slugInput?.value.trim() || '';
 
   const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
