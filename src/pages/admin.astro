@@ -1551,12 +1551,32 @@ toolButtons.forEach((btn) => {
         const matches = model.findMatches(searchText, false, false, false, null, true);
         if (matches && matches.length > 0) {
           const matchRange = matches[0].range;
+
+          // 1️⃣ [바깥쪽 스크롤 완벽 해결]
+          const editorElement = document.getElementById('monaco-editor');
+          const leftCard = editorElement ? editorElement.closest('section.card') as HTMLElement : null;
+
+          if (editorElement) {
+            if (leftCard && leftCard.scrollHeight > leftCard.clientHeight) {
+              // PC 환경: 왼쪽 카드 내부 스크롤 컨테이너 이동
+              const cardRect = leftCard.getBoundingClientRect();
+              const editorRect = editorElement.getBoundingClientRect();
+              const scrollOffset = editorRect.top - cardRect.top + leftCard.scrollTop - 40;
+              leftCard.scrollTo({ top: scrollOffset, behavior: 'smooth' });
+            } else {
+              // 모바일/전체 창 스크롤 환경: 화면 스크롤 이동
+              editorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+
+          // 2️⃣ [안쪽 스크롤] Monaco 에디터 내부 커서 이동 및 포커스
           monacoEditor.setPosition({
             lineNumber: matchRange.startLineNumber,
             column: matchRange.startColumn
           });
           monacoEditor.revealLineInCenter(matchRange.startLineNumber);
           monacoEditor.focus();
+
           showToast(`🎯 코드 ${matchRange.startLineNumber}번째 줄로 이동했습니다.`);
         }
       });
