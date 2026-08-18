@@ -1,273 +1,590 @@
 ---
-import Layout from '../layouts/BlogPost.astro';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SOCIAL_LINKS } from '../consts';
 ---
 
-<Layout
-	title="소개 | 세광로그 - 일상과 여정의 기록"
-	description="길 위에서 만난 풍경과 스쳐 지나가는 소소한 일상의 순간들을 글로 기록하는 공간입니다."
-	pubDate={new Date('2026-08-05')}
->
-	<div class="about-container">
-		<!-- profile-image 뒤에 no-hover-wrap 추가 -->
-<div class="profile-image-wrapper fade-in">
-  <img 
-    src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&q=80&w=1200" 
-    alt="세광로그 - 일상과 여정을 기록하는 공간" 
-    class="profile-image no-hover-wrap" 
-  />
-</div>
+<!doctype html>
+<html lang="ko">
+  <head>
+    <BaseHead
+      title={`소개 | ${SITE_TITLE} - 일상과 여정의 기록`}
+      description="길 위에서 만난 풍경과 스쳐 지나가는 소소한 일상의 순간들을 글로 기록하는 공간입니다."
+    />
+    <style>
+      .about-main-container {
+        width: 100%;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem 1.5rem;
+        box-sizing: border-box;
+        position: relative;
+      }
 
-		<!-- 소개 글 영역 -->
-		<div class="about-content">
-			<section class="intro-section fade-in delay-1">
-				<h2>스치는 계절 속에서 문장을 건져 올립니다</h2>
-				<p class="poetic-text">
-					안녕하세요, 일상과 여정의 조각들을 고이 기록하는 <strong>세광</strong>입니다.<br /><br />
-					바람이 흘러가는 소리, 무심코 지나치던 길가의 그림자,<br />
-					그리고 낯선 도시의 밤하늘 아래서 느꼈던 작고 아득한 감정들.<br />
-					빠르게 지나가는 시간 속에서 사소하지만 소중한 찰나를 문장으로 벼려냅니다.
-				</p>
-			</section>
+      .about-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 3.25rem;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+      }
 
-			<hr class="divider fade-in delay-1" />
+      /* 1. 상단 인터랙티브 비주얼 카드 */
+      .visual-card {
+        position: relative;
+        width: 100%;
+        height: 280px;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        background: #0f172a;
+      }
 
-			<section class="category-section fade-in delay-2">
-				<h3>
-					<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-						<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-					</svg>
-					이곳에 담기는 이야기
-				</h3>
-				
-				<div class="card-grid">
-					<div class="card">
-						<h4>
-							<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M12 20h9"></path>
-								<path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-							</svg>
-							일상과 일기
-						</h4>
-						<p>단조로운 하루의 결을 천천히 짚어보며 마음의 소리를 나지막이 기록합니다.</p>
-					</div>
+      .visual-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+        margin: 0 !important;
+        filter: brightness(0.65);
+      }
 
-					<div class="card">
-						<h4>
-							<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<circle cx="12" cy="12" r="10"></circle>
-								<polygon points="12 8 8 12 12 16 16 12 12 8"></polygon>
-							</svg>
-							순간의 에피소드
-						</h4>
-						<p>우연히 맞닥뜨린 사람들과 뜻밖의 해프닝, 그 속에 숨겨진 작은 여운들을 남깁니다.</p>
-					</div>
+      /* 별빛/반딧불 파티클 캔버스 */
+      #particle-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;
+      }
 
-					<div class="card">
-						<h4>
-							<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<circle cx="12" cy="12" r="10"></circle>
-								<line x1="2" y1="12" x2="22" y2="12"></line>
-								<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path>
-							</svg>
-							길 위의 여정
-						</h4>
-						<p>익숙한 정적을 떠나 낯선 바람을 맞으며 마주한 풍경과 생각을 담아냅니다.</p>
-					</div>
-				</div>
-			</section>
+      .visual-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        text-align: center;
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.65), transparent);
+        z-index: 3;
+      }
 
-			<hr class="divider fade-in delay-2" />
+      .visual-badge {
+        display: inline-block;
+        padding: 0.25rem 0.85rem;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        margin-bottom: 0.85rem;
+      }
 
-			<!-- 소통 섹션 (직관적인 연락 버튼 추가) -->
-			<section class="contact-section fade-in delay-3">
-				<h3>
-					<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-						<polyline points="22,6 12,13 2,6"></polyline>
-					</svg>
-					마음을 나누며
-				</h3>
-				<p>
-					남겨진 글귀들이 누군가에게 작은 온기나 한 조각 휴식이 될 수 있기를 바랍니다.<br />
-					이야기를 나누고 싶거나 문의가 있다면 편하게 연락주세요.
-				</p>
-				<div class="contact-buttons">
-					<a href="mailto:kwang11235@naver.com" class="contact-btn">
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-							<rect width="20" height="16" x="2" y="4" rx="2"></rect>
-							<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-						</svg>
-						이메일 보내기
-					</a>
-				</div>
-			</section>
-		</div>
-	</div>
-</Layout>
+      .visual-quote {
+        color: #ffffff !important;
+        font-size: 1.35rem;
+        font-weight: 700;
+        line-height: 1.45;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        word-break: keep-all;
+        min-height: 2em;
+      }
 
-<style>
-	.about-container {
-		display: flex;
-		flex-direction: column;
-		gap: 2.5rem;
-		margin-top: 1rem;
-		width: 100%;
-	}
+      .typing-cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1.1em;
+        background-color: #ffffff;
+        margin-left: 4px;
+        vertical-align: middle;
+        animation: blink 0.8s infinite;
+      }
 
-	/* 1. 이미지 위아래 여백 제거 및 완벽한 라운딩 고정 */
-	.profile-image-wrapper {
-		width: 100% !important;
-		border-radius: 16px !important;
-		overflow: hidden !important;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
-		margin: 0 !important;
-		padding: 0 !important;
-		line-height: 0 !important;
-		font-size: 0 !important;
-		background: transparent !important;
-	}
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
 
-	.profile-image-wrapper img {
-		width: 100% !important;
-		height: auto !important;
-		display: block !important;
-		margin: 0 !important;
-		padding: 0 !important;
-		border-radius: 16px !important;
-		object-fit: cover !important;
-	}
+      /* 2. 소개 본문 섹션 */
+      .intro-section {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 0 0.5rem;
+      }
 
-	.about-content {
-		width: 100%;
-	}
+      .section-badge {
+        font-size: 0.8rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: var(--accent-color, #5c6255);
+        margin-bottom: 0.6rem;
+      }
 
-	.intro-section h2 {
-		font-size: 1.75rem;
-		font-weight: 800;
-		margin-bottom: 1.2rem;
-		color: var(--heading-color, #1e293b);
-		word-break: keep-all;
-	}
+      .section-title {
+        font-size: 1.55rem;
+        font-weight: 800;
+        color: var(--heading-color, #1e293b);
+        line-height: 1.4;
+        margin: 0 0 1.25rem 0;
+        word-break: keep-all;
+      }
 
-	.poetic-text {
-		font-size: 1.05rem;
-		line-height: 1.8;
-		color: var(--text-muted, #475569);
-		word-break: keep-all;
-	}
+      .intro-text {
+        font-size: 1rem;
+        line-height: 1.85;
+        color: var(--text-muted, #475569);
+        margin: 0;
+        word-break: keep-all;
+      }
 
-	.divider {
-		border: 0;
-		border-top: 1px solid var(--border-color, #ebeae6);
-		margin: 2.5rem 0;
-	}
+      /* 3. 블로그 주제 카드 그리드 (3D 틸트 적용) */
+      .topic-section {
+        width: 100%;
+      }
 
-	h3 {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 1.3rem;
-		font-weight: 700;
-		margin-bottom: 1.2rem;
-		color: var(--heading-color, #1e293b);
-	}
+      .topic-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--heading-color, #1e293b);
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1.5px solid rgba(92, 98, 85, 0.15);
+      }
 
-	.icon {
-		width: 1.2em;
-		height: 1.2em;
-		color: var(--accent-color, #5c6255);
-		flex-shrink: 0;
-	}
+      .topic-header-icon {
+        width: 20px;
+        height: 20px;
+        color: var(--accent-color, #5c6255);
+      }
 
-	.icon-sm {
-		width: 1em;
-		height: 1em;
-		color: var(--accent-color, #5c6255);
-		flex-shrink: 0;
-	}
+      .topic-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        perspective: 1000px;
+      }
 
-	.card-grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 1rem;
-	}
+      .topic-card {
+        background: #ffffff;
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: 16px;
+        padding: 1.35rem 1.1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        transform-style: preserve-3d;
+        transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.2s ease;
+        cursor: default;
+      }
 
-	@media (min-width: 640px) {
-		.card-grid {
-			grid-template-columns: repeat(3, 1fr);
-		}
-	}
+      .topic-card:hover {
+        border-color: var(--accent-color, #5c6255);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+      }
 
-	.card {
-		padding: 1.25rem;
-		border-radius: 12px;
-		background-color: var(--bg-card, #ffffff);
-		border: 1px solid var(--border-color, #ebeae6);
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
-	}
+      .topic-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(92, 98, 85, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        transition: transform 0.2s ease;
+      }
 
-	.card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
-	}
+      .topic-card:hover .topic-icon-wrap {
+        transform: translateZ(20px) scale(1.1);
+        background: rgba(92, 98, 85, 0.15);
+      }
 
-	.card h4 {
-		display: flex;
-		align-items: center;
-		gap: 0.4rem;
-		font-size: 1.05rem;
-		font-weight: 700;
-		margin-bottom: 0.5rem;
-		color: var(--heading-color, #1e293b);
-	}
+      .topic-icon {
+        width: 20px;
+        height: 20px;
+        color: var(--accent-color, #5c6255);
+      }
 
-	.card p {
-		font-size: 0.925rem;
-		line-height: 1.6;
-		color: var(--text-muted, #475569);
-		margin: 0;
-		word-break: keep-all;
-	}
+      .topic-card h4 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--heading-color, #1e293b);
+        margin: 0 0 0.5rem 0;
+        transition: transform 0.2s ease;
+      }
 
-	.contact-section p {
-		line-height: 1.7;
-		color: var(--text-muted, #475569);
-		word-break: keep-all;
-		margin-bottom: 1.25rem;
-	}
+      .topic-card:hover h4 {
+        transform: translateZ(15px);
+      }
 
-	/* 2. 이메일 버튼 스타일 강제 적용 (파란 밑줄 및 글씨 색상 덮어쓰기) */
-	.contact-buttons {
-		display: flex;
-		gap: 0.75rem;
-		margin-top: 1rem;
-	}
+      .topic-card p {
+        font-size: 0.88rem;
+        line-height: 1.6;
+        color: var(--text-muted, #64748b);
+        margin: 0;
+        word-break: keep-all;
+        transition: transform 0.2s ease;
+      }
 
-	:global(.contact-btn),
-	.contact-btn {
-		display: inline-flex !important;
-		align-items: center !important;
-		gap: 0.5rem !important;
-		padding: 0.65rem 1.25rem !important;
-		background-color: #f1f5f9 !important;
-		color: #1e293b !important;
-		font-size: 0.9rem !important;
-		font-weight: 600 !important;
-		text-decoration: none !important;
-		border-radius: 20px !important;
-		transition: all 0.2s ease !important;
-		border: 1px solid #cbd5e1 !important;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-	}
+      .topic-card:hover p {
+        transform: translateZ(10px);
+      }
 
-	:global(.contact-btn:hover),
-	.contact-btn:hover {
-		background-color: var(--accent-color, #5c6255) !important;
-		color: #ffffff !important;
-		border-color: var(--accent-color, #5c6255) !important;
-		text-decoration: none !important;
-		transform: translateY(-2px) !important;
-	}
-</style>
+      /* 4. 소통 및 연락처 카드 */
+      .connect-card {
+        background: #f8fafc;
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: 18px;
+        padding: 1.75rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        box-sizing: border-box;
+      }
+
+      .connect-info h3 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--heading-color, #1e293b);
+        margin: 0 0 0.35rem 0;
+      }
+
+      .connect-info p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--text-muted, #64748b);
+        margin: 0;
+        word-break: keep-all;
+      }
+
+      .connect-buttons {
+        display: flex;
+        gap: 0.65rem;
+        flex-shrink: 0;
+      }
+
+      .btn-connect {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.45rem !important;
+        padding: 0.65rem 1.1rem !important;
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
+        border-radius: 20px !important;
+        text-decoration: none !important;
+        transition: all 0.2s ease !important;
+        white-space: nowrap !important;
+      }
+
+      .btn-connect.primary {
+        background-color: var(--accent-color, #5c6255) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--accent-color, #5c6255) !important;
+        box-shadow: 0 4px 10px rgba(92, 98, 85, 0.2) !important;
+      }
+
+      .btn-connect.primary:hover {
+        background-color: #484d43 !important;
+        transform: translateY(-2px);
+      }
+
+      .btn-connect.secondary {
+        background-color: #ffffff !important;
+        color: #334155 !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+
+      .btn-connect.secondary:hover {
+        background-color: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        transform: translateY(-2px);
+      }
+
+      .btn-icon {
+        width: 16px !important;
+        height: 16px !important;
+        flex-shrink: 0 !important;
+      }
+
+      /* 📱 모바일 최적화 (768px 이하) */
+      @media (max-width: 768px) {
+        .about-main-container {
+          padding: 1.5rem 1rem 3.5rem 1rem;
+        }
+
+        .about-wrapper {
+          gap: 2.25rem;
+        }
+
+        .visual-card {
+          height: 200px;
+        }
+
+        .visual-quote {
+          font-size: 1.1rem;
+        }
+
+        .section-title {
+          font-size: 1.3rem;
+        }
+
+        .intro-text {
+          font-size: 0.92rem;
+        }
+
+        .topic-grid {
+          grid-template-columns: 1fr;
+          gap: 0.75rem;
+        }
+
+        .connect-card {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 1.25rem;
+          text-align: center;
+        }
+
+        .connect-buttons {
+          justify-content: center;
+          width: 100%;
+        }
+
+        .btn-connect {
+          flex: 1;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <Header />
+
+    <main class="about-main-container">
+      <div class="about-wrapper">
+        <!-- 1. 대표 비주얼 카드 (인터랙티브 파티클 & 타이핑) -->
+        <div class="visual-card">
+          <img
+            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+            alt="세광로그 - 일상과 여정의 기록"
+            class="visual-img"
+            loading="eager"
+          />
+          <canvas id="particle-canvas"></canvas>
+          <div class="visual-overlay">
+            <span class="visual-badge">SEKWANG LOG</span>
+            <h2 class="visual-quote">
+              <span id="typing-text"></span><span class="typing-cursor"></span>
+            </h2>
+          </div>
+        </div>
+
+        <!-- 2. 소개 본문 섹션 -->
+        <section class="intro-section">
+          <div class="section-badge">ABOUT ME</div>
+          <h3 class="section-title">작고 아득한 순간들을 기록하는 세광입니다</h3>
+          <p class="intro-text">
+            바람이 흘러가는 소리, 무심코 지나치던 길가의 그림자,<br />
+            그리고 낯선 도시의 밤하늘 아래서 느꼈던 작고 아득한 감정들.<br /><br />
+            빠르게 지나쳐가는 시간 속에서 사소하지만 소중한 찰나를 문장으로 벼려냅니다.<br />
+            이곳에 머무는 짧은 순간이 당신의 마음에 작은 쉼표와 온기가 되기를 바랍니다.
+          </p>
+        </section>
+
+        <!-- 3. 블로그 주제 카드 그리드 (3D 틸트 인터랙션) -->
+        <section class="topic-section">
+          <div class="topic-header">
+            <svg class="topic-header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span>이곳에 담기는 이야기</span>
+          </div>
+
+          <div class="topic-grid">
+            <div class="topic-card" data-tilt>
+              <div class="topic-icon-wrap">
+                <svg class="topic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+              </div>
+              <h4>일상과 일기</h4>
+              <p>단조로운 하루의 결을 천천히 짚어보며 마음의 소리를 나지막이 기록합니다.</p>
+            </div>
+
+            <div class="topic-card" data-tilt>
+              <div class="topic-icon-wrap">
+                <svg class="topic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polygon points="12 8 8 12 12 16 16 12 12 8"></polygon>
+                </svg>
+              </div>
+              <h4>순간의 에피소드</h4>
+              <p>우연히 맞닥뜨린 사람들과 뜻밖의 해프닝 속 숨겨진 작은 여운들을 담습니다.</p>
+            </div>
+
+            <div class="topic-card" data-tilt>
+              <div class="topic-icon-wrap">
+                <svg class="topic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+              </div>
+              <h4>길 위의 여정</h4>
+              <p>익숙한 정적을 떠나 낯선 바람을 맞으며 마주한 풍경과 생각을 담아냅니다.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. 소통 및 연락처 카드 -->
+        <section class="connect-card">
+          <div class="connect-info">
+            <h3>마음을 나누며</h3>
+            <p>남겨진 글귀에 대한 생각이나 전하고 싶은 이야기가 있다면 언제든 편하게 연결해 주세요.</p>
+          </div>
+
+          <div class="connect-buttons">
+            <a href={`mailto:${SOCIAL_LINKS.email}`} class="btn-connect primary">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </svg>
+              <span>이메일 보내기</span>
+            </a>
+
+            {SOCIAL_LINKS.instagram && (
+              <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" class="btn-connect secondary">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+                <span>인스타그램</span>
+              </a>
+            )}
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <Footer />
+
+    <!-- 💡 클라이언트 사이드 자바스크립트 (파티클, 타이핑, 3D 틸트) -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // [1] 타이핑 효과
+        const textTarget = document.getElementById('typing-text');
+        const quoteString = '"스치는 계절 속에서 문장을 건져 올립니다."';
+        let charIndex = 0;
+
+        function typeWriter() {
+          if (!textTarget) return;
+          if (charIndex < quoteString.length) {
+            textTarget.textContent += quoteString.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeWriter, 75);
+          }
+        }
+        typeWriter();
+
+        // [2] 캔버스 반딧불 파티클 애니메이션
+        const canvas = document.getElementById('particle-canvas') as HTMLCanvasElement | null;
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          let width = (canvas.width = canvas.offsetWidth);
+          let height = (canvas.height = canvas.offsetHeight);
+
+          window.addEventListener('resize', () => {
+            if (!canvas) return;
+            width = canvas.width = canvas.offsetWidth;
+            height = canvas.height = canvas.offsetHeight;
+          });
+
+          interface Particle {
+            x: number;
+            y: number;
+            radius: number;
+            vx: number;
+            vy: number;
+            alpha: number;
+            alphaSpeed: number;
+          }
+
+          const particles: Particle[] = Array.from({ length: 28 }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 2 + 1,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4 - 0.2,
+            alpha: Math.random(),
+            alphaSpeed: (Math.random() * 0.02 + 0.008) * (Math.random() > 0.5 ? 1 : -1),
+          }));
+
+          function animateParticles() {
+            if (!ctx || !canvas) return;
+            ctx.clearRect(0, 0, width, height);
+
+            particles.forEach((p) => {
+              p.x += p.vx;
+              p.y += p.vy;
+              p.alpha += p.alphaSpeed;
+
+              if (p.alpha <= 0.1 || p.alpha >= 0.9) p.alphaSpeed = -p.alphaSpeed;
+              if (p.x < 0) p.x = width;
+              if (p.x > width) p.x = 0;
+              if (p.y < 0) p.y = height;
+              if (p.y > height) p.y = 0;
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.75})`;
+              ctx.shadowBlur = 8;
+              ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+              ctx.fill();
+            });
+
+            requestAnimationFrame(animateParticles);
+          }
+          animateParticles();
+        }
+
+        // [3] 카드 3D 틸트 (마우스 커서 따라 기울기)
+        const tiltCards = document.querySelectorAll<HTMLElement>('[data-tilt]');
+
+        tiltCards.forEach((card) => {
+          card.addEventListener('mousemove', (e: MouseEvent) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+          });
+
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

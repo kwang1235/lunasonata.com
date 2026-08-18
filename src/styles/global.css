@@ -69,7 +69,7 @@ h2 {
   margin-top: 3rem;
   margin-bottom: 1.25rem;
   padding-left: 0.85rem;
-  border-left: 3.5px solid var(--accent-color);
+  /* border-left: 3.5px solid var(--accent-color); */
 }
 
 h3 {
