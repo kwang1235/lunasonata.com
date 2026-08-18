@@ -10,7 +10,10 @@ const today = new Date();
     <div class="footer-grid">
       <!-- 사이트 브랜드 & 소개 -->
       <div class="footer-brand">
-        <h3 class="footer-logo">{SITE_TITLE}</h3>
+        <h3 class="footer-logo">
+          <span class="logo-text">{SITE_TITLE}</span>
+          <span class="live-dot" title="블로그가 활성화되어 운영 중입니다"></span>
+        </h3>
         <p class="footer-desc">{SITE_DESCRIPTION}</p>
       </div>
 
@@ -18,9 +21,9 @@ const today = new Date();
       <div class="footer-links">
         <h4 class="footer-heading">바로가기</h4>
         <ul>
-          <li><a href="/">홈</a></li>
-          <li><a href="/blog/">블로그</a></li>
-          <li><a href="/about">소개</a></li>
+          <li><a href="/" class="footer-nav-link">홈</a></li>
+          <li><a href="/blog/" class="footer-nav-link">전체 글 목록</a></li>
+          <li><a href="/about/" class="footer-nav-link">블로그 소개</a></li>
         </ul>
       </div>
 
@@ -29,13 +32,13 @@ const today = new Date();
         <h4 class="footer-heading">소통하기</h4>
         <div class="social-icons">
           {SOCIAL_LINKS.instagram && (
-            <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="인스타그램">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+            <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="인스타그램" class="social-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
             </a>
           )}
           {SOCIAL_LINKS.email && (
-            <a href={`mailto:${SOCIAL_LINKS.email}`} aria-label="이메일 보내기">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            <a href={`mailto:${SOCIAL_LINKS.email}`} aria-label="이메일 보내기" class="social-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
             </a>
           )}
         </div>
@@ -44,17 +47,21 @@ const today = new Date();
 
     <div class="footer-bottom">
       <p class="copyright">
-        &copy; {today.getFullYear()} Sekwang. All rights reserved.
+        &copy; {today.getFullYear()} <strong>Sekwang</strong>. All rights reserved.
       </p>
-      <button id="footer-back-to-top" class="back-to-top" aria-label="맨 위로 이동">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"></path></svg>
+      
+      <!-- 부유 애니메이션 탑 버튼 -->
+      <button id="footer-back-to-top" class="back-to-top" aria-label="맨 위로 이동" title="맨 위로 스크롤">
+        <svg class="top-arrow-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m18 15-6-6-6 6"></path>
+        </svg>
       </button>
     </div>
   </div>
 </footer>
 
 <script>
-  // 상단 이동 버튼 동작 (ID 충돌 방지)
+  // 상단 이동 버튼 부드러운 스크롤
   const footerBackToTopBtn = document.getElementById('footer-back-to-top');
   footerBackToTopBtn?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -63,16 +70,17 @@ const today = new Date();
 
 <style>
   .site-footer {
-    background-color: var(--footer-bg, #f8f9fa);
+    background-color: var(--footer-bg, #fcfbf9);
     border-top: 1px solid var(--border-color, #ebeae6);
     padding: 3.5rem 1.5rem 2rem;
-    margin-top: 1rem;
+    margin-top: 2rem;
     color: var(--text-color, #334155);
     font-size: 0.95rem;
+    position: relative;
   }
 
   .footer-container {
-    max-width: 1080px;
+    max-width: 860px;
     margin: 0 auto;
   }
 
@@ -91,26 +99,56 @@ const today = new Date();
   }
 
   .footer-logo {
-    font-size: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
     font-weight: 800;
     margin: 0 0 0.6rem 0;
     color: var(--heading-color, #1e293b);
     letter-spacing: -0.02em;
   }
 
+  /* 💡 실시간 살아있는 블로그 느낌을 주는 그린 펄스 점 */
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    animation: pulseGlow 2s infinite cubic-bezier(0.66, 0, 0, 1);
+  }
+
+  @keyframes pulseGlow {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+  }
+
   .footer-desc {
     margin: 0;
     line-height: 1.6;
-    color: var(--text-muted, #475569);
+    color: var(--text-muted, #64748b);
     font-size: 0.9rem;
+    word-break: keep-all;
   }
 
   .footer-heading {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 1rem 0;
+    letter-spacing: 0.06em;
+    margin: 0 0 0.85rem 0;
     color: var(--heading-color, #1e293b);
   }
 
@@ -121,75 +159,97 @@ const today = new Date();
   }
 
   .footer-links li {
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.4rem;
   }
 
-  .footer-links a {
+  .footer-nav-link {
     display: inline-block;
     padding: 0.2rem 0;
-    color: var(--text-muted, #475569);
-    text-decoration: none;
+    color: var(--text-muted, #64748b);
+    text-decoration: none !important;
+    font-size: 0.88rem;
     font-weight: 500;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
   }
 
-  .footer-links a:hover {
+  .footer-nav-link:hover {
     color: var(--accent-color, #5c6255);
+    transform: translateX(3px);
   }
 
   .social-icons {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.65rem;
   }
 
-  .social-icons a {
+  .social-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background-color: var(--icon-bg, #e2e8f0);
-    color: var(--text-color, #334155);
-    transition: all 0.2s ease;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .social-icons a:hover {
+  .social-btn:hover {
     background-color: var(--accent-color, #5c6255);
     color: #ffffff;
-    transform: translateY(-2px);
+    border-color: var(--accent-color, #5c6255);
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 6px 12px rgba(92, 98, 85, 0.25);
   }
 
   .footer-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 1.75rem;
-    border-top: 1px solid var(--border-color, #e2e8f0);
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(92, 98, 85, 0.12);
   }
 
   .copyright {
     margin: 0;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--text-muted, #64748b);
   }
 
+  /* 🚀 상단 이동 버튼 애니메이션 */
   .back-to-top {
-    background: var(--icon-bg, #e2e8f0);
-    border: none;
-    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
     width: 36px;
     height: 36px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--text-color, #334155);
-    transition: all 0.2s ease;
+    color: var(--text-muted, #64748b);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s ease;
+  }
+
+  .top-arrow-icon {
+    transition: transform 0.25s ease;
   }
 
   .back-to-top:hover {
     background: var(--accent-color, #5c6255);
     color: #ffffff;
+    border-color: var(--accent-color, #5c6255);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(92, 98, 85, 0.25);
+  }
+
+  .back-to-top:hover .top-arrow-icon {
+    transform: translateY(-2px);
+  }
+
+  .back-to-top:active {
+    transform: scale(0.92);
   }
 </style>

@@ -1,9 +1,8 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
+// src/components/BaseHead.astro
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
-import { SITE_TITLE, SITE_URL, DEFAULT_OG_IMAGE } from '../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, DEFAULT_OG_IMAGE, AUTHOR_NAME } from '../consts';
 import { Font } from 'astro:assets';
 
 interface Props {
@@ -11,13 +10,21 @@ interface Props {
   description: string;
   image?: ImageMetadata | string;
   noindex?: boolean;
+  article?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || SITE_URL);
-const { title, description, image = DEFAULT_OG_IMAGE, noindex = false } = Astro.props;
 
+const {
+  title,
+  description = SITE_DESCRIPTION,
+  image = DEFAULT_OG_IMAGE,
+  noindex = false,
+  article = false,
+} = Astro.props;
+
+// 이미지 절대 경로 URL 변환
 let imageURL: URL;
-
 if (typeof image === 'string') {
   if (image.startsWith('http://') || image.startsWith('https://')) {
     imageURL = new URL(image);
@@ -29,10 +36,12 @@ if (typeof image === 'string') {
 }
 ---
 
+<!-- 캐시 및 사전 연결 최적화 -->
 <meta http-equiv="Cache-Control" content="max-age=31536000, public" />
 <link rel="dns-prefetch" href="https://image.lunasonata.com" />
 <link rel="preconnect" href="https://image.lunasonata.com" crossorigin />
 
+<!-- 기본 메타데이터 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 
@@ -49,6 +58,7 @@ if (typeof image === 'string') {
 />
 <meta name="generator" content={Astro.generator} />
 
+<!-- 로컬 폰트 로드 -->
 <Font cssVariable="--font-atkinson" preload />
 <style is:inline>
   @font-face {
@@ -56,6 +66,7 @@ if (typeof image === 'string') {
   }
 </style>
 
+<!-- 정규 URL 및 로봇 색인 제어 -->
 <link rel="canonical" href={canonicalURL} />
 
 {noindex ? (
@@ -68,55 +79,28 @@ if (typeof image === 'string') {
 
 <title>{title}</title>
 <meta name="description" content={description} />
-<meta name="author" content="세광" />
+<meta name="author" content={AUTHOR_NAME} />
 
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
+<!-- Open Graph (소셜 공유) -->
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={imageURL} />
 <meta property="og:site_name" content={SITE_TITLE} />
 <meta property="og:locale" content="ko_KR" />
 
+<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:url" content={Astro.url} />
+<meta name="twitter:url" content={canonicalURL} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageURL} />
 
-{/* 사이트 구조화 데이터 (검색 최적화) */}
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": SITE_TITLE,
-  "url": SITE_URL
-})} />
-
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": title,
-  "description": description,
-  "image": imageURL.toString(),
-  "author": {
-    "@type": "Person",
-    "name": "세광",
-    "url": SITE_URL
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": SITE_TITLE,
-    "url": SITE_URL
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": canonicalURL.toString()
-  }
-})} />
-
-{/* 인덱싱 허용된 정상 페이지에서만 통계 및 광고 스크립트 로드 */}
+<!-- 💡 공개 페이지 전용: 애널리틱스, 구글 애드센스(단일 호출), 구조화 데이터 스키마 -->
 {!noindex && (
   <>
+    <!-- Matomo Analytics -->
     <script is:inline>
       var _paq = window._paq = window._paq || [];
       _paq.push(['trackPageView']);
@@ -130,10 +114,44 @@ if (typeof image === 'string') {
       })();
     </script>
 
+    <!-- 구글 애드센스 (단 1번만 안전하게 로드) -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4839414905225875"
       crossorigin="anonymous"
     ></script>
+
+    <!-- 1. 사이트 기본 스키마 (WebSite) -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": SITE_TITLE,
+      "url": SITE_URL
+    })} />
+
+    <!-- 2. 블로그 포스트 전용 스키마 (개별 글일 때만 실행) -->
+    {article && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": title,
+        "description": description,
+        "image": imageURL.toString(),
+        "author": {
+          "@type": "Person",
+          "name": AUTHOR_NAME,
+          "url": SITE_URL
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": SITE_TITLE,
+          "url": SITE_URL
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": canonicalURL.toString()
+        }
+      })} />
+    )}
   </>
 )}
