@@ -39,6 +39,7 @@ const categories = [
         padding: 3rem 1rem 5rem 1rem;
         box-sizing: border-box;
         position: relative;
+        min-height: calc(100vh - 350px);
       }
 
       /* 배경 은은한 오로라 앰비언트 라이트 */
@@ -84,7 +85,7 @@ const categories = [
         gap: 0.6rem;
       }
 
-      /* 책 아이콘 회전/펄스 지속 애니메이션 */
+      /* 헤더 아이콘 부유 애니메이션 */
       .header-icon {
         width: 26px !important;
         height: 26px !important;
@@ -94,10 +95,10 @@ const categories = [
         fill: none;
         display: inline-block;
         flex-shrink: 0;
-        animation: bookFloat 3s ease-in-out infinite;
+        animation: tagFloat 3s ease-in-out infinite;
       }
 
-      @keyframes bookFloat {
+      @keyframes tagFloat {
         0%, 100% { transform: translateY(0) rotate(0deg); }
         50% { transform: translateY(-3px) rotate(-6deg); }
       }
@@ -108,6 +109,16 @@ const categories = [
         color: var(--heading-color, #1e293b);
         margin: 0;
         letter-spacing: -0.02em;
+      }
+
+      .post-count-badge {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--accent-color, #5c6255);
+        background: rgba(92, 98, 85, 0.1);
+        padding: 0.2rem 0.65rem;
+        border-radius: 12px;
+        margin-left: 0.4rem;
       }
 
       /* 카테고리 내비게이션 탭 */
@@ -315,7 +326,7 @@ const categories = [
         overflow: hidden;
       }
 
-      /* 📱 모바일 반응형 (680px 이하) */
+      /* 📱 모바일 반응형 (680px 이하) - 카테고리 페이지와 완벽 통일 */
       @media (max-width: 680px) {
         main {
           padding: 1.75rem 1rem 3.5rem 1rem;
@@ -364,6 +375,7 @@ const categories = [
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
             <h1 class="page-title">전체 글 목록</h1>
+            <span class="post-count-badge">{posts.length}</span>
           </div>
         </div>
 
@@ -386,7 +398,7 @@ const categories = [
           {
             posts.map((post) => (
               <li class="post-item">
-                <a href={`/${post.id}/`} class="interactive-card">
+                <a href={`/${post.data.slug || post.id}/`} class="interactive-card">
                   <div class="thumbnail-wrapper">
                     {
                       post.data.heroImage && typeof post.data.heroImage === 'object' ? (
@@ -437,7 +449,7 @@ const categories = [
 
     <Footer />
 
-    <!-- 💡 은은하고 부드러운 마우스 반응 스크립트 -->
+    <!-- 💡 은은하고 부드러운 3D 틸트 스크립트 (최대 2.2도) -->
     <script is:inline>
       function initTilt() {
         const cards = document.querySelectorAll('.interactive-card');
@@ -450,7 +462,6 @@ const categories = [
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            // 은은한 회전 각도(최대 2도) 및 미세한 스케일 적용
             const rotateX = ((y - centerY) / centerY) * -2.2;
             const rotateY = ((x - centerX) / centerX) * 2.2;
 
