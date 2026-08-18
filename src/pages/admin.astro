@@ -26,13 +26,15 @@ import BaseHead from '../components/BaseHead.astro';
         --text-muted: #94a3b8;
       }
 
-      body {
+      html, body {
         margin: 0;
         padding: 0;
         background-color: var(--bg-main);
         color: var(--text-main);
         font-family: 'Pretendard', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        overflow-y: auto !important; /* 세로 스크롤 강제 활성화 */
       }
 
       .header-bar {
@@ -89,25 +91,71 @@ import BaseHead from '../components/BaseHead.astro';
         flex-direction: column;
         gap: 1rem;
         box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-        min-width: 0; /* 내부 콘텐츠 넘침으로 인한 폭 찌그러짐 방지 */
-      }
-
-      .card-sticky {
-        position: sticky;
-        top: 80px;
-        height: calc(100vh - 110px);
+        min-width: 0;
         box-sizing: border-box;
       }
 
+      /* 🖥️ PC 화면: 왼쪽 작성 카드와 오른쪽 미리보기 카드 둘 다 상단 고정 & 내부 스크롤 */
+      .editor-grid > section.card {
+        position: sticky;
+        top: 80px;
+        height: calc(100vh - 110px);
+        overflow-y: auto; /* 내부 스크롤 활성화 */
+      }
+
+      /* 🎨 왼쪽 카드 내부 스크롤바 커스텀 스타일링 (슬림 & 다크 테마) */
+      .editor-grid > section.card::-webkit-scrollbar {
+        width: 6px;
+      }
+      .editor-grid > section.card::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .editor-grid > section.card::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+      }
+      .editor-grid > section.card::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-color);
+      }
+
+      .card-sticky {
+        /* 오른쪽 카드의 고유 설정 유지 */
+        overflow: hidden; /* 미리보기는 내부 preview-box가 스크롤을 담당 */
+      }
+
+      /* 🖥️ PC 상태 바: 1층과 2층을 세로로 깔끔하게 배치 */
       .stats-bar {
         display: flex;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
         background: var(--bg-input);
-        padding: 0.75rem 1rem;
+        padding: 0.85rem 1.1rem;
         border-radius: 10px;
         border: 1px solid var(--border-color);
+        box-sizing: border-box;
+      }
+
+      .stats-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         font-size: 0.85rem;
         color: var(--text-muted);
+      }
+
+      .stats-info-row span strong {
+        color: var(--primary-color);
+      }
+
+      #save-status {
+        font-size: 0.8rem;
+        color: #10b981;
+      }
+
+      .stats-btn-row {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
       }
 
       .stats-bar span strong {
@@ -668,9 +716,12 @@ import BaseHead from '../components/BaseHead.astro';
           padding: 0.75rem;
           gap: 1.25rem;
         }
+        /* 📱 모바일/태블릿에서는 스티키 및 고정 높이 해제 */
+        .editor-grid > section.card,
         .card-sticky {
-          position: static;
-          height: auto;
+          position: static !important;
+          height: auto !important;
+          overflow-y: visible !important;
         }
       }
 
@@ -680,9 +731,9 @@ import BaseHead from '../components/BaseHead.astro';
   .mobile-tab-bar {
     display: flex !important;
     gap: 0.5rem;
-    padding: 0.75rem 1rem 0;
-    max-width: 1700px;
-    margin: 0 auto;
+    padding: 0.75rem 0.75rem 0 0.75rem !important;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .tab-btn {
@@ -708,18 +759,86 @@ import BaseHead from '../components/BaseHead.astro';
   :root {
     --mobile-hide: none;
   }
-        .card {
-          padding: 1rem;
-        }
+/* 📱 메인 콘텐츠 그리드 여백 통일 */
+  .editor-grid {
+    padding: 0.75rem !important;
+    gap: 0.75rem !important;
+  }
+
+        /* 📱 글 작성 카드 및 미리보기 박스 내부 패딩 통일 */
+  .card {
+    padding: 0.85rem !important;
+    box-sizing: border-box;
+  }
         .editor-grid div[style*="grid-template-columns: 1fr 1fr"] {
           grid-template-columns: 1fr !important;
           gap: 0.75rem !important;
         }
-        .stats-bar {
-          flex-direction: column;
-          align-items: flex-start !important;
-          gap: 0.75rem;
-        }
+        /* 📱 상단 상태 바: 위(글자수 & 저장상태) / 아래(버튼 3개) 상하 완벽 분리 */
+  .stats-bar {
+    padding: 0.75rem !important;
+    gap: 0.6rem !important;
+  }
+
+  .stats-info-row {
+    font-size: 0.78rem !important;
+    width: 100% !important;
+  }
+
+  /* 1층: 글자 수, 읽기 시간, 자동 저장 상태를 한 줄로 시원하게 배치 */
+  .stats-bar > div:first-child {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* 2층: 초안 보관함 / 보관 / 비우기 버튼을 모바일 가로 3분할로 균등 정렬 */
+  .stats-bar > div:last-child {
+    display: grid !important;
+    grid-template-columns: 1.2fr 1fr 1fr !important;
+    gap: 0.4rem !important;
+    width: 100% !important;
+  }
+
+  #save-status {
+    font-size: 0.75rem !important;
+  }
+
+  .stats-btn-row {
+    display: grid !important;
+    grid-template-columns: 1.2fr 1.2fr 1fr !important;
+    gap: 0.4rem !important;
+    width: 100% !important;
+  }
+
+  .stats-btn-row .tool-btn {
+    width: 100% !important;
+    padding: 0.55rem 0.2rem !important;
+    font-size: 0.75rem !important;
+    text-align: center;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 0 !important;
+    white-space: nowrap;
+  }
+
+  /* 모바일 버튼 터치 영역 및 패딩 정리 */
+  .stats-bar .tool-btn {
+    padding: 0.6rem 0.3rem !important;
+    font-size: 0.75rem !important;
+    text-align: center;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 !important;
+    white-space: nowrap;
+  }
         .stats-bar > div:last-child {
           flex-wrap: wrap;
           width: 100%;
@@ -761,8 +880,8 @@ import BaseHead from '../components/BaseHead.astro';
 
   /* 실시간 미리보기 박스 높이 및 여백 조절 */
   .preview-box {
-    padding: 1.25rem !important;
-    max-height: 500px;
+    padding: 1rem !important;
+    box-sizing: border-box;
   }
   /* 📱 모바일 팝업 모달창 화면 꽉 차게 최적화 */
   .modal-box {
@@ -837,7 +956,7 @@ import BaseHead from '../components/BaseHead.astro';
 
   /* 📱 헤더 및 상단 여백 모바일 슬림화 */
   .header-bar {
-    padding: 0.75rem 1rem !important;
+    padding: 0.85rem 0.75rem !important;
   }
   .header-bar h1 {
     font-size: 1.15rem !important;
@@ -895,19 +1014,24 @@ import BaseHead from '../components/BaseHead.astro';
     <main class="editor-grid">
       <!-- 💡 왼쪽 카드: 자연스럽게 아래로 길어지며 스크롤되는 영역 -->
       <section class="card">
-        <div class="stats-bar" style="justify-content: space-between; align-items: center;">
-          <div>
-            <span>글자 수: <strong id="char-count">0</strong> 자</span>
-            <span>•</span>
-            <span>예상 읽기 시간: <strong id="read-time">0</strong> 분</span>
-          </div>
-          <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <span id="save-status" style="font-size: 0.75rem; color: #10b981;">작성 내용 자동 저장됨</span>
-            <button type="button" id="btn-open-drafts" class="tool-btn" style="background: #6366f1; border-color: #818cf8; padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 700;">📁 초안 보관함 (<span id="draft-count">0</span>)</button>
-            <button type="button" id="btn-save-as-draft" class="tool-btn" style="background: #0ea5e9; border-color: #38bdf8; padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 700;">💾 현재 글 보관</button>
-            <button type="button" id="btn-reset-draft" class="tool-btn" style="background: #e11d48; padding: 0.2rem 0.5rem; font-size: 0.75rem;">🗑️ 내용 비우기</button>
-          </div>
-        </div>
+        <div class="stats-bar">
+  <!-- 1층: 통계 정보 및 자동 저장 안내 -->
+  <div class="stats-info-row">
+    <div>
+      <span>글자 수: <strong id="char-count">0</strong> 자</span>
+      <span>•</span>
+      <span>예상 읽기 시간: <strong id="read-time">0</strong> 분</span>
+    </div>
+    <span id="save-status">✅ 작성 내용 자동 저장됨</span>
+  </div>
+
+  <!-- 2층: 초안 보관함 / 저장 / 비우기 버튼 3개 -->
+  <div class="stats-btn-row">
+    <button type="button" id="btn-open-drafts" class="tool-btn" style="background: #6366f1; border-color: #818cf8; font-weight: 700;">📁 초안 보관함 (<span id="draft-count">0</span>)</button>
+    <button type="button" id="btn-save-as-draft" class="tool-btn" style="background: #0ea5e9; border-color: #38bdf8; font-weight: 700;">💾 현재 글 보관</button>
+    <button type="button" id="btn-reset-draft" class="tool-btn" style="background: #e11d48;">🗑️ 내용 비우기</button>
+  </div>
+</div>
 
         <!-- 🌐 다중 사이트 선택기 -->
 <div class="form-group" style="background: rgba(56, 189, 248, 0.08); padding: 0.85rem; border-radius: 10px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 0.5rem;">
@@ -1789,18 +1913,21 @@ ${bodyContent}`;
       // =========================================================
 // 💡 [추가] 모달 열림/닫힘 시 뒷배경 스크롤 잠금/해제 함수
 function lockBackgroundScroll() {
+  document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
 }
 
 function unlockBackgroundScroll() {
-  // 열려있는 다른 모달이 하나도 없을 때만 스크롤 복구
-  const anyModalOpen = [modal, lbModal, postsModal, draftsModal, deleteModal].some(
-    (m) => m && m.style.display === 'flex'
-  );
+  // 현재 열려있는 팝업 모달이 있는지 확인
+  const modals = [modal, lbModal, postsModal, draftsModal, deleteModal];
+  const anyModalOpen = modals.some((m) => m && window.getComputedStyle(m).display === 'flex');
+
+  // 열려있는 모달이 없으면 스크롤을 완전히 복구
   if (!anyModalOpen) {
-    document.body.style.overflow = '';
+    document.documentElement.style.overflow = 'auto';
+    document.body.style.overflow = 'auto';
   }
-}      
+}   
       function closeModal() {
         if (modal) modal.style.display = 'none';
         unlockBackgroundScroll();
@@ -2407,16 +2534,17 @@ const filtered = allPostsData.filter((post) => {
       // [8] 🔒 관리자 인증(로그인) 기능
       // =========================================================
       function checkAdminAuth() {
-  const isAuth = sessionStorage.getItem('admin_authenticated');
-  if (isAuth === 'true') {
-    if (authOverlay) authOverlay.style.display = 'none';
-    unlockBackgroundScroll(); // 💡 인증 완료 시 스크롤 해제
-  } else {
-    if (authOverlay) authOverlay.style.display = 'flex';
-    lockBackgroundScroll();   // 💡 잠금 화면 뜰 때 뒷배경 스크롤 방지
-    authPasswordInput?.focus();
-  }
-}
+        const isAuth = sessionStorage.getItem('admin_authenticated');
+        if (isAuth === 'true') {
+          if (authOverlay) authOverlay.style.display = 'none';
+          document.documentElement.style.overflow = 'auto';
+          document.body.style.overflow = 'auto';
+        } else {
+          if (authOverlay) authOverlay.style.display = 'flex';
+          lockBackgroundScroll();
+          authPasswordInput?.focus();
+        }
+      }
 
       async function handleAdminLogin() {
         const password = authPasswordInput?.value.trim();
