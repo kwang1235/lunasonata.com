@@ -36,10 +36,8 @@ if (typeof image === 'string') {
 }
 ---
 
-<!-- 캐시 및 사전 연결 최적화 -->
-<meta http-equiv="Cache-Control" content="max-age=31536000, public" />
+<!-- DNS 사전 조회만 유지 (preconnect는 외부 서버 핸드셰이크 지연을 유발하므로 제거) -->
 <link rel="dns-prefetch" href="https://image.lunasonata.com" />
-<link rel="preconnect" href="https://image.lunasonata.com" crossorigin />
 
 <!-- 기본 메타데이터 -->
 <meta charset="utf-8" />
@@ -125,7 +123,6 @@ if (typeof image === 'string') {
       ['scroll', 'mousemove', 'touchstart', 'click'].forEach(evt =>
         window.addEventListener(evt, loadDeferredScripts, { passive: true, once: true })
       );
-      setTimeout(loadDeferredScripts, 3500);
     </script>
 
     <!-- 1. 사이트 기본 스키마 (WebSite) -->
