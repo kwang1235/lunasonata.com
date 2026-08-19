@@ -58,14 +58,6 @@ if (typeof image === 'string') {
 />
 <meta name="generator" content={Astro.generator} />
 
-<!-- 로컬 폰트 로드 -->
-<Font cssVariable="--font-atkinson" preload />
-<style is:inline>
-  @font-face {
-    font-display: swap;
-  }
-</style>
-
 <!-- 정규 URL 및 로봇 색인 제어 -->
 <link rel="canonical" href={canonicalURL} />
 
@@ -74,8 +66,6 @@ if (typeof image === 'string') {
 ) : (
   <meta name="robots" content="index, follow" />
 )}
-
-<link rel="preload" as="image" href={imageURL} />
 
 <title>{title}</title>
 <meta name="description" content={description} />
@@ -100,26 +90,43 @@ if (typeof image === 'string') {
 <!-- 💡 공개 페이지 전용: 애널리틱스, 구글 애드센스(단일 호출), 구조화 데이터 스키마 -->
 {!noindex && (
   <>
-    <!-- Matomo Analytics -->
+    <!-- Matomo Analytics & 애드센스 지연 로드 스크립트 -->
     <script is:inline>
-      var _paq = window._paq = window._paq || [];
-      _paq.push(['trackPageView']);
-      _paq.push(['enableLinkTracking']);
-      (function() {
-        var u="https://analytics.kwang1235.synology.me/";
-        _paq.push(['setTrackerUrl', u+'matomo.php']);
-        _paq.push(['setSiteId', '1']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-      })();
-    </script>
+      let isDeferredScriptsLoaded = false;
+      function loadDeferredScripts() {
+        if (isDeferredScriptsLoaded) return;
+        isDeferredScriptsLoaded = true;
 
-    <!-- 구글 애드센스 (단 1번만 안전하게 로드) -->
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4839414905225875"
-      crossorigin="anonymous"
-    ></script>
+        // 1. Matomo 통계 로드
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        var u = "https://analytics.kwang1235.synology.me/";
+        _paq.push(['setTrackerUrl', u + 'matomo.php']);
+        _paq.push(['setSiteId', '1']);
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.async = true; g.src = u + 'matomo.js';
+        s.parentNode.insertBefore(g, s);
+
+        // 2. 구글 애드센스 지연 로드
+        var adScript = document.createElement('script');
+        adScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4839414905225875";
+        adScript.async = true;
+        adScript.crossOrigin = "anonymous";
+        document.head.appendChild(adScript);
+
+        // 이벤트 제거
+        ['scroll', 'mousemove', 'touchstart', 'click'].forEach(evt =>
+          window.removeEventListener(evt, loadDeferredScripts)
+        );
+      }
+
+      // 첫 상호작용(스크롤/터치/클릭/마우스이동) 시 실행 or 3.5초 뒤 자동 로드
+      ['scroll', 'mousemove', 'touchstart', 'click'].forEach(evt =>
+        window.addEventListener(evt, loadDeferredScripts, { passive: true, once: true })
+      );
+      setTimeout(loadDeferredScripts, 3500);
+    </script>
 
     <!-- 1. 사이트 기본 스키마 (WebSite) -->
     <script type="application/ld+json" set:html={JSON.stringify({

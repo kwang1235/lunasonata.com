@@ -3,9 +3,9 @@ import { fromHtml } from 'hast-util-from-html';
 
 // 본문 중간 광고 단위 HTML 코드
 const AD_HTML = `
-<div class="in-feed-ads ads-container" style="margin: 2rem 0; text-align: center; overflow: hidden; clear: both;">
+<div class="in-feed-ads ads-container" style="margin: 2rem 0; min-height: 280px; text-align: center; overflow: hidden; clear: both;">
   <ins class="adsbygoogle"
-       style="display:block; text-align:center;"
+       style="display:block; text-align:center; min-height: 280px;"
        data-ad-layout="in-article"
        data-ad-format="fluid"
        data-ad-client="ca-pub-4839414905225875"
