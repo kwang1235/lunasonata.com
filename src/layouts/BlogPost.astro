@@ -37,6 +37,25 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
   <head>
     <!-- 글 개별 대표 이미지(또는 기본 대체 이미지)를 메타태그 및 OG 카드에 전달 -->
     <BaseHead title={title} description={description} image={displayHeroImage} noindex={noindex} />
+
+    <!-- 🔍 검색엔진 최적화(SEO)를 위한 BlogPosting 구조화 데이터 -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": title,
+      "description": description,
+      "image": displayHeroImage ? [new URL(displayHeroImage, Astro.site || Astro.url.origin).toString()] : [],
+      "datePublished": (!isNaN(new Date(pubDate).getTime())) ? new Date(pubDate).toISOString() : new Date().toISOString(),
+      ...(updatedDate && !isNaN(new Date(updatedDate).getTime()) && { "dateModified": new Date(updatedDate).toISOString() }),
+      "author": {
+        "@type": "Person",
+        "name": SITE_TITLE
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": Astro.url.toString()
+      }
+    })} />
   </head>
 
   <body>
@@ -126,7 +145,9 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
 
     <!-- 원형 플로팅 스크롤 상단 이동 버튼 -->
     <button id="back-to-top" class="floating-top-btn" aria-label="맨 위로 이동">
-      ↑
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
     </button>
 
     <!-- 고급 이미지 갤러리 모달 (라이트박스) -->
@@ -153,6 +174,86 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
     <Footer />
 
     <style>
+/* 💡 모달 활성화 시 스크롤바 제거로 인한 화면 밀림 방지 */
+      :root {
+        scrollbar-gutter: stable;
+      }
+
+      /* 🎨 본문 텍스트 드래그(선택) 강조 색상 */
+      ::selection {
+        background-color: rgba(92, 98, 85, 0.25);
+        color: inherit;
+      }
+
+      /* 💻 코드 블록 및 인라인 코드 드래그 선택 강조 색상 */
+      .prose :global(pre ::selection),
+      .prose :global(code::selection) {
+        background-color: rgba(255, 255, 255, 0.25);
+        color: #ffffff;
+      }
+
+      /* 💡 인용구(blockquote) 및 링크 기본 여백 정돈 */
+      .prose :global(blockquote) {
+        border-left: 4px solid var(--accent-color, #5c6255);
+        padding-left: 1rem;
+        margin: 1.5rem 0;
+        color: var(--text-muted, #64748b);
+        font-style: italic;
+      }
+
+      /* 📝 본문 목록(ul, ol) 가독성 및 들여쓰기 정돈 */
+      .prose :global(ul),
+      .prose :global(ol) {
+        padding-left: 1.4rem;
+        margin: 1.25rem 0;
+      }
+
+      .prose :global(li) {
+        margin-bottom: 0.5rem;
+        line-height: 1.7;
+        color: var(--text-primary, #334155);
+      }
+
+      /* 📋 마크다운 체크박스(Task List) 스타일 및 정렬 최적화 */
+      .prose :global(li.task-list-item) {
+        list-style-type: none;
+        position: relative;
+        padding-left: 0.2rem;
+      }
+
+      .prose :global(input[type='checkbox']) {
+        accent-color: var(--accent-color, #5c6255);
+        transform: scale(1.15);
+        margin-right: 0.5rem;
+        vertical-align: middle;
+        cursor: pointer;
+      }
+
+      .prose :global(li::marker) {
+        color: var(--accent-color, #5c6255);
+        font-weight: 600;
+      }
+
+      /* ➖ 본문 감성 구분선(hr) 스타일 */
+      .prose :global(hr) {
+        border: none;
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          rgba(92, 98, 85, 0.25),
+          transparent
+        );
+        margin: 2.5rem 0;
+      }
+
+      /* 🔤 본문 강조 굵은 글씨(strong, b) 가독성 및 명도 강화 */
+      .prose :global(strong),
+      .prose :global(b) {
+        font-weight: 700;
+        color: var(--heading-color, #0f172a);
+      }
+
       /* 스크롤 프로그레스 바 */
       .progress-bar {
         position: fixed;
@@ -173,20 +274,52 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         position: relative;
       }
 
+      /* 📄 본문 텍스트 자동 줄바꿈 및 모바일 레이아웃 최적화 */
+      .prose {
+        overflow-wrap: break-word;
+        word-break: keep-all;
+        line-height: 1.8;
+        color: var(--text-primary, #334155);
+      }
+
+      /* 🔗 본문 링크 밑줄 간격 및 호버 애니메이션 최적화 */
+      .prose :global(a:not(.heading-anchor-btn)) {
+        color: var(--accent-color, #5c6255);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        text-decoration-thickness: 1.5px;
+        transition: color 0.2s ease, text-decoration-color 0.2s ease;
+      }
+
+      /* 🎯 본문 링크 키보드 포커스(접근성) 스타일 최적화 */
+      .prose :global(a:focus-visible) {
+        outline: 2px solid var(--accent-color, #5c6255);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+
+      .prose :global(a:not(.heading-anchor-btn):hover) {
+        color: #2b3027;
+        text-decoration-color: #2b3027;
+      }
+
       .post-header {
         text-align: center;
         margin-bottom: 2.5rem;
-        padding: 4rem 2rem; /* 위아래 여백을 주어 은은하게 배경이 드러나도록 지정 */
+        padding: 4rem 2rem;
         border-radius: 16px;
+        background-color: #1e293b;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         position: relative;
         overflow: hidden;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: background-image 0.3s ease-in-out;
       }
 
-/* 💡 배경 위 글자 가독성을 위해 텍스트 색상을 흰색 톤으로 통일 */
+      /* 💡 배경 위 글자 가독성을 위해 텍스트 색상을 흰색 톤으로 통일 */
       .post-header .post-meta-row {
         color: rgba(255, 255, 255, 0.85) !important;
       }
@@ -202,14 +335,15 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
       .post-title {
         font-size: 2.1rem;
         font-weight: 800;
-        color: #ffffff !important; /* 글자색을 흰색으로 지정 */
+        color: #ffffff !important;
         line-height: 1.35;
         letter-spacing: -0.02em;
         margin: 0;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* 은은한 그림자로 가독성 확보 */
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        word-break: keep-all;
+        overflow-wrap: break-word;
       }
 
-      /* ✅ 추가할 CSS 코드 */
       .post-categories-row {
         display: flex;
         justify-content: center;
@@ -230,22 +364,29 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         font-size: 0.8rem;
         font-weight: 700;
         text-decoration: none !important;
-        transition: all 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+        transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
       }
 
-      .post-header-tag:hover {
+      .post-header-tag:hover,
+      .post-header-tag:focus {
         background: rgba(255, 255, 255, 0.35);
         border-color: rgba(255, 255, 255, 0.6);
+        color: #ffffff !important;
+        text-decoration: none !important;
         transform: translateY(-1px);
       }
 
       .post-meta-row {
         display: inline-flex;
+        flex-wrap: wrap;
+        justify-content: center;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem 0.6rem;
         font-size: 0.875rem;
         color: var(--text-muted, #64748b);
         margin-bottom: 0.75rem;
+        line-height: 1.4;
       }
 
       .meta-divider {
@@ -264,21 +405,12 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         flex-shrink: 0;
       }
 
-      .post-title {
-        font-size: 2rem;
-        font-weight: 800;
-        color: var(--heading-color, #1e293b);
-        line-height: 1.35;
-        letter-spacing: -0.02em;
-        margin: 0;
-      }
-
       /* 🎨 목차(TOC) 스타일: 흰색 배경 대신 감성적 은은한 유선형 투명 디자인 */
       .toc-container {
         display: none;
         background: rgba(255, 255, 255, 0.45);
         backdrop-filter: blur(8px);
-        border: 1px solid rgba(92, 98, 85, 0.12); /* 딥 올리브 톤 얇은 라인 */
+        border: 1px solid rgba(92, 98, 85, 0.12);
         border-radius: 16px;
         padding: 1.1rem 1.25rem;
         margin-bottom: 2.5rem;
@@ -316,11 +448,16 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background 0.2s, transform 0.2s;
+        -webkit-tap-highlight-color: transparent;
+        transition: background-color 0.2s ease, transform 0.15s ease;
       }
 
       .toc-toggle-btn:hover {
         background: rgba(92, 98, 85, 0.12);
+      }
+
+      .toc-toggle-btn:active {
+        transform: scale(0.92);
       }
 
       .toc-wrapper {
@@ -330,7 +467,15 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         transition: max-height 0.3s cubic-bezier(0, 1, 0, 1), opacity 0.2s ease;
       }
 
+      #toc-toggle-icon {
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
       /* 접힌 상태 */
+      .toc-container.collapsed {
+        padding-bottom: 1.1rem;
+      }
+
       .toc-container.collapsed .toc-wrapper {
         max-height: 0 !important;
         opacity: 0;
@@ -376,18 +521,23 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         border-left-color: var(--accent-color, #5c6255);
       }
 
-      /* 🖥️ PC 환경 (1201px 이상) 스크롤 시 좌측 플로팅 애니메이션 전환 */
-      @media (min-width: 1201px) {
+      /* 🖥️ PC 환경 (1360px 이상 넓은 화면) 스크롤 시 좌측 플로팅 전환 */
+      @media (min-width: 1360px) {
         .toc-container.is-floating {
           position: fixed;
           top: 140px;
-          left: calc(50% - 360px - 250px); /* 본문 좌측 위치 */
+          left: calc(50% - 360px - 250px);
           width: 220px;
           max-height: calc(100vh - 180px);
           margin-bottom: 0;
           z-index: 90;
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
           animation: floatIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .toc-container.is-floating.collapsed {
+          padding-bottom: 0.85rem;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
         }
 
         .toc-container.is-floating .toc-wrapper {
@@ -414,7 +564,6 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
       .image-hover-wrapper {
         position: relative;
         overflow: hidden;
-        border-radius: 12px;
         cursor: pointer;
       }
 
@@ -425,22 +574,21 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         display: block;
       }
 
-      /* 💡 1. 이미지 래퍼 및 이미지 바깥 여백(margin) 0으로 설정 & 사진 간격 1rem 설정 */
+      /* 💡 1. 이미지 래퍼 및 본문 이미지 설정 */
       .prose :global(.image-hover-wrapper) {
         position: relative;
         display: block;
         max-width: 100%;
         overflow: hidden;
-        border-radius: 0 !important;
         margin: 0 0 1rem 0 !important;
-        cursor: default;
+        cursor: pointer;
       }
 
       .prose :global(img) {
         display: block;
         max-width: 100%;
         height: auto;
-        border-radius: 0 !important;
+        border-radius: 8px;
         margin: 0 !important;
         transition: transform 0.3s ease, filter 0.3s ease;
       }
@@ -453,20 +601,116 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
 
       /* 💡 2. figure 태그 및 캡션(figcaption) 간격 정밀 조정 */
       .prose :global(figure) {
-        margin: 0 0 1rem 0 !important; /* figure 간격 1rem */
+        margin: 0 0 1rem 0 !important;
         text-align: center;
+      }
+
+      /* 📊 본문 테이블(table) 모바일 가로 스크롤 및 테두리 정돈 */
+      .prose :global(table) {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        font-size: 0.9rem;
+      }
+
+      .prose :global(th),
+      .prose :global(td) {
+        padding: 0.6rem 0.9rem;
+        border: 1px solid var(--border-color, #e2e8f0);
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      .prose :global(th) {
+        background: rgba(92, 98, 85, 0.08);
+        font-weight: 700;
+        color: var(--heading-color, #1e293b);
+      }
+
+      /* 🎬 본문 유튜브 및 외부 임베드 iframe 16:9 반응형 최적화 */
+      .prose :global(iframe) {
+        width: 100% !important;
+        aspect-ratio: 16 / 9;
+        height: auto !important;
+        border-radius: 12px;
+        border: none;
+        margin: 1.5rem 0 !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
       }
 
       .prose :global(figcaption) {
         font-size: 0.85rem;
         color: var(--text-muted, #64748b);
-        margin-top: 0.35rem !important; /* 이미지 바로 밑에 가깝게 붙이기 */
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+        line-height: 1.5;
+        text-align: center;
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        letter-spacing: -0.01em;
+      }
+
+      /* 💡 목차 및 앵커 링크 클릭 시 상단 고정 헤더에 제목이 가려지지 않도록 여백 확보 */
+      .prose :global(h2),
+      .prose :global(h3),
+      .prose :global(h4),
+      .prose :global(h5),
+      .prose :global(h6) {
+        scroll-margin-top: 100px;
+      }
+
+      /* 🏷️ 본문 소제목(h3, h4) 계층별 여백 및 가독성 최적화 */
+      .prose :global(h3) {
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: var(--heading-color, #1e293b);
+        margin-top: 2.2rem;
+        margin-bottom: 0.8rem;
         line-height: 1.4;
+        letter-spacing: -0.01em;
+      }
+
+      .prose :global(h4) {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--heading-color, #1e293b);
+        margin-top: 1.8rem;
+        margin-bottom: 0.6rem;
+        line-height: 1.45;
+      }
+
+      /* 🔗 본문 제목 앵커 링크 버튼 스타일 */
+      .prose :global(h2) {
+        position: relative;
+      }
+
+      :global(.heading-anchor-btn) {
+        opacity: 0;
+        margin-left: 0.5rem;
+        color: var(--text-muted, #94a3b8);
+        text-decoration: none;
+        font-size: 0.85em;
+        cursor: pointer;
+        transition: opacity 0.2s ease, color 0.2s ease;
+        vertical-align: middle;
+      }
+
+      .prose :global(h2:hover) :global(.heading-anchor-btn),
+      :global(.heading-anchor-btn:focus) {
+        opacity: 1;
+      }
+
+      :global(.heading-anchor-btn:hover) {
+        color: var(--accent-color, #5c6255);
       }
 
       .zoom-hint-overlay,
       :global(.zoom-hint-overlay) {
-        display: none !important; /* 💡 이미지 위 호버 아이콘 레이어 숨김 */
+        display: flex;
         position: absolute;
         bottom: 12px;
         right: 12px;
@@ -487,23 +731,15 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
       }
 
       .image-hover-wrapper:hover .zoom-hint-overlay,
-      .image-hover-wrapper:hover img,
-      :global(.image-hover-wrapper:hover .zoom-hint-overlay),
-      :global(.image-hover-wrapper:hover img) {
+      :global(.image-hover-wrapper:hover .zoom-hint-overlay) {
         opacity: 1;
         transform: translateY(0);
-      }
-
-      .image-hover-wrapper:hover img,
-      :global(.image-hover-wrapper:hover img) {
-        filter: brightness(0.95);
-        transform: scale(1.01);
       }
 
       /* 원형 플로팅 맨 위로 이동 버튼 */
       .floating-top-btn {
         position: fixed;
-        bottom: 2rem;
+        bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
         right: 2rem;
         width: 44px;
         height: 44px;
@@ -516,63 +752,74 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
         opacity: 0;
         visibility: hidden;
-        transition: all 0.25s ease;
-        z-index: 100;
+        transform: translateY(10px);
+        transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease, background-color 0.2s ease, color 0.2s ease;
+        z-index: 95;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .floating-top-btn.visible {
         opacity: 1;
         visibility: visible;
+        transform: translateY(0);
       }
 
       .floating-top-btn:hover {
         background-color: var(--accent-color, #5c6255);
         color: #ffffff;
         border-color: var(--accent-color, #5c6255);
+        transform: translateY(-2px);
       }
 
       /* 이미지 모달 전체 컨테이너 */
       .image-modal {
         position: fixed;
-        top: 0;
-        left: 0;
+        inset: 0;
         width: 100vw;
         height: 100vh;
         height: 100dvh;
         background-color: rgba(0, 0, 0, 0.92);
         z-index: 9999;
-        display: none;
+        display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
         padding-bottom: env(safe-area-inset-bottom, 0px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
       }
 
       .image-modal.open {
-        display: flex !important;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
       }
 
       /* 화면 우측 상단 고정 X 버튼 */
       .modal-close {
         position: fixed;
-        top: 20px;
-        right: 24px;
+        top: calc(18px + env(safe-area-inset-top, 0px));
+        right: calc(20px + env(safe-area-inset-right, 0px));
         color: #ffffff;
         font-size: 2rem;
         line-height: 1;
         width: 44px;
         height: 44px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 10006;
+        -webkit-tap-highlight-color: transparent;
         transition: background 0.2s, transform 0.2s;
       }
 
@@ -616,6 +863,8 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         object-fit: contain;
         cursor: zoom-in;
         user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
         transition: transform 0.2s ease-out;
         transform-origin: center center;
       }
@@ -633,9 +882,10 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(6px);
         color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.25);
         width: 48px;
         height: 48px;
         border-radius: 50%;
@@ -646,42 +896,58 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         align-items: center;
         justify-content: center;
         z-index: 10002;
-        transition: background 0.2s;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.2s, transform 0.2s;
       }
 
       .nav-btn:hover {
         background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-50%) scale(1.05);
       }
 
-      .prev-btn { left: 1.5rem; }
-      .next-btn { right: 1.5rem; }
+      .prev-btn {
+        left: calc(1.5rem + env(safe-area-inset-left, 0px));
+      }
+
+      .next-btn {
+        right: calc(1.5rem + env(safe-area-inset-right, 0px));
+      }
 
       /* 하단 썸네일 바 */
       .floating-thumbnail-bar {
         position: absolute;
-        bottom: calc(15px + env(safe-area-inset-bottom, 0px)) !important;
+        bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
         left: 50%;
         transform: translateX(-50%);
         z-index: 10000;
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(8px);
-        padding: 6px 12px;
+        background: rgba(15, 23, 42, 0.82);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
         border-radius: 30px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .thumbnail-list {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 10px;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         max-width: 80vw;
-        height: 100%;
-        padding: 0 4px;
+        padding: 4px 8px;
+        margin: 0 auto;
+        scrollbar-width: none; /* Firefox 스크롤바 숨김 */
+        -ms-overflow-style: none; /* IE/Edge 스크롤바 숨김 */
       }
 
       .thumbnail-list::-webkit-scrollbar {
-        display: none;
+        display: none; /* Chrome, Safari, Whale 스크롤바 숨김 */
+        width: 0;
+        height: 0;
       }
 
       :global(.thumb-item) {
@@ -708,11 +974,24 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         transform: scale(1.1) !important;
       }
 
+      /* 📱 모바일 환경 (768px 이하) */
       @media (max-width: 768px) {
         .article-container {
-          padding: 1.5rem 1rem 1.5rem 1rem;
+          padding: 1.25rem 1rem 2.5rem 1rem;
+          overflow-x: clip; /* 가로 스크롤 방지 */
         }
 
+        .toc-wrapper {
+          max-height: 220px;
+        }
+
+        .post-header {
+          padding: 2.5rem 1.25rem;
+          margin-bottom: 1.75rem;
+          border-radius: 12px;
+        }
+
+        /* 💡 모바일에서 본문 여백(1rem)을 뚫고 화면 끝까지 꽉 차게 확장 */
         .prose :global(.image-hover-wrapper) {
           width: calc(100% + 2rem) !important;
           max-width: calc(100% + 2rem) !important;
@@ -729,12 +1008,12 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         }
 
         .post-title {
-          font-size: 1.65rem;
+          font-size: 1.6rem;
         }
 
         .zoom-hint-overlay,
         :global(.zoom-hint-overlay) {
-          display: none;
+          display: none !important;
         }
 
         .floating-top-btn {
@@ -775,35 +1054,220 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
           max-width: 32px !important;
           min-height: 32px !important;
           max-height: 32px !important;
+          flex-shrink: 0 !important;
+          aspect-ratio: 1 / 1 !important;
         }
+      }
+
+      /* 📋 코드 블록 복사 버튼 스타일 (신규 추가) */
+      .copy-code-button {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.6rem;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 6px;
+        color: #e2e8f0;
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 0.3rem 0.6rem;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+        z-index: 10;
+      }
+
+      .copy-code-button:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+      }
+
+      .copy-code-button:active {
+        transform: scale(0.95);
+      }
+
+      /* 💻 인라인 코드(code) 스타일 및 줄바꿈 보정 */
+      .prose :global(:not(pre) > code) {
+        background: rgba(92, 98, 85, 0.08);
+        color: var(--accent-color, #5c6255);
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.88em;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        word-break: break-all;
+        white-space: normal;
+        border: 1px solid rgba(92, 98, 85, 0.15);
+      }
+
+      /* ⌨️ 키보드 단축키(kbd) 키캡 스타일 */
+      .prose :global(kbd) {
+        display: inline-block;
+        padding: 0.15rem 0.45rem;
+        font-size: 0.8em;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 600;
+        color: var(--heading-color, #1e293b);
+        background-color: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-bottom-width: 2px;
+        border-radius: 6px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        vertical-align: baseline;
+      }
+
+      /* 🌙 시스템 다크 모드 대비율 최적화 */
+      @media (prefers-color-scheme: dark) {
+        .prose {
+          color: var(--text-primary, #e2e8f0);
+        }
+
+        .prose :global(strong),
+        .prose :global(b),
+        .prose :global(h3),
+        .prose :global(h4) {
+          color: var(--heading-color, #f8fafc);
+        }
+
+        .prose :global(blockquote) {
+          color: var(--text-muted, #94a3b8);
+          border-left-color: var(--accent-color, #8b947e);
+        }
+
+        .prose :global(li) {
+          color: var(--text-primary, #e2e8f0);
+        }
+
+        .prose :global(kbd) {
+          background-color: #1e293b;
+          color: #f1f5f9;
+          border-color: #475569;
+        }
+      }
+
+      /* 🖨️ 인쇄(Print) 및 PDF 저장 최적화 스타일 */
+      @media print {
+        .progress-bar,
+        .floating-top-btn,
+        .image-modal,
+        .toc-toggle-btn,
+        .copy-code-button,
+        .zoom-hint-overlay,
+        :global(header),
+        :global(footer),
+        :global(.in-article-ad),
+        :global(.like-share-container) {
+          display: none !important;
+        }
+
+        .article-container {
+          max-width: 100% !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+
+        .post-header {
+          background: none !important;
+          color: #000000 !important;
+          padding: 1rem 0 !important;
+          box-shadow: none !important;
+        }
+
+        .post-title {
+          color: #000000 !important;
+          text-shadow: none !important;
+        }
+
+        .post-header .post-meta-row,
+        .post-header .reading-time,
+        .post-header-tag {
+          color: #333333 !important;
+          background: none !important;
+          border: 1px solid #cccccc !important;
+        }
+
+        .toc-container {
+          position: static !important;
+          width: 100% !important;
+          box-shadow: none !important;
+          border: 1px solid #dddddd !important;
+          page-break-inside: avoid;
+        }
+
+        .prose :global(pre),
+        .prose :global(table),
+        .prose :global(blockquote) {
+          page-break-inside: avoid;
+        }
+
+        .prose :global(pre) {
+          background-color: #f8fafc !important;
+          color: #0f172a !important;
+          border: 1px solid #cbd5e1 !important;
+          box-shadow: none !important;
+        }
+
+        .prose :global(pre code) {
+          color: #0f172a !important;
+          text-shadow: none !important;
+        }
+
+        .prose :global(.image-hover-wrapper) {
+          cursor: default !important;
+          margin: 1rem 0 !important;
+        }
+
+        .prose :global(.image-hover-wrapper img) {
+          transform: none !important;
+          filter: none !important;
+        }
+      }
+
+      /* 💬 인용구 내부 문단 여백 최적화 */
+      .prose :global(blockquote > p:first-child) {
+        margin-top: 0;
+      }
+
+      .prose :global(blockquote > p:last-child) {
+        margin-bottom: 0;
       }
     </style>
 
     <script>
-      // 1. 스크롤 진행률 & 플로팅 버튼
-      const progressBar = document.getElementById('progress-bar');
-      const topBtn = document.getElementById('back-to-top');
+      function initBlogPost() {
+        // 1. 스크롤 진행률 & 플로팅 버튼
+        const progressBar = document.getElementById('progress-bar');
+        const topBtn = document.getElementById('back-to-top');
 
-      window.addEventListener('scroll', () => {
-        const winScroll = document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-        
-        if (progressBar) progressBar.style.width = scrolled + '%';
+        window.addEventListener('scroll', () => {
+          const winScroll = window.pageYOffset || document.documentElement.scrollTop;
+          const totalHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          
+          let scrolled = 0;
+          if (totalHeight > 0) {
+            scrolled = Math.min(100, Math.max(0, (winScroll / totalHeight) * 100));
+          }
+          
+          if (progressBar) progressBar.style.width = `${scrolled}%`;
 
-        if (winScroll > 300) {
-          topBtn?.classList.add('visible');
-        } else {
-          topBtn?.classList.remove('visible');
-        }
-      });
+          if (winScroll > 300) {
+            topBtn?.classList.add('visible');
+          } else {
+            topBtn?.classList.remove('visible');
+          }
+        }, { passive: true });
 
-      topBtn?.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+        topBtn?.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (window.pageYOffset > 0) {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
+        });
 
-      // 2. 본문 읽기 시간 자동 계산
-      document.addEventListener('DOMContentLoaded', () => {
+        // 2. 본문 읽기 시간 자동 계산
         const prose = document.getElementById('prose-content');
         const readingTimeText = document.getElementById('reading-time-text');
 
@@ -813,15 +1277,13 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
           const minutes = Math.max(1, Math.ceil(charCount / 500));
           readingTimeText.textContent = `약 ${minutes}분 읽기`;
         }
-      });
 
-      // 3. 본문 이미지 돋보기 힌트 레이어 동적 생성 (p 태그 중첩 해결)
-      document.addEventListener('DOMContentLoaded', () => {
+        // 3. 본문 이미지 돋보기 힌트 레이어 동적 생성 (중복 생성 방지 강화)
         const proseImages = document.querySelectorAll<HTMLImageElement>('.prose img:not(.no-hover-wrap)');
         
         proseImages.forEach((img) => {
           const parent = img.parentElement;
-          if (parent && !parent.classList.contains('image-hover-wrapper')) {
+          if (parent && !parent.classList.contains('image-hover-wrapper') && !parent.querySelector('.zoom-hint-overlay')) {
             const wrapper = document.createElement('div');
             wrapper.className = 'image-hover-wrapper';
 
@@ -837,7 +1299,6 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
               <span>클릭하여 확대</span>
             `;
 
-            // 💡 부모가 <p> 태그이고 이미지만 감싸고 있다면 <p> 자체를 <div class="image-hover-wrapper">로 교체
             if (parent.tagName === 'P' && parent.children.length === 1 && parent.textContent?.trim() === '') {
               wrapper.appendChild(img);
               wrapper.appendChild(overlay);
@@ -849,10 +1310,8 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
             }
           }
         });
-      });
 
-      // 4. 모달 갤러리
-      document.addEventListener('DOMContentLoaded', () => {
+        // 4. 모달 갤러리
         const modal = document.getElementById('image-modal');
         const modalImg = document.getElementById('modal-img') as HTMLImageElement | null;
         const modalStage = document.getElementById('modal-stage');
@@ -862,7 +1321,7 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         const thumbnailList = document.getElementById('thumbnail-list');
 
         const allImages = Array.from(
-          document.querySelectorAll<HTMLImageElement>('.prose img')
+          document.querySelectorAll<HTMLImageElement>('.prose img:not(.no-lightbox)')
         ).filter((img) => img.src && img.src.trim() !== '');
 
         let currentIndex = 0;
@@ -917,7 +1376,8 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         }
 
         function buildThumbnails() {
-          if (!thumbnailList || thumbnailList.children.length > 0) return;
+          if (!thumbnailList) return;
+          thumbnailList.innerHTML = ''; // 재진입 시 중복 추가 방지
 
           allImages.forEach((img, i) => {
             const thumb = document.createElement('img');
@@ -935,31 +1395,102 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         function openModal(index: number) {
           if (!modal) return;
           buildThumbnails();
+
+          // 이미지가 1장뿐이면 좌우 화살표와 썸네일 바 숨김 처리
+          const isSingle = allImages.length <= 1;
+          if (prevBtn) prevBtn.style.display = isSingle ? 'none' : 'flex';
+          if (nextBtn) nextBtn.style.display = isSingle ? 'none' : 'flex';
+          const thumbBar = modal.querySelector('.floating-thumbnail-bar') as HTMLElement | null;
+          if (thumbBar) thumbBar.style.display = isSingle ? 'none' : 'flex';
+
           modal.classList.add('open');
           document.body.style.overflow = 'hidden';
           updateModalImage(index);
-        }
 
-        function closeModal() {
-          if (modal) {
-            modal.classList.remove('open');
-            document.body.style.overflow = '';
-            resetZoom();
+          // 브라우저 뒤로 가기 시 모달만 닫히도록 히스토리 추가
+          if (window.location.hash !== '#modal-open') {
+            history.pushState({ modalOpen: true }, '', '#modal-open');
           }
         }
 
+        function closeModal() {
+          if (modal && modal.classList.contains('open')) {
+            resetZoom();
+            modal.classList.remove('open');
+            document.body.style.removeProperty('overflow');
+
+            if (history.state?.modalOpen || window.location.hash === '#modal-open') {
+              history.back();
+            }
+          }
+        }
+
+        // 🔙 스마트폰 제스처/브라우저 뒤로가기 버튼 클릭 시 모달 닫기 감지
+        window.addEventListener('popstate', () => {
+          if (modal && modal.classList.contains('open')) {
+            resetZoom();
+            modal.classList.remove('open');
+            document.body.style.removeProperty('overflow');
+          }
+        });
+
+        window.addEventListener('popstate', () => {
+          if (modal && modal.classList.contains('open')) {
+            modal.classList.remove('open');
+            document.body.style.removeProperty('overflow');
+            resetZoom();
+          }
+        });
+
         allImages.forEach((img, index) => {
+          img.style.cursor = 'pointer';
           img.addEventListener('click', () => openModal(index));
         });
 
-        modalStage?.addEventListener('touchstart', (e: TouchEvent) => {
+        let touchMoveStartX = 0;
+        let touchMoveStartY = 0;
+
+        // 모달 활성화 시 마우스 휠 조작 최적화 (확대 중엔 기본 차단, 일반 상태에선 사진 넘김 지원)
+        let wheelTimeout: NodeJS.Timeout | number | null = null;
+        modalStage?.addEventListener('wheel', (e: WheelEvent) => {
+          e.preventDefault();
           if (isZoomed) return;
+
+          if (!wheelTimeout) {
+            if (e.deltaY > 30) {
+              updateModalImage(currentIndex + 1); // 휠 아래로 내리면 다음 사진
+            } else if (e.deltaY < -30) {
+              updateModalImage(currentIndex - 1); // 휠 위로 올리면 이전 사진
+            }
+            wheelTimeout = setTimeout(() => {
+              wheelTimeout = null;
+            }, 250); // 연속 스크롤로 인한 폭주 방지 쿨타임
+          }
+        }, { passive: false });
+        modalStage?.addEventListener('touchstart', (e: TouchEvent) => {
+          if (isZoomed) {
+            touchMoveStartX = e.touches[0].clientX - currentX;
+            touchMoveStartY = e.touches[0].clientY - currentY;
+            return;
+          }
           touchStartX = e.changedTouches[0].clientX;
           touchStartY = e.changedTouches[0].clientY;
         }, { passive: true });
 
+        modalStage?.addEventListener('touchmove', (e: TouchEvent) => {
+          if (!isZoomed || !modalImg) return;
+          e.preventDefault(); // 확대 상태에서 아래로 당길 때 브라우저 새로고침 방지
+          translateX = e.touches[0].clientX - touchMoveStartX;
+          translateY = e.touches[0].clientY - touchMoveStartY;
+          modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(1.8)`;
+        }, { passive: false });
+
         modalStage?.addEventListener('touchend', (e: TouchEvent) => {
-          if (isZoomed) return;
+          if (isZoomed) {
+            currentX = translateX;
+            currentY = translateY;
+            return;
+          }
           touchEndX = e.changedTouches[0].clientX;
           touchEndY = e.changedTouches[0].clientY;
 
@@ -969,12 +1500,14 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         function handleSwipe() {
           const diffX = touchEndX - touchStartX;
           const diffY = touchEndY - touchStartY;
+          const threshold = 50; // 확실한 좌우 스와이프 감지 기준값
 
-          if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+          // 수평 이동 거리가 수직 이동 거리의 1.5배 이상일 때만 안정적으로 슬라이드 전환
+          if (Math.abs(diffX) > Math.abs(diffY) * 1.5 && Math.abs(diffX) > threshold) {
             if (diffX < 0) {
-              updateModalImage(currentIndex + 1);
+              updateModalImage(currentIndex + 1); // 왼쪽으로 밀면 다음 사진
             } else {
-              updateModalImage(currentIndex - 1);
+              updateModalImage(currentIndex - 1); // 오른쪽으로 밀면 이전 사진
             }
           }
         }
@@ -998,6 +1531,7 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
 
         modalImg?.addEventListener('mousedown', (e) => {
           if (!isZoomed) return;
+          e.preventDefault(); // 드래그 중 파란색 블록 선택 방지
           isDragging = true;
           hasDragged = false;
           startX = e.clientX - currentX;
@@ -1017,14 +1551,17 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
           modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(1.8)`;
         });
 
-        window.addEventListener('mouseup', () => {
+        function stopDragging() {
           if (isDragging) {
             isDragging = false;
             currentX = translateX;
             currentY = translateY;
           }
-        });
+        }
 
+        window.addEventListener('mouseup', stopDragging);
+        window.addEventListener('mouseleave', stopDragging);
+        window.addEventListener('blur', stopDragging);
         closeBtn?.addEventListener('click', (e) => {
           e.stopPropagation();
           closeModal();
@@ -1033,6 +1570,7 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         modal?.addEventListener('click', (e) => {
           const target = e.target as HTMLElement;
           if (target.classList.contains('image-modal') || target.classList.contains('modal-stage')) {
+            resetZoom();
             closeModal();
           }
         });
@@ -1047,22 +1585,31 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
           updateModalImage(currentIndex + 1);
         });
 
-        document.addEventListener('keydown', (e) => {
+        function handleKeyDown(e: KeyboardEvent) {
           if (!modal || !modal.classList.contains('open')) return;
 
           if (e.key === 'Escape') {
+            e.preventDefault();
             closeModal();
           } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            resetZoom();
             updateModalImage(currentIndex - 1);
           } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            resetZoom();
             updateModalImage(currentIndex + 1);
+          } else if (['ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
+            // 모달 활성화 중 배경 스크롤 방지
+            e.preventDefault();
           }
-        });
-      });
+        }
 
-      // 5. 목차(TOC) 생성 & 스크롤 위치별 PC 좌측 플로팅 전환 & 하이라이트
-      document.addEventListener('DOMContentLoaded', () => {
-        const prose = document.getElementById('prose-content');
+        // 페이지 재진입 시 이벤트 리스너 중복 누적 방지
+        document.removeEventListener('keydown', handleKeyDown);
+        document.addEventListener('keydown', handleKeyDown);
+
+        // 5. 목차(TOC) 생성 & 스크롤 위치별 PC 좌측 플로팅 전환 & 하이라이트
         const tocContainer = document.getElementById('toc-container');
         const tocList = document.getElementById('toc-list');
         const toggleBtn = document.getElementById('toc-toggle-btn');
@@ -1071,17 +1618,28 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
 
         const h2Elements = Array.from(prose.querySelectorAll('h2'));
 
+        // 본문에 h2가 없으면 목차 영역을 완전히 숨기고 이후 불필요한 이벤트 등록 중단
         if (h2Elements.length === 0) {
           tocContainer.style.display = 'none';
+          tocContainer.classList.remove('is-floating');
           return;
         }
 
         tocContainer.style.display = 'block';
+        tocList.innerHTML = ''; // 재진입 시 목차 목록 초기화
 
         h2Elements.forEach((h2, index) => {
+          const rawText = (h2.textContent || '').trim().replace(/\s+/g, ' ');
+
           if (!h2.id) {
-            const slug = h2.textContent?.trim().toLowerCase().replace(/\s+/g, '-') || `heading-${index}`;
-            h2.id = slug;
+            // 한글, 영문, 숫자, 하이픈 외 특수문자/이모지 제거 및 앞뒤 하이픈 정리
+            const cleanSlug = rawText
+              .toLowerCase()
+              .replace(/[^\w\sㄱ-ㅎ가-힣-]/g, '')
+              .trim()
+              .replace(/\s+/g, '-')
+              .replace(/-+/g, '-');
+            h2.id = cleanSlug ? `toc-${cleanSlug}-${index}` : `heading-${index}`;
           }
 
           const li = document.createElement('li');
@@ -1090,12 +1648,16 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
           const a = document.createElement('a');
           a.className = 'toc-link';
           a.href = `#${h2.id}`;
-          a.textContent = h2.textContent;
+          a.textContent = rawText;
 
           a.addEventListener('click', (e) => {
             e.preventDefault();
             const targetElement = document.getElementById(h2.id);
             if (targetElement) {
+              // 클릭 즉시 목차 활성 상태 피드백 반영
+              document.querySelectorAll('.toc-link').forEach((link) => link.classList.remove('active'));
+              a.classList.add('active');
+
               const headerOffset = 90;
               const elementPosition = targetElement.getBoundingClientRect().top;
               const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -1104,6 +1666,9 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
                 top: offsetPosition,
                 behavior: 'smooth'
               });
+
+              // 뒤로 가기 히스토리를 더럽히지 않고 URL 해시 안전하게 갱신
+              history.replaceState(null, '', `#${h2.id}`);
             }
           });
 
@@ -1111,17 +1676,17 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
           tocList.appendChild(li);
         });
 
-        // 접기/열기 버튼
         toggleBtn?.addEventListener('click', () => {
           tocContainer.classList.toggle('collapsed');
         });
 
-        // 📌 PC 스크롤 시 목차가 상단 위치에서 자연스럽게 좌측 플로팅으로 전환되는 Observer
-        const initialTocTop = tocContainer.getBoundingClientRect().top + window.pageYOffset;
+        function handleTocFloating() {
+          if (!tocContainer || !prose) return;
 
-        window.addEventListener('scroll', () => {
-          if (window.innerWidth >= 1201) {
-            if (window.pageYOffset > initialTocTop - 100) {
+          if (window.innerWidth >= 1360) {
+            const proseRect = prose.getBoundingClientRect();
+            // 본문 영역이 상단 네비게이션 아래로 진입했을 때 플로팅 활성화
+            if (proseRect.top < 100 && proseRect.bottom > 200) {
               tocContainer.classList.add('is-floating');
             } else {
               tocContainer.classList.remove('is-floating');
@@ -1129,9 +1694,17 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
           } else {
             tocContainer.classList.remove('is-floating');
           }
-        });
+        }
 
-        // 스크롤 시 현재 보는 헤딩 하이라이트
+        window.addEventListener('scroll', handleTocFloating, { passive: true });
+        window.addEventListener('resize', handleTocFloating, { passive: true });
+        // 페이지 진입 즉시 1회 실행하여 현재 스크롤 위치에 맞춤
+        handleTocFloating();
+        // 이전 옵저버가 살아있다면 연결 해제
+        if ((window as any).__tocObserver) {
+          (window as any).__tocObserver.disconnect();
+        }
+
         const observerOptions = {
           root: null,
           rootMargin: '-80px 0px -60% 0px',
@@ -1154,7 +1727,106 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         }, observerOptions);
 
         h2Elements.forEach((h2) => observer.observe(h2));
+        (window as any).__tocObserver = observer;
+
+        // 6. 코드 블록(pre) 복사 버튼 자동 생성 및 클립보드 복사 기능
+        if (prose) {
+          const preBlocks = prose.querySelectorAll('pre');
+          preBlocks.forEach((pre) => {
+            // 중복 생성 방지
+            if (pre.querySelector('.copy-code-button')) return;
+
+            (pre as HTMLElement).style.position = 'relative';
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-code-button';
+            copyBtn.type = 'button';
+            copyBtn.innerText = '복사';
+            copyBtn.setAttribute('aria-label', '코드 복사');
+
+            copyBtn.addEventListener('click', async () => {
+              const codeText = pre.querySelector('code')?.innerText || pre.innerText;
+              try {
+                await navigator.clipboard.writeText(codeText.trim());
+                copyBtn.innerText = '복사됨!';
+                copyBtn.style.color = '#4ade80';
+
+                setTimeout(() => {
+                  copyBtn.innerText = '복사';
+                  copyBtn.style.color = '#e2e8f0';
+                }, 2000);
+              } catch (err) {
+                copyBtn.innerText = '실패';
+                setTimeout(() => {
+                  copyBtn.innerText = '복사';
+                }, 2000);
+              }
+            });
+
+            pre.appendChild(copyBtn);
+          });
+        }
+
+        // 7. 본문 외부 링크 새 창 열기 및 보안 속성 자동 적용
+        if (prose) {
+          const links = prose.querySelectorAll('a');
+          links.forEach((link) => {
+            const href = link.getAttribute('href');
+            if (href && (href.startsWith('http://') || href.startsWith('https://')) && !href.includes(window.location.hostname)) {
+              link.setAttribute('target', '_blank');
+              link.setAttribute('rel', 'noopener noreferrer');
+            }
+          });
+        }
+
+        // 8. 글 공유 기능 (모바일 시스템 공유 & PC 클립보드 링크 복사 지원)
+        const shareBtn = document.getElementById('share-btn');
+        if (shareBtn) {
+          shareBtn.onclick = async () => {
+            const shareData = {
+              title: document.title,
+              url: window.location.href
+            };
+
+            if (navigator.share) {
+              try {
+                await navigator.share(shareData);
+              } catch (err) {
+                // 사용자가 공유 창을 닫은 경우 무시
+              }
+            } else {
+              try {
+                await navigator.clipboard.writeText(window.location.href);
+                alert('링크가 클립보드에 복사되었습니다.');
+              } catch (err) {
+                const tempInput = document.createElement('input');
+                tempInput.value = window.location.href;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                alert('링크가 클립보드에 복사되었습니다.');
+              }
+            }
+          };
+        }
+      }
+
+      // 📊 반응형 테이블 마우스 휠 가로 스크롤 지원
+      const tableContainers = document.querySelectorAll('.table-container');
+      tableContainers.forEach((container) => {
+        container.addEventListener('wheel', (e) => {
+          // 세로 스크롤 휠 입력을 감지하여 가로 스크롤로 부드럽게 전달
+          if (e.deltaY !== 0 && container.scrollWidth > container.clientWidth) {
+            e.preventDefault();
+            container.scrollLeft += e.deltaY;
+          }
+        }, { passive: false });
       });
+
+      // Astro 페이지 로드 및 일반 DOM 로드 모두 지원
+      document.addEventListener('DOMContentLoaded', initBlogPost);
+      document.addEventListener('astro:page-load', initBlogPost);
     </script>
   </body>
 </html>
