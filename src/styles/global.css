@@ -98,17 +98,38 @@ img, video {
   border-radius: 0 !important;
 }
 
+/* 🖼️ 본문 이미지 기본 스타일 & 부드러운 전환 효과 */
 .prose img {
-  cursor: grab;
-  margin: 2rem 0;
+  cursor: zoom-in;
+  margin: 2rem auto;
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent; /* 모바일 터치 시 기본 파란색/회색 하이라이트 박스 제거 */
 }
 
+/* ✨ PC 마우스 호버 인터랙션 */
+@media (hover: hover) and (pointer: fine) {
+  .prose img:hover {
+    transform: scale(1.015);
+    filter: brightness(0.96);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* 📱 모바일 터치(누르는 순간) & PC 클릭 인터랙션 피드백 */
+.prose img:active {
+  transform: scale(0.98); /* 살짝 눌리는 듯한 탭 피드백 */
+  filter: brightness(0.92); /* 살짝 어두워지며 눌림 강조 */
+}
+
+/* 📱 모바일 환경 (768px 이하) 풀블리드 */
 @media (max-width: 768px) {
   .prose img {
-    width: calc(100% + 2rem);
-    max-width: calc(100% + 2rem);
-    margin-left: -1rem;
-    margin-right: -1rem;
+    width: calc(100% + 2rem) !important;
+    max-width: calc(100% + 2rem) !important;
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    border-radius: 0 !important;
   }
 }
 
