@@ -15,6 +15,8 @@ draft: false
 <p>예전엔 챗지피티만 주구장창 썼는데, 어느 순간부터 <strong>제미나이(Gemini)</strong> 코딩 능력이 미쳐돌아가길래 완전히 갈아탔다. 문제는 내가 코딩 작업을 하도 많이 돌리다 보니 무료 버전은 감질나서 도저히 못 써먹겠다는 거다.</p>
 <p>결국 <strong>제미나이 프로 모델</strong>을 써야 하는데... 이게 월 29,000원이다. 아무리 성능이 좋아도 매달 나가기엔 살짝 킹받는 금액 아닌가?</p>
 
+<!-- final test -->
+
 <div className="sk-box-warm sk-fade-in">
   <div className="sk-txt-myeongjo">"정가 다 내고 쓰면 바보 아닌가?" 이 오만한 생각이 험난한 잔머리 잔혹사의 서막이었다...</div>
 </div>
