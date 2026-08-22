@@ -1,7 +1,7 @@
 ---
 title: "제미나이 프로 공짜로 쓰는 황당한 후기"
 description: "중고나라와 네이버 스토어의 매운맛을 거쳐 11번가에서 제미나이 프로 18개월권을 0원에 쓰게 된 황당한 대반전 후기입니다."
-pubDate: 2026-08-22T19:40:51
+pubDate: 2026-08-22T19:50:50
 slug: "how-i-got-gemini-advanced-for-free"
 heroImage: "https://image.lunasonata.com/2026/08/gemini.webp"
 
