@@ -1591,7 +1591,6 @@ function generateFrontmatter(isDraft: boolean = false): string {
   const title = rawTitle.replace(/"/g, '\\"');
   const description = rawDescription.replace(/"/g, '\\"');
 
-  // 💡 중복을 없애고 1줄로 통합
   const rawHero = heroInput?.value.trim() || '';
   const heroImage = rawHero.replace(/^["']|["']$/g, '');
 
@@ -1601,10 +1600,14 @@ function generateFrontmatter(isDraft: boolean = false): string {
     ? `\ncategories:\n${rawCategories.map(c => `  - "${c.replace(/"/g, '\\"')}"`).join('\n')}` 
     : '';
 
-  const now = new Date();
-  const offset = now.getTimezoneOffset() * 60000;
-  const localIso = new Date(now.getTime() - offset).toISOString().slice(0, 19);
-  const pubDateValue = currentPubDate ? currentPubDate : localIso;
+  // 💡 기존 글 수정 시에는 기존 pubDate를 100% 그대로 유지하고, 완전히 새로 작성할 때만 현재 시간 부여
+  let pubDateValue = currentPubDate ? currentPubDate : '';
+  if (!pubDateValue) {
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    pubDateValue = new Date(now.getTime() - offset).toISOString().slice(0, 10); // 깔끔한 YYYY-MM-DD 형태
+  }
+
   const bodyContent = getEditorValue();
 
   return `---
