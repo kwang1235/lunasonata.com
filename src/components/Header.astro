@@ -159,13 +159,13 @@ const titleLetters = SITE_TITLE.split('');
 
 <style>
   .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--bg-primary, #fcfbf9);
-    border-bottom: 1px solid var(--border-color, #ebeae6);
-    backdrop-filter: blur(12px);
-  }
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--bg-primary, #ffffff);
+  border-bottom: 1px solid var(--border-color, #ebeae6);
+  /* ❌ backdrop-filter: blur(12px); 제거 */
+}
 
   .header-container {
     max-width: 1080px;
@@ -452,25 +452,27 @@ const titleLetters = SITE_TITLE.split('');
   }
 
   .bottom-sheet-drawer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1002;
-    background-color: var(--bg-card, #ffffff);
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.12);
-    transform: translateY(100%);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-  }
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1002;
+  background-color: var(--bg-card, #ffffff);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.12);
+  transform: translateY(100%);
+  visibility: hidden; /* ✅ 추가: 닫혀있을 때 브라우저 뷰포트 간섭 완전 차단 */
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
 
-  .bottom-sheet-drawer.open {
-    transform: translateY(0);
-  }
+.bottom-sheet-drawer.open {
+  transform: translateY(0);
+  visibility: visible; /* ✅ 열렸을 때만 표시 */
+}
 
   .sheet-handle-wrapper {
     display: flex;
