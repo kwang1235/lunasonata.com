@@ -679,9 +679,34 @@ const displayHeroImage = rawImage || DEFAULT_OG_IMAGE;
         const nextBtn = document.getElementById('next-btn');
         const thumbnailList = document.getElementById('thumbnail-list');
 
+        // 제외할 키워드 목록 (URL에 포함 시 모달 제외)
+        const excludedKeywords = [
+          'coupang.com',
+          'agoda.com',
+          'partners',
+          'banner',
+          'decoration'
+        ];
+
+        // 🖼️ 제외 대상을 완벽히 걸러낸 모달 전용 이미지 목록 수집
         const allImages = Array.from(
           prose?.querySelectorAll<HTMLImageElement>('img:not(.no-lightbox):not(.thumb-item)') || []
-        ).filter((img) => img.src && img.src.trim() !== '');
+        ).filter((img) => {
+          // 1. 이미지 주소가 비어있는 경우 제외
+          if (!img.src || img.src.trim() === '') return false;
+
+          // 2. .no-modal 또는 .decoration 클래스가 붙어있는 경우 제외
+          if (img.classList.contains('no-modal') || img.classList.contains('decoration')) return false;
+
+          // 3. <a> 태그(외부 파트너스 링크 등)로 감싸진 이미지는 모달 제외 (링크 이동 우선)
+          if (img.closest('a')) return false;
+
+          // 4. URL에 파트너스/배너 관련 키워드가 포함된 경우 제외
+          const isExcludedUrl = excludedKeywords.some((keyword) => img.src.includes(keyword));
+          if (isExcludedUrl) return false;
+
+          return true;
+        });
 
         let currentIndex = 0;
         let isZoomed = false;

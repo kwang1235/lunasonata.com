@@ -98,31 +98,31 @@ img, video {
   border-radius: 0 !important;
 }
 
-/* 🖼️ 본문 이미지 기본 스타일 & 부드러운 전환 효과 */
-.prose img {
+/* 🖼️ 일반 본문 이미지 (제외 대상(.no-modal, 링크 이미지)이 아닌 경우에만 돋보기 및 전환 효과 적용) */
+.prose img:not(.no-modal):not(a img) {
   cursor: zoom-in;
   margin: 2rem auto;
   transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
   will-change: transform;
-  -webkit-tap-highlight-color: transparent; /* 모바일 터치 시 기본 파란색/회색 하이라이트 박스 제거 */
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* ✨ PC 마우스 호버 인터랙션 */
+/* ✨ PC 마우스 호버 인터랙션 (제외 대상은 동작 안 함) */
 @media (hover: hover) and (pointer: fine) {
-  .prose img:hover {
+  .prose img:not(.no-modal):not(a img):hover {
     transform: scale(1.015);
     filter: brightness(0.96);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   }
 }
 
-/* 📱 모바일 터치(누르는 순간) & PC 클릭 인터랙션 피드백 */
-.prose img:active {
-  transform: scale(0.98); /* 살짝 눌리는 듯한 탭 피드백 */
-  filter: brightness(0.92); /* 살짝 어두워지며 눌림 강조 */
+/* 📱 모바일 터치 피드백 (제외 대상은 동작 안 함) */
+.prose img:not(.no-modal):not(a img):active {
+  transform: scale(0.98);
+  filter: brightness(0.92);
 }
 
-/* 📱 모바일 환경 (768px 이하) 풀블리드 */
+/* 📱 모바일 환경 (768px 이하) 풀블리드 (모든 본문 이미지에 적용) */
 @media (max-width: 768px) {
   .prose img {
     width: calc(100% + 2rem) !important;
