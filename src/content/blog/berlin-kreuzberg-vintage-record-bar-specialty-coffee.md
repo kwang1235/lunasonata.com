@@ -1,7 +1,7 @@
 ---
 title: "베를린 크로이츠베르크 빈티지 LP 레코드 바 탐방기, 슈프레강 안개 속 브루탈리즘 건축과 플랫화이트 한 잔의 온기"
 description: "흐린 가을날의 독일 베를린 크로이츠베르크(Kreuzberg) 뒷골목을 걸었다. 낡은 공장을 개조한 로스터리 카페와 앤틱 아날로그 사운드가 머무는 레코드 바에서 마주한 베를린 특유의 무채색 온기를 기록했다."
-pubDate: "2026-08-23T21:32:09"
+pubDate: "2026-08-23T22:04:36"
 slug: "berlin-kreuzberg-vintage-record-bar-specialty-coffee"
 heroImage: "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWn5j60dBR34HC8DhzSXMtkHAmwrlNjDRy0EUp-Dsunsp2t8EzyyxbilczcF-lJTAZ9zDsneGP9x58tZ-Skqt_NSJ8wYophA4Xh76hvMs-OmzUT8R1snoCRxPxuEWd1rN3YeoqeXXw=s1360-w1360-h1020-rw"
 
@@ -12,7 +12,7 @@ draft: true
 
 <div class="sk-post-container" style="width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif; color: #1e293b; line-height: 1.85; letter-spacing: -0.015em; word-break: normal; box-sizing: border-box;">
   <p class="sk-p" style="margin: 0 0 20px; font-size: 1.05rem; color: #1e293b; line-height: 1.9;">
-    슈프레강 너머에서 불어오는 서늘한 바람이 베를린의 잿빛 공기를 휘감던 늦은 오후였다. 코트부서 토어(Kottbusser Tor) 역의 거친 그라피티 계단을 내려서자, 젖은 콘크리트 냄새 사이로 갓 볶아낸 원두의 스모키한 향이 스쳤다. <mark style="background: linear-gradient(120deg, rgba(203, 213, 225, 0.4) 0%, rgba(203, 213, 225, 0.85) 100%); padding: 2px 6px; border-radius: 4px; color: inherit; font-weight: 600;">크로이츠베르크(Kreuzberg) 운하 골목에 자리 잡은 붉은 벽돌 창고형 레코드 바 '오랄 사운드(Aural Sound)'</mark>의 철제 문을 밀고 들어섰다.
+    ((세광))슈프레강 너머에서 불어오는 서늘한 바람이 베를린의 잿빛 공기를 휘감던 늦은 오후였다. 코트부서 토어(Kottbusser Tor) 역의 거친 그라피티 계단을 내려서자, 젖은 콘크리트 냄새 사이로 갓 볶아낸 원두의 스모키한 향이 스쳤다. <mark style="background: linear-gradient(120deg, rgba(203, 213, 225, 0.4) 0%, rgba(203, 213, 225, 0.85) 100%); padding: 2px 6px; border-radius: 4px; color: inherit; font-weight: 600;">크로이츠베르크(Kreuzberg) 운하 골목에 자리 잡은 붉은 벽돌 창고형 레코드 바 '오랄 사운드(Aural Sound)'</mark>의 철제 문을 밀고 들어섰다.
   </p>
   <div class="sk-fade" style="margin: 28px 4px; padding: 22px 24px; border: 1px solid #cbd5e1; border-radius: 16px; background: #f8fafc; box-shadow: 0 4px 18px rgba(30, 41, 59, 0.04);">
     <p style="margin: 0 0 10px; font-size: 0.92rem; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 0.05em;">
