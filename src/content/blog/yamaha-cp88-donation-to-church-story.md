@@ -1,7 +1,7 @@
 ---
 title: "250만 원 중고 판매 대신 옥정 사귐의교회에 야마하 CP88 신디사이저 기증한 솔직한 이유와 감사"
 description: "자취 시절 손때 묻은 야마하 CP88 건반을 중고 250만 원에 판매하는 대신, 옥정 사귐의교회에 기증하게 된 솔직한 마음과 특송 연주 후기. 새로운 피아노 NU1XA 구매 후 이어진 가정의 신앙 이야기."
-pubDate: 2026-08-22
+pubDate: "2026-08-22"
 slug: "yamaha-cp88-donation-to-church-story"
 heroImage: "https://info.shimamura.co.jp/digital/img/upload/shimastaff/2019/CP73_88_2_.jpg"
 
@@ -66,7 +66,7 @@ draft: false
     주일 본 예배 때 회중석에 앉아 예배당 전체에 울려 퍼지는 익숙한 건반 사운드를 들으니 감회가 새로웠다. 내가 집에서 듣던 그 맑고 단단한 음색이 이제는 공동체의 찬양을 받쳐주는 기초가 되고 있었다.
   </p>
   <div class="sk-fade" style="margin: 32px 0 12px; text-align: center;">
-    <img src="https://image.lunasonata.com/sample.webp" alt="옥정 사귐의교회 본당에 세팅된 야마하 CP88 신디사이저" style="width: 100%; height: auto; display: block; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
+    <img src="https://image.lunasonata.com/2026/08/IMG_0050.webp" alt="옥정 사귐의교회 본당에 세팅된 야마하 CP88 신디사이저" style="width: 100%; height: auto; display: block; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
     <div style="font-size: 0.86rem; color: #78716c; margin-top: 8px; text-align: center;">옥정 사귐의교회 예배 반주 악기로 새롭게 자리 잡은 메인건반</div>
   </div>
   <p class="sk-fade" style="margin: 0 0 20px; font-size: 1.04rem; color: #292524; line-height: 1.85;">
