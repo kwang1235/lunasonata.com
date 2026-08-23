@@ -2391,7 +2391,8 @@ if (heroMatch && heroInput) {
             }
 
 
-            const pubDateMatch = rawContent.match(/^pubDate:\s*["']?([^\r\n"']+)["']?/m);
+            // 기존 pubDate를 따옴표 유무나 줄바꿈에 관계없이 완벽하게 추출
+            const pubDateMatch = rawContent.match(/^pubDate:\s*["']?([^"'\r\n]+)["']?/m);
             currentPubDate = pubDateMatch ? pubDateMatch[1].trim() : '';
 
             const bodyContent = rawContent.replace(/^---[\s\S]*?---\s*/, '');
