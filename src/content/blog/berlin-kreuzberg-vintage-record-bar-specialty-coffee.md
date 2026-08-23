@@ -1,7 +1,7 @@
 ---
 title: "베를린 크로이츠베르크 빈티지 LP 레코드 바 탐방기, 슈프레강 안개 속 브루탈리즘 건축과 플랫화이트 한 잔의 온기"
 description: "흐린 가을날의 독일 베를린 크로이츠베르크(Kreuzberg) 뒷골목을 걸었다. 낡은 공장을 개조한 로스터리 카페와 앤틱 아날로그 사운드가 머무는 레코드 바에서 마주한 베를린 특유의 무채색 온기를 기록했다."
-pubDate: "2026-08-23T21:13:39"
+pubDate: "2026-08-23T21:25:46"
 slug: "berlin-kreuzberg-vintage-record-bar-specialty-coffee"
 heroImage: "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWn5j60dBR34HC8DhzSXMtkHAmwrlNjDRy0EUp-Dsunsp2t8EzyyxbilczcF-lJTAZ9zDsneGP9x58tZ-Skqt_NSJ8wYophA4Xh76hvMs-OmzUT8R1snoCRxPxuEWd1rN3YeoqeXXw=s1360-w1360-h1020-rw"
 
@@ -81,9 +81,7 @@ draft: true
     </div>
   </div>
   <div class="sk-fade" style="margin: 28px 4px; padding: 20px 22px; border: 1px solid #cbd5e1; border-radius: 12px; background: #f8fafc;">
-    <p style="margin: 0; font-size: 0.96rem; color: #334155; line-height: 1.8;">
-      <svg style="display: inline-block; vertical-align: -0.15em; margin-right: 6px; width: 17px; height: 17px; fill: none; stroke: #475569; stroke-width: 2;" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><strong>에디터 노트:</strong> 오후 5시 이후부터는 커피 메뉴 외에도 베를린 로컬 크래프트 맥주와 자연주의 와인이 제공된다. 노트북 작업은 창가 바 테이블에서만 허용되므로 방문 시 참고하는 것이 좋다. 테스트 중 버전2 버전3
-    </p>
+    <p style="margin: 0; font-size: 0.96rem; color: #334155; line-height: 1.8;"><svg style="display: inline-block; vertical-align: -0.15em; margin-right: 6px; width: 17px; height: 17px; fill: none; stroke: #475569; stroke-width: 2;" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><strong>에디터 노트:</strong> 오후 5시 이후부터는 커피 메뉴 외에도 베를린 로컬 크래프트 맥주와 자연주의 와인이 제공된다. 노트북 작업은 창가 바 테이블에서만 허용되므로 방문 시 참고하는 것이 좋다. 테스트 중 버전2 버전3 버전4</p>
   </div>
   <div class="sk-fade" style="margin: 36px 0 16px; text-align: center;">
     <a href="https://maps.google.com/?q=Kreuzberg+Berlin" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 13px 32px; background: #334155; color: #ffffff; text-decoration: none; font-size: 0.95rem; font-weight: 600; border-radius: 9999px; box-shadow: 0 4px 14px rgba(51, 65, 85, 0.25); transition: background 0.2s ease;">
