@@ -1,7 +1,7 @@
 ---
 title: "250만 원 중고 판매 대신 옥정 사귐의교회에 야마하 CP88 신디사이저 기증한 솔직한 이유와 감사"
 description: "자취 시절 손때 묻은 야마하 CP88 건반을 중고 250만 원에 판매하는 대신, 옥정 사귐의교회에 기증하게 된 솔직한 마음과 특송 연주 후기. 새로운 피아노 NU1XA 구매 후 이어진 가정의 신앙 이야기."
-pubDate: 2026-08-23
+pubDate: 2026-08-22
 slug: "yamaha-cp88-donation-to-church-story"
 heroImage: "https://info.shimamura.co.jp/digital/img/upload/shimastaff/2019/CP73_88_2_.jpg"
 
@@ -19,7 +19,7 @@ draft: false
   </p>
   <div class="sk-fade" style="margin: 32px 0 12px; text-align: center;">
     <img src="https://image.lunasonata.com/2026/08/IMG_8758.webp" alt="야마하 CP88 스테이지 피아노 본체" style="width: 100%; height: auto; display: block; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
-    <caption style="font-size: 0.86rem; color: #78716c; margin-top: 8px; text-align: center;">자취 시절부터 오랜 시간 연습을 책임져 준 야마하 CP88</caption>
+    <div style="font-size: 0.86rem; color: #78716c; margin-top: 8px; text-align: center;">자취 시절부터 오랜 시간 연습을 책임져 준 야마하 CP88</div>
   </div>
   <p class="sk-fade" style="margin: 0 0 20px; font-size: 1.04rem; color: #292524; line-height: 1.85;">
     하지만 머릿속의 계산기를 두드리던 손길을 멈추게 한 순간이 있었다. 출석 중인 <strong>옥정 사귐의교회</strong> 주일 예배 중, 교인 수가 늘어나고 장소가 협소해져 향후 더 넓은 예배 처소로 이전하기 위한 비전헌금 이야기가 나온 것이다. 당장 큰돈을 헌금할 여유는 없었지만, 마음 한편에 깊은 울림이 남았다. '내가 지금 가진 것으로 하나님 나라에 기여할 수 있는 방법은 무엇일까?'
@@ -67,7 +67,7 @@ draft: false
   </p>
   <div class="sk-fade" style="margin: 32px 0 12px; text-align: center;">
     <img src="https://image.lunasonata.com/sample.webp" alt="옥정 사귐의교회 본당에 세팅된 야마하 CP88 신디사이저" style="width: 100%; height: auto; display: block; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
-    <caption style="font-size: 0.86rem; color: #78716c; margin-top: 8px; text-align: center;">옥정 사귐의교회 예배 반주 악기로 새롭게 자리 잡은 메인건반</caption>
+    <div style="font-size: 0.86rem; color: #78716c; margin-top: 8px; text-align: center;">옥정 사귐의교회 예배 반주 악기로 새롭게 자리 잡은 메인건반</div>
   </div>
   <p class="sk-fade" style="margin: 0 0 20px; font-size: 1.04rem; color: #292524; line-height: 1.85;">
     한편으로는 곁에서 일과 삶, 그리고 새로운 교회 정착 과정에서 무게감을 느끼는 아내를 보며 미안한 마음도 스쳤다. 늘 말씀 중심으로 살아가려 애쓰는 아내가 주변의 시선에 부담을 느낀다는 이야기를 털어놓았을 때, 내가 너무 앞서나간 것은 아닌지 돌아보게 되었다. 쉼 없이 바쁜 일상에 지쳐 마음에 여유가 부족했을 아내의 무게를 헤아려 본다.
