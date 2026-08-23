@@ -1600,12 +1600,13 @@ function generateFrontmatter(isDraft: boolean = false): string {
     ? `\ncategories:\n${rawCategories.map(c => `  - "${c.replace(/"/g, '\\"')}"`).join('\n')}` 
     : '';
 
-  // 💡 기존 글 수정 시에는 기존 pubDate를 100% 그대로 유지하고, 완전히 새로 작성할 때만 현재 시간 부여
+  // 💡 [핵심] 기존 글 수정 시에는 기존 pubDate를 100% 그대로 유지하고, 새 글일 때만 현지 날짜+시간 기록
   let pubDateValue = currentPubDate ? currentPubDate : '';
   if (!pubDateValue) {
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
-    pubDateValue = new Date(now.getTime() - offset).toISOString().slice(0, 10); // 깔끔한 YYYY-MM-DD 형태
+    // 'YYYY-MM-DDTHH:mm:ss' 형태로 현지 시간까지 정밀하게 생성
+    pubDateValue = new Date(now.getTime() - offset).toISOString().slice(0, 19);
   }
 
   const bodyContent = getEditorValue();
@@ -1613,7 +1614,7 @@ function generateFrontmatter(isDraft: boolean = false): string {
   return `---
 title: "${title}"
 description: "${description}"
-pubDate: ${pubDateValue}
+pubDate: "${pubDateValue}"
 ${slug ? `slug: "${slug}"\n` : ''}${heroImage ? `heroImage: "${heroImage}"\n` : ''}${categoriesFormatted}
 draft: ${isDraft}
 ---
@@ -2389,7 +2390,8 @@ if (heroMatch && heroInput) {
               categoryInput.value = loadedCategories.join(', ');
             }
 
-            const pubDateMatch = rawContent.match(/^pubDate:\s*["']?(.*?)["']?$/m);
+
+            const pubDateMatch = rawContent.match(/^pubDate:\s*["']?([^\r\n"']+)["']?/m);
             currentPubDate = pubDateMatch ? pubDateMatch[1].trim() : '';
 
             const bodyContent = rawContent.replace(/^---[\s\S]*?---\s*/, '');
