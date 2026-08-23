@@ -2394,7 +2394,8 @@ if (heroMatch && heroInput) {
             // 기존 pubDate를 따옴표 유무나 줄바꿈에 관계없이 완벽하게 추출
             const pubDateMatch = rawContent.match(/^pubDate:\s*["']?([^"'\r\n]+)["']?/m);
             currentPubDate = pubDateMatch ? pubDateMatch[1].trim() : '';
-            
+            console.log('불러온 기존 pubDate:', currentPubDate); // 💡 콘솔에서 확인 가능
+
             const bodyContent = rawContent.replace(/^---[\s\S]*?---\s*/, '');
             setEditorValue(bodyContent);
             updatePreview();
@@ -2499,7 +2500,7 @@ const filtered = allPostsData.filter((post) => {
             transition: all 0.2s ease;
           `;
 
-          const targetName = post.filename || post.title || post.slug;
+          const targetIdentifier = post.slug || post.filename || post.title;
           
           // 💡 상태별 뱃지 생성 (발행됨 vs 비공개 Draft)
           const statusBadge = post.draft
@@ -2541,12 +2542,12 @@ const filtered = allPostsData.filter((post) => {
 
           item.querySelector('.btn-load-post')?.addEventListener('click', (e) => {
             e.stopPropagation();
-            loadPostContent(targetName);
+            loadPostContent(targetIdentifier);
           });
 
           item.querySelector('.btn-delete-post')?.addEventListener('click', (e) => {
             e.stopPropagation();
-            deletePostContent(targetName);
+            deletePostContent(targetIdentifier);
           });
 
           item.addEventListener('mouseenter', () => { item.style.borderColor = 'var(--primary-color)'; });
