@@ -98,17 +98,38 @@ img, video {
   border-radius: 0 !important;
 }
 
-.prose img {
-  cursor: grab;
-  margin: 2rem 0;
+/* 🖼️ 일반 본문 이미지 (제외 대상(.no-modal, 링크 이미지)이 아닌 경우에만 돋보기 및 전환 효과 적용) */
+.prose img:not(.no-modal):not(a img) {
+  cursor: zoom-in;
+  margin: 2rem auto;
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* ✨ PC 마우스 호버 인터랙션 (제외 대상은 동작 안 함) */
+@media (hover: hover) and (pointer: fine) {
+  .prose img:not(.no-modal):not(a img):hover {
+    transform: scale(1.015);
+    filter: brightness(0.96);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* 📱 모바일 터치 피드백 (제외 대상은 동작 안 함) */
+.prose img:not(.no-modal):not(a img):active {
+  transform: scale(0.98);
+  filter: brightness(0.92);
+}
+
+/* 📱 모바일 환경 (768px 이하) 풀블리드 (모든 본문 이미지에 적용) */
 @media (max-width: 768px) {
   .prose img {
-    width: calc(100% + 2rem);
-    max-width: calc(100% + 2rem);
-    margin-left: -1rem;
-    margin-right: -1rem;
+    width: calc(100% + 2rem) !important;
+    max-width: calc(100% + 2rem) !important;
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    border-radius: 0 !important;
   }
 }
 

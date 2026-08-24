@@ -4,12 +4,11 @@ interface Props {
   slotId?: string;
 }
 
-// 💡 기본 slot ID 또는 전달받은 slot ID 사용
 const { slotId = "7884232550" } = Astro.props;
 ---
 
-<div class="ads-wrapper" style="margin: 2rem 0; text-align: center; overflow: hidden; clear: both;">
-  <!-- 구글 애드센스 인피드/인아티클 반응형 광고 단위 -->
+<div class="ads-wrapper">
+  <!-- 구글 애드센스 인아티클 반응형 광고 단위 -->
   <ins
     class="adsbygoogle"
     style="display: block; text-align: center;"
@@ -17,8 +16,38 @@ const { slotId = "7884232550" } = Astro.props;
     data-ad-format="fluid"
     data-ad-client="ca-pub-4839414905225875"
     data-ad-slot={slotId}
+    data-full-width-responsive="true"
   ></ins>
   <script is:inline>
     (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
 </div>
+
+<style>
+  /* 📢 PC 기본 광고 래퍼 스타일 */
+  .ads-wrapper {
+    margin: 2rem 0;
+    text-align: center;
+    overflow: hidden;
+    clear: both;
+    width: 100%;
+  }
+
+  .ads-wrapper :global(ins.adsbygoogle) {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 auto;
+  }
+
+  /* 📱 모바일 환경 (768px 이하) 좌우 패딩을 뚫고 꽉 차게 확장 */
+  @media (max-width: 768px) {
+    .ads-wrapper {
+      width: calc(100% + 2rem) !important;
+      max-width: calc(100% + 2rem) !important;
+      margin-left: -1rem !important;
+      margin-right: -1rem !important;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+</style>

@@ -8,7 +8,7 @@ import BaseHead from '../components/BaseHead.astro';
   <head>
     <BaseHead title="Lunasonata 포스팅 에디터" description="웹 기반 글쓰기 관리자 페이지" noindex={true} />
     
-    <!-- 💡 VSCode 핵심 엔진(Monaco Editor) CDN 로드 -->
+    <!-- Monaco Editor CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/editor/vscode.min.css" />
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
 
@@ -34,7 +34,7 @@ import BaseHead from '../components/BaseHead.astro';
         font-family: 'Pretendard', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         -webkit-font-smoothing: antialiased;
         min-height: 100vh;
-        overflow-y: auto !important; /* 세로 스크롤 강제 활성화 */
+        overflow-y: auto !important;
       }
 
       .header-bar {
@@ -51,24 +51,24 @@ import BaseHead from '../components/BaseHead.astro';
       }
 
       .header-bar h1 {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  letter-spacing: -0.02em;
-}
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        letter-spacing: -0.02em;
+      }
 
-.header-bar h1 a {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
+      .header-bar h1 a {
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
 
-.header-bar h1 a:hover {
-  opacity: 0.85;
-  transform: translateY(-1px);
-}
+      .header-bar h1 a:hover {
+        opacity: 0.85;
+        transform: translateY(-1px);
+      }
 
       .editor-grid {
         display: grid;
@@ -95,15 +95,13 @@ import BaseHead from '../components/BaseHead.astro';
         box-sizing: border-box;
       }
 
-      /* 🖥️ PC 화면: 왼쪽 작성 카드와 오른쪽 미리보기 카드 둘 다 상단 고정 & 내부 스크롤 */
       .editor-grid > section.card {
         position: sticky;
         top: 80px;
         height: calc(100vh - 110px);
-        overflow-y: auto; /* 내부 스크롤 활성화 */
+        overflow-y: auto;
       }
 
-      /* 🎨 왼쪽 카드 내부 스크롤바 커스텀 스타일링 (슬림 & 다크 테마) */
       .editor-grid > section.card::-webkit-scrollbar {
         width: 6px;
       }
@@ -119,11 +117,9 @@ import BaseHead from '../components/BaseHead.astro';
       }
 
       .card-sticky {
-        /* 오른쪽 카드의 고유 설정 유지 */
-        overflow: hidden; /* 미리보기는 내부 preview-box가 스크롤을 담당 */
+        overflow: hidden;
       }
 
-      /* 🖥️ PC 상태 바: 1층과 2층을 세로로 깔끔하게 배치 */
       .stats-bar {
         display: flex;
         flex-direction: column;
@@ -250,7 +246,6 @@ import BaseHead from '../components/BaseHead.astro';
         transform: translateY(-1px);
       }
 
-      /* 💡 미리보기 박스: 화면 높이를 가득 채우고 안에서 스크롤 */
       .preview-box {
         background: #ffffff;
         color: #1e293b;
@@ -264,15 +259,14 @@ import BaseHead from '../components/BaseHead.astro';
         box-sizing: border-box;
       }
 
-      /* 💡 오른쪽 미리보기 영역 내 클릭 가능한 글자/요소 포인터 커서 및 가이드 테두리 */
-  .preview-box #pv-body * {
-    cursor: pointer;
-    transition: outline 0.15s ease;
-  }
-  .preview-box #pv-body *:hover {
-    outline: 1.5px dashed var(--primary-color) !important;
-    outline-offset: 2px;
-  }
+      .preview-box #pv-body * {
+        cursor: pointer;
+        transition: outline 0.15s ease;
+      }
+      .preview-box #pv-body *:hover {
+        outline: 1.5px dashed var(--primary-color) !important;
+        outline-offset: 2px;
+      }
 
       .preview-box h2 {
         font-size: 1.5rem;
@@ -319,7 +313,6 @@ import BaseHead from '../components/BaseHead.astro';
         word-break: break-word;
       }
 
-      /* 모달 레이아웃 */
       .modal-backdrop {
         position: fixed;
         top: 0;
@@ -542,8 +535,7 @@ import BaseHead from '../components/BaseHead.astro';
         border: none !important;
         padding: 0.35rem 0.1rem !important;
         font-size: 0.62rem !important;
-        font-weight: 600 !important;
-        border-radius: 4px !important;
+        font-weight: 600 !border-radius: 4px !important;
         cursor: pointer !important;
         transition: all 0.2s !important;
         text-align: center !important;
@@ -573,7 +565,6 @@ import BaseHead from '../components/BaseHead.astro';
         color: #ffffff !important;
       }
 
-      /* 라이트박스 모달 */
       .lightbox-backdrop {
         position: fixed;
         top: 0;
@@ -671,39 +662,38 @@ import BaseHead from '../components/BaseHead.astro';
         opacity: 1;
       }
 
-      /* 실시간 미리보기 다크모드 토글 */
       .preview-box.dark-mode {
-  background: #0b0f19 !important;
-  color: #f8fafc !important;
-}
-.preview-box.dark-mode h1,
-.preview-box.dark-mode h2,
-.preview-box.dark-mode h3 {
-  color: #f8fafc !important;
-}
-.preview-box.dark-mode h2 {
-  border-bottom-color: var(--border-color) !important;
-}
-.preview-box.dark-mode p {
-  color: #e2e8f0 !important;
-}
-.preview-box.dark-mode blockquote {
-  border-left-color: var(--primary-color) !important;
-  color: #cbd5e1 !important;
-  background: rgba(15, 23, 42, 0.6) !important;
-}
-.preview-box.dark-mode code {
-  background: #1e293b !important;
-  color: var(--primary-color) !important;
-}
-.preview-box.dark-mode pre {
-  background: #070a12 !important;
-  border: 1px solid var(--border-color) !important;
-}
+        background: #0b0f19 !important;
+        color: #f8fafc !important;
+      }
+      .preview-box.dark-mode h1,
+      .preview-box.dark-mode h2,
+      .preview-box.dark-mode h3 {
+        color: #f8fafc !important;
+      }
+      .preview-box.dark-mode h2 {
+        border-bottom-color: var(--border-color) !important;
+      }
+      .preview-box.dark-mode p {
+        color: #e2e8f0 !important;
+      }
+      .preview-box.dark-mode blockquote {
+        border-left-color: var(--primary-color) !important;
+        color: #cbd5e1 !important;
+        background: rgba(15, 23, 42, 0.6) !important;
+      }
+      .preview-box.dark-mode code {
+        background: #1e293b !important;
+        color: var(--primary-color) !important;
+      }
+      .preview-box.dark-mode pre {
+        background: #070a12 !important;
+        border: 1px solid var(--border-color) !important;
+      }
 
-.mobile-tab-bar {
-  display: none;
-}
+      .mobile-tab-bar {
+        display: none;
+      }
       @media (max-width: 1024px) {
         .header-bar {
           padding: 0.75rem 1rem;
@@ -716,7 +706,6 @@ import BaseHead from '../components/BaseHead.astro';
           padding: 0.75rem;
           gap: 1.25rem;
         }
-        /* 📱 모바일/태블릿에서는 스티키 및 고정 높이 해제 */
         .editor-grid > section.card,
         .card-sticky {
           position: static !important;
@@ -725,245 +714,206 @@ import BaseHead from '../components/BaseHead.astro';
         }
       }
 
-/* 📱 화면 폭 768px 이하 모바일 전용 UI 터치 최적화 */
       @media (max-width: 768px) {
-        /* 📱 모바일 상단 탭 바 스타일 */
-  .mobile-tab-bar {
-    display: flex !important;
-    gap: 0.5rem;
-    padding: 0.75rem 0.75rem 0 0.75rem !important;
-    box-sizing: border-box;
-    width: 100%;
-  }
-
-  .tab-btn {
-    flex: 1;
-    background: var(--bg-card);
-    color: var(--text-muted);
-    border: 1px solid var(--border-color);
-    padding: 0.7rem;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .tab-btn.active {
-    background: #0284c7 !important;
-    color: #ffffff !important;
-    border-color: #38bdf8 !important;
-  }
-
-  /* PC 기본 상태에서는 모바일 탭 숨김 */
-  :root {
-    --mobile-hide: none;
-  }
-/* 📱 메인 콘텐츠 그리드 여백 통일 */
-  .editor-grid {
-    padding: 0.75rem !important;
-    gap: 0.75rem !important;
-  }
-
-        /* 📱 글 작성 카드 및 미리보기 박스 내부 패딩 통일 */
-  .card {
-    padding: 0.85rem !important;
-    box-sizing: border-box;
-  }
-        .editor-grid div[style*="grid-template-columns: 1fr 1fr"] {
-          grid-template-columns: 1fr !important;
-          gap: 0.75rem !important;
-        }
-        /* 📱 상단 상태 바: 위(글자수 & 저장상태) / 아래(버튼 3개) 상하 완벽 분리 */
-  .stats-bar {
-    padding: 0.75rem !important;
-    gap: 0.6rem !important;
-  }
-
-  .stats-info-row {
-    font-size: 0.78rem !important;
-    width: 100% !important;
-  }
-
-  /* 1층: 글자 수, 읽기 시간, 자동 저장 상태를 한 줄로 시원하게 배치 */
-  .stats-bar > div:first-child {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    width: 100% !important;
-    font-size: 0.82rem !important;
-  }
-
-  /* 2층: 초안 보관함 / 보관 / 비우기 버튼을 모바일 가로 3분할로 균등 정렬 */
-  .stats-bar > div:last-child {
-    display: grid !important;
-    grid-template-columns: 1.2fr 1fr 1fr !important;
-    gap: 0.4rem !important;
-    width: 100% !important;
-  }
-
-  #save-status {
-    font-size: 0.75rem !important;
-  }
-
-  .stats-btn-row {
-    display: grid !important;
-    grid-template-columns: 1.2fr 1.2fr 1fr !important;
-    gap: 0.4rem !important;
-    width: 100% !important;
-  }
-
-  .stats-btn-row .tool-btn {
-    width: 100% !important;
-    padding: 0.55rem 0.2rem !important;
-    font-size: 0.75rem !important;
-    text-align: center;
-    justify-content: center;
-    display: inline-flex;
-    align-items: center;
-    box-sizing: border-box;
-    margin: 0 !important;
-    white-space: nowrap;
-  }
-
-  /* 모바일 버튼 터치 영역 및 패딩 정리 */
-  .stats-bar .tool-btn {
-    padding: 0.6rem 0.3rem !important;
-    font-size: 0.75rem !important;
-    text-align: center;
-    justify-content: center;
-    display: inline-flex;
-    align-items: center;
-    box-sizing: border-box;
-    width: 100%;
-    margin: 0 !important;
-    white-space: nowrap;
-  }
-        .stats-bar > div:last-child {
-          flex-wrap: wrap;
+        .mobile-tab-bar {
+          display: flex !important;
+          gap: 0.5rem;
+          padding: 0.75rem 0.75rem 0 0.75rem !important;
+          box-sizing: border-box;
           width: 100%;
         }
+
+        .tab-btn {
+          flex: 1;
+          background: var(--bg-card);
+          color: var(--text-muted);
+          border: 1px solid var(--border-color);
+          padding: 0.7rem;
+          border-radius: 8px;
+          font-weight: 700;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+          background: #0284c7 !important;
+          color: #ffffff !important;
+          border-color: #38bdf8 !important;
+        }
+
+        .editor-grid {
+          padding: 0.75rem !important;
+          gap: 0.75rem !important;
+        }
+
+        .card {
+          padding: 0.85rem !important;
+          box-sizing: border-box;
+        }
+
+        .stats-bar {
+          padding: 0.75rem !important;
+          gap: 0.6rem !important;
+        }
+
+        .stats-info-row {
+          font-size: 0.78rem !important;
+          width: 100% !important;
+        }
+
+        .stats-bar > div:first-child {
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: center !important;
+          width: 100% !important;
+          font-size: 0.82rem !important;
+        }
+
+        .stats-bar > div:last-child {
+          display: grid !important;
+          grid-template-columns: 1.2fr 1fr 1fr !important;
+          gap: 0.4rem !important;
+          width: 100% !important;
+        }
+
+        #save-status {
+          font-size: 0.75rem !important;
+        }
+
+        .stats-btn-row {
+          display: grid !important;
+          grid-template-columns: 1.2fr 1.2fr 1fr !important;
+          gap: 0.4rem !important;
+          width: 100% !important;
+        }
+
+        .stats-btn-row .tool-btn {
+          width: 100% !important;
+          padding: 0.55rem 0.2rem !important;
+          font-size: 0.75rem !important;
+          text-align: center;
+          justify-content: center;
+          display: inline-flex;
+          align-items: center;
+          box-sizing: border-box;
+          margin: 0 !important;
+          white-space: nowrap;
+        }
+
+        .stats-bar .tool-btn {
+          padding: 0.6rem 0.3rem !important;
+          font-size: 0.75rem !important;
+          text-align: center;
+          justify-content: center;
+          display: inline-flex;
+          align-items: center;
+          box-sizing: border-box;
+          width: 100%;
+          margin: 0 !important;
+          white-space: nowrap;
+        }
+
         .toolbar {
           flex-wrap: nowrap;
           overflow-x: auto;
           -webkit-overflow-scrolling: touch;
-          padding: 0.5rem;
+          gap: 0.5rem !important;
+          padding: 0.6rem 0.5rem !important;
+          margin-bottom: 0.5rem;
           scrollbar-width: none;
         }
         .toolbar::-webkit-scrollbar {
           display: none;
         }
+
         .tool-btn {
           white-space: nowrap;
           flex-shrink: 0;
-          padding: 0.5rem 0.75rem;
+          font-size: 0.85rem !important;
+          padding: 0.55rem 0.85rem !important;
+          border-radius: 8px !important;
         }
+
         .btn-group {
           flex-direction: column;
           gap: 0.5rem;
         }
+
         .btn-submit {
           width: 100%;
           padding: 0.9rem;
           font-size: 1rem;
         }
-        /* 📱 모바일 에디터 입력창 높이 및 패딩 최적화 */
-  #monaco-editor {
-    height: 380px !important;
-  }
 
-  /* 입력창 및 셀렉트 박스 터치 높이 확보 (손가락 터치 편의성) */
-  input, select {
-    font-size: 16px !important; /* 모바일 사파리/크롬에서 입력창 클릭 시 화면 자동 확대(줌인) 현상 방지 */
-    padding: 0.85rem !important;
-  }
+        #monaco-editor {
+          height: 380px !important;
+        }
 
-  /* 실시간 미리보기 박스 높이 및 여백 조절 */
-  .preview-box {
-    padding: 1rem !important;
-    box-sizing: border-box;
-  }
-  /* 📱 모바일 팝업 모달창 화면 꽉 차게 최적화 */
-  .modal-box {
-    width: 95% !important;
-    max-width: 95% !important;
-    height: 90vh !important;
-    padding: 1rem !important;
-    border-radius: 12px !important;
-  }
+        input, select {
+          font-size: 16px !important;
+          padding: 0.85rem !important;
+        }
 
-  /* 🖼️ 모바일 갤러리 이미지 목록을 2열 그리드로 정렬 */
-  .modal-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.6rem !important;
-  }
+        .preview-box {
+          padding: 1rem !important;
+          box-sizing: border-box;
+        }
 
-  .modal-item {
-    height: 185px !important;
-  }
+        .modal-box {
+          width: 95% !important;
+          max-width: 95% !important;
+          height: 90vh !important;
+          padding: 1rem !important;
+          border-radius: 12px !important;
+        }
 
-  .modal-item-thumb-wrapper {
-    height: 95px !important;
-  }
+        .modal-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 0.6rem !important;
+        }
 
-  .modal-item-info {
-    height: 85px !important;
-    padding: 0.35rem !important;
-  }
+        .modal-item {
+          height: 185px !important;
+        }
 
-  .modal-item-actions {
-    flex-wrap: wrap !important;
-    gap: 2px !important;
-  }
+        .modal-item-thumb-wrapper {
+          height: 95px !important;
+        }
 
-  .btn-card-mini, .btn-card-mini-danger {
-    font-size: 0.65rem !important;
-    padding: 0.35rem 0.2rem !important;
-  }
+        .modal-item-info {
+          height: 85px !important;
+          padding: 0.35rem !important;
+        }
 
-  /* 🔍 모바일 갤러리 상단 검색 및 필터 툴바 정렬 */
-  .filter-toolbar {
-    gap: 0.4rem !important;
-    padding: 0.5rem 0 !important;
-  }
+        .modal-item-actions {
+          flex-wrap: wrap !important;
+          gap: 2px !important;
+        }
 
-  .alt-input-box {
-    min-width: 100% !important;
-  }
-  /* 🛠️ 모바일 툴바 부드러운 스와이프 및 여백 정리 */
-  .toolbar {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-    gap: 0.5rem !important;
-    padding: 0.6rem 0.5rem !important;
-    margin-bottom: 0.5rem;
-  }
+        .btn-card-mini, .btn-card-mini-danger {
+          font-size: 0.65rem !important;
+          padding: 0.35rem 0.2rem !important;
+        }
 
-  .tool-btn {
-    flex-shrink: 0 !important;
-    font-size: 0.85rem !important;
-    padding: 0.55rem 0.85rem !important;
-    border-radius: 8px !important;
-  }
+        .filter-toolbar {
+          gap: 0.4rem !important;
+          padding: 0.5rem 0 !important;
+        }
 
-  /* 💡 손가락 터치 시 살짝 눌리는 피드백 효과 */
-  .tool-btn:active, .btn-submit:active {
-    transform: scale(0.96) !important;
-    opacity: 0.85;
-  }
+        .alt-input-box {
+          min-width: 100% !important;
+        }
 
-  /* 📱 헤더 및 상단 여백 모바일 슬림화 */
-  .header-bar {
-    padding: 0.85rem 0.75rem !important;
-  }
-  .header-bar h1 {
-    font-size: 1.15rem !important;
-  }
-  /* 📱 모바일 탭 활성화에 따른 섹션 표시/숨김 */
-  .editor-grid.show-preview > section.card:first-child { display: none !important; }
-  .editor-grid.show-edit > section.card.card-sticky { display: none !important; }
+        .header-bar {
+          padding: 0.85rem 0.75rem !important;
+        }
+        .header-bar h1 {
+          font-size: 1.15rem !important;
+        }
+
+        .editor-grid.show-preview > section.card:first-child { display: none !important; }
+        .editor-grid.show-edit > section.card.card-sticky { display: none !important; }
       }
     </style>
   </head>
@@ -997,52 +947,47 @@ import BaseHead from '../components/BaseHead.astro';
     </div>
 
     <header class="header-bar">
-  <h1>
-    <a href="https://blog.lunasonata.com" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-      ✨ Lunasonata 포스팅 에디터
-    </a>
-  </h1>
-  <span style="color: var(--text-muted); font-size: 0.9rem;">반갑습니다, 세광님! 🎹</span>
-</header>
+      <h1>
+        <a href="https://blog.lunasonata.com" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+          ✨ Lunasonata 포스팅 에디터
+        </a>
+      </h1>
+      <span style="color: var(--text-muted); font-size: 0.9rem;">반갑습니다, 세광님! 🎹</span>
+    </header>
 
-<!-- 📱 모바일 전용 뷰 전환 탭 (768px 이하에서만 표시) -->
     <div id="mobile-view-tabs" class="mobile-tab-bar">
       <button type="button" id="tab-edit" class="tab-btn active">✏️ 글 작성</button>
       <button type="button" id="tab-preview" class="tab-btn">👀 실시간 미리보기</button>
     </div>
 
     <main class="editor-grid">
-      <!-- 💡 왼쪽 카드: 자연스럽게 아래로 길어지며 스크롤되는 영역 -->
       <section class="card">
         <div class="stats-bar">
-  <!-- 1층: 통계 정보 및 자동 저장 안내 -->
-  <div class="stats-info-row">
-    <div>
-      <span>글자 수: <strong id="char-count">0</strong> 자</span>
-      <span>•</span>
-      <span>예상 읽기 시간: <strong id="read-time">0</strong> 분</span>
-    </div>
-    <span id="save-status">✅ 작성 내용 자동 저장됨</span>
-  </div>
+          <div class="stats-info-row">
+            <div>
+              <span>글자 수: <strong id="char-count">0</strong> 자</span>
+              <span>•</span>
+              <span>예상 읽기 시간: <strong id="read-time">0</strong> 분</span>
+            </div>
+            <span id="save-status">✅ 작성 내용 자동 저장됨</span>
+          </div>
 
-  <!-- 2층: 초안 보관함 / 저장 / 비우기 버튼 3개 -->
-  <div class="stats-btn-row">
-    <button type="button" id="btn-open-drafts" class="tool-btn" style="background: #6366f1; border-color: #818cf8; font-weight: 700;">📁 초안 보관함 (<span id="draft-count">0</span>)</button>
-    <button type="button" id="btn-save-as-draft" class="tool-btn" style="background: #0ea5e9; border-color: #38bdf8; font-weight: 700;">💾 현재 글 보관</button>
-    <button type="button" id="btn-reset-draft" class="tool-btn" style="background: #e11d48;">🗑️ 내용 비우기</button>
-  </div>
-</div>
+          <div class="stats-btn-row">
+            <button type="button" id="btn-open-drafts" class="tool-btn" style="background: #6366f1; border-color: #818cf8; font-weight: 700;">📁 초안 보관함 (<span id="draft-count">0</span>)</button>
+            <button type="button" id="btn-save-as-draft" class="tool-btn" style="background: #0ea5e9; border-color: #38bdf8; font-weight: 700;">💾 현재 글 보관</button>
+            <button type="button" id="btn-reset-draft" class="tool-btn" style="background: #e11d48;">🗑️ 내용 비우기</button>
+          </div>
+        </div>
 
-        <!-- 🌐 다중 사이트 선택기 -->
-<div class="form-group" style="background: rgba(56, 189, 248, 0.08); padding: 0.85rem; border-radius: 10px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 0.5rem;">
-  <label for="site-select" style="color: var(--primary-color); font-weight: 700;">🌐 작성 및 발행 대상 사이트 선택</label>
-  <select id="site-select" style="font-weight: 700; color: var(--primary-color); background: #070a12; border-color: rgba(56, 189, 248, 0.4); width: 100%;">
-    <option value="blog" selected>📝 블로그 (blog.lunasonata.com)</option>
-    <option value="info">ℹ️ 정보 사이트 (info.lunasonata.com)</option>
-    <option value="piano">🎹 피아노 (piano.lunasonata.com)</option>
-    <option value="sekwang">👤 세광 개인 (sekwang.lunasonata.com)</option>
-  </select>
-</div>
+        <div class="form-group" style="background: rgba(56, 189, 248, 0.08); padding: 0.85rem; border-radius: 10px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 0.5rem;">
+          <label for="site-select" style="color: var(--primary-color); font-weight: 700;">🌐 작성 및 발행 대상 사이트 선택</label>
+          <select id="site-select" style="font-weight: 700; color: var(--primary-color); background: #070a12; border-color: rgba(56, 189, 248, 0.4); width: 100%;">
+            <option value="blog" selected>📝 블로그 (blog.lunasonata.com)</option>
+            <option value="info">ℹ️ 정보 사이트 (info.lunasonata.com)</option>
+            <option value="piano">🎹 피아노 (piano.lunasonata.com)</option>
+            <option value="sekwang">👤 세광 개인 (sekwang.lunasonata.com)</option>
+          </select>
+        </div>
 
         <div class="form-group">
           <label for="post-title">포스트 제목</label>
@@ -1104,7 +1049,6 @@ import BaseHead from '../components/BaseHead.astro';
         </div>
       </section>
 
-      <!-- 💡 오른쪽 카드: 화면 상단에 찰떡같이 고정되어 왼쪽이 스크롤되어도 따라오는 영역 -->
       <section class="card card-sticky">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <label>👀 실시간 미리보기</label>
@@ -1187,14 +1131,14 @@ import BaseHead from '../components/BaseHead.astro';
         </div>
 
         <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); display: flex; gap: 0.75rem; align-items: center;">
-      <select id="modal-site-filter" style="padding: 0.5rem 0.8rem; font-size: 0.85rem; border-color: #8b5cf6; color: #c084fc; background: #0f172a;">
-        <option value="blog">📝 블로그</option>
-        <option value="info">ℹ️ 정보 사이트</option>
-        <option value="piano">🎹 피아노</option>
-        <option value="sekwang">👤 세광 개인</option>
-      </select>
-      <input type="text" id="posts-search" placeholder="🔍 글 제목 또는 영문 슬러그 검색..." style="flex: 1; box-sizing: border-box;" />
-    </div>
+          <select id="modal-site-filter" style="padding: 0.5rem 0.8rem; font-size: 0.85rem; border-color: #8b5cf6; color: #c084fc; background: #0f172a;">
+            <option value="blog">📝 블로그</option>
+            <option value="info">ℹ️ 정보 사이트</option>
+            <option value="piano">🎹 피아노</option>
+            <option value="sekwang">👤 세광 개인</option>
+          </select>
+          <input type="text" id="posts-search" placeholder="🔍 글 제목 또는 영문 슬러그 검색..." style="flex: 1; box-sizing: border-box;" />
+        </div>
 
         <div id="posts-list-container" style="overflow-y: auto; flex: 1; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
           <p style="color:var(--text-muted); text-align:center; padding:2rem;">글 목록을 불러오는 중입니다...</p>
@@ -1202,25 +1146,64 @@ import BaseHead from '../components/BaseHead.astro';
       </div>
     </div>
 
+    <div id="toast" class="toast">알림 메시지</div>
+
+    <!-- 🔒 글 삭제 확인 모달 -->
+    <div id="delete-confirm-modal" class="modal-backdrop">
+      <div class="modal-box" style="max-width: 420px; height: auto; text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🗑️</div>
+        <h3 style="color: #f8fafc; margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">글 삭제 확인</h3>
+        <p id="delete-modal-target-title" style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.25rem; word-break: break-all;"></p>
+        
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <input 
+            type="password" 
+            id="delete-modal-password" 
+            placeholder="관리자 비밀번호 입력..." 
+            style="width: 100%; box-sizing: border-box; text-align: center;"
+          />
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" id="btn-delete-modal-cancel" class="tool-btn" style="flex: 1; padding: 0.7rem;">취소</button>
+          <button type="button" id="btn-delete-modal-confirm" class="btn-card-mini-danger" style="flex: 1; padding: 0.7rem; font-size: 0.85rem;">삭제하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📁 로컬 임시저장 모달 -->
+    <div id="drafts-modal" class="modal-backdrop">
+      <div class="modal-box" style="max-width: 800px;">
+        <div class="modal-header">
+          <h3 style="margin:0; color:#818cf8; display: flex; align-items: center; gap: 0.5rem;">
+            📁 로컬 임시저장 초안 보관함
+          </h3>
+          <button type="button" id="btn-close-drafts" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;" title="닫기 (Esc)">✕</button>
+        </div>
+
+        <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.85rem; color: var(--text-muted);">브라우저에 보관된 작성 중인 글 목록입니다. 언제든 다시 불러올 수 있습니다.</span>
+          <button type="button" id="btn-clear-all-drafts" class="tool-btn" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); font-size: 0.75rem; padding: 0.3rem 0.6rem;">전체 초안 삭제</button>
+        </div>
+
+        <div id="drafts-list-container" style="overflow-y: auto; flex: 1; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <p style="color:var(--text-muted); text-align:center; padding:2rem;">보관된 초안 글이 없습니다.</p>
+        </div>
+      </div>
+    </div>
+
     <script>
       declare const require: any;
 
-      // =========================================================
-      // [1] 모든 DOM 요소 및 상수 선언 (최상단에 선언하여 참조 에러 방지)
-      // =========================================================
       const API_BASE_URL = 'https://api.lunasonata.com';
       const DRAFT_KEY = 'lunasonata_admin_draft';
       const MULTI_DRAFTS_KEY = 'lunasonata_multi_drafts';
 
-      // 📱 모바일 탭 제어 요소
       const mobileTabEdit = document.getElementById('tab-edit');
       const mobileTabPreview = document.getElementById('tab-preview');
       const editorGrid = document.querySelector('.editor-grid');
 
-      // 입력창 요소
       const titleInput = document.getElementById('post-title') as HTMLInputElement;
-
-      // 🌐 다중 사이트 선택 요소
       const siteSelect = document.getElementById('site-select') as HTMLSelectElement;
       const modalSiteFilter = document.getElementById('modal-site-filter') as HTMLSelectElement;
 
@@ -1229,7 +1212,6 @@ import BaseHead from '../components/BaseHead.astro';
       const categoryInput = document.getElementById('post-category') as HTMLInputElement;
       const heroInput = document.getElementById('post-hero') as HTMLInputElement;
 
-      // 실시간 미리보기 & 통계 요소
       const pvTitle = document.getElementById('pv-title');
       const pvBody = document.getElementById('pv-body');
       const charCount = document.getElementById('char-count');
@@ -1238,7 +1220,6 @@ import BaseHead from '../components/BaseHead.astro';
       const previewBox = document.querySelector('.preview-box');
       const toast = document.getElementById('toast');
 
-      // 주요 액션 버튼
       const copyBtn = document.getElementById('copy-btn');
       const downloadBtn = document.getElementById('download-btn');
       const btnPublishWeb = document.getElementById('btn-publish-web');
@@ -1247,7 +1228,6 @@ import BaseHead from '../components/BaseHead.astro';
       const btnTogglePvTheme = document.getElementById('btn-toggle-pv-theme');
       const toolButtons = document.querySelectorAll('.tool-btn:not(.highlight)');
 
-      // 초안 보관함 요소
       const btnSaveAsDraft = document.getElementById('btn-save-as-draft');
       const btnOpenDrafts = document.getElementById('btn-open-drafts');
       const btnCloseDrafts = document.getElementById('btn-close-drafts');
@@ -1256,7 +1236,6 @@ import BaseHead from '../components/BaseHead.astro';
       const draftsListContainer = document.getElementById('drafts-list-container');
       const draftCountBadge = document.getElementById('draft-count');
 
-      // 갤러리 모달 요소
       const modal = document.getElementById('gallery-modal');
       const btnOpenGallery = document.getElementById('btn-open-gallery');
       const btnCloseGallery = document.getElementById('btn-close-gallery');
@@ -1269,7 +1248,6 @@ import BaseHead from '../components/BaseHead.astro';
       const filterUsageUsed = document.getElementById('filter-usage-used');
       const filterUsageUnused = document.getElementById('filter-usage-unused');
 
-      // 라이트박스(크게보기) 모달 요소
       const lbModal = document.getElementById('lightbox-modal');
       const lbImg = document.getElementById('lb-img') as HTMLImageElement;
       const lbCaption = document.getElementById('lb-caption');
@@ -1280,28 +1258,24 @@ import BaseHead from '../components/BaseHead.astro';
       const lbCopyHtml = document.getElementById('lb-copy-html');
       const lbCopyUrl = document.getElementById('lb-copy-url');
 
-      // 기존 글 불러오기 모달 요소
       const postsModal = document.getElementById('posts-modal');
       const btnOpenPosts = document.getElementById('btn-open-posts');
       const btnClosePosts = document.getElementById('btn-close-posts');
       const postsSearch = document.getElementById('posts-search') as HTMLInputElement;
       const postsContainer = document.getElementById('posts-list-container');
 
-      // 글 삭제 모달 요소
       const deleteModal = document.getElementById('delete-confirm-modal');
       const deleteModalTitle = document.getElementById('delete-modal-target-title');
       const deleteModalPassword = document.getElementById('delete-modal-password') as HTMLInputElement;
       const btnDeleteModalCancel = document.getElementById('btn-delete-modal-cancel');
       const btnDeleteModalConfirm = document.getElementById('btn-delete-modal-confirm');
 
-      // 로그인 인증 요소
       const authOverlay = document.getElementById('auth-overlay');
       const authPasswordInput = document.getElementById('auth-password-input') as HTMLInputElement;
       const authLoginBtn = document.getElementById('auth-login-btn');
       const authErrorMsg = document.getElementById('auth-error-msg');
       const authForm = document.getElementById('auth-form');
 
-      // 상태 관리 변수
       let monacoEditor: any = null;
       let allGalleryItems: any[] = [];
       let allPostsData: any[] = [];
@@ -1312,60 +1286,54 @@ import BaseHead from '../components/BaseHead.astro';
       let currentPubDate = '';
       let pendingDeleteSlug = '';
 
-      // =========================================================
-      // [2] Monaco Editor (VSCode 에디터 엔진) 설정 및 로드
-      // =========================================================
       if (typeof require !== 'undefined') {
         require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
         require(['vs/editor/editor.main'], function () {
           const container = document.getElementById('monaco-editor');
           if (container) {
             monacoEditor = (window as any).monaco.editor.create(container, {
-  value: '',
-  language: 'html',
-  theme: 'vs-dark',
-  automaticLayout: true,
-  fontSize: 14,
-  minimap: { enabled: false },
-  wordWrap: 'on',
-  lineNumbers: 'on',
-  scrollBeyondLastLine: false,
-  padding: { top: 12, bottom: 12 }
-});
+              value: '',
+              language: 'html',
+              theme: 'vs-dark',
+              automaticLayout: true,
+              fontSize: 14,
+              minimap: { enabled: false },
+              wordWrap: 'on',
+              lineNumbers: 'on',
+              scrollBeyondLastLine: false,
+              padding: { top: 12, bottom: 12 }
+            });
 
-// 📱 모바일 탭 전환 클릭 이벤트
-      if (editorGrid) {
-        editorGrid.classList.add('show-edit'); // 기본 상태: 글 작성 화면 보이기
-      }
+            if (editorGrid) {
+              editorGrid.classList.add('show-edit');
+            }
 
-      mobileTabEdit?.addEventListener('click', () => {
-        mobileTabEdit.classList.add('active');
-        mobileTabPreview?.classList.remove('active');
-        editorGrid?.classList.add('show-edit');
-        editorGrid?.classList.remove('show-preview');
-        // Monaco 에디터 레이아웃 재계산
-        if (monacoEditor) monacoEditor.layout();
-      });
+            mobileTabEdit?.addEventListener('click', () => {
+              mobileTabEdit.classList.add('active');
+              mobileTabPreview?.classList.remove('active');
+              editorGrid?.classList.add('show-edit');
+              editorGrid?.classList.remove('show-preview');
+              if (monacoEditor) monacoEditor.layout();
+            });
 
-      mobileTabPreview?.addEventListener('click', () => {
-        mobileTabPreview.classList.add('active');
-        mobileTabEdit?.classList.remove('active');
-        editorGrid?.classList.add('show-preview');
-        editorGrid?.classList.remove('show-edit');
-        updatePreview();
-      });
+            mobileTabPreview?.addEventListener('click', () => {
+              mobileTabPreview.classList.add('active');
+              mobileTabEdit?.classList.remove('active');
+              editorGrid?.classList.add('show-preview');
+              editorGrid?.classList.remove('show-edit');
+              updatePreview();
+            });
 
-// 💡 창 크기 변경 시 Monaco 에디터 레이아웃 자동 재계산
-window.addEventListener('resize', () => {
-  if (monacoEditor) monacoEditor.layout();
-});
+            window.addEventListener('resize', () => {
+              if (monacoEditor) monacoEditor.layout();
+            });
 
-monacoEditor.onDidChangeModelContent(() => {
-  updatePreview();
-  saveDraft();
-});
+            monacoEditor.onDidChangeModelContent(() => {
+              updatePreview();
+              saveDraft();
+            });
 
-loadDraft();
+            loadDraft();
           }
         });
       }
@@ -1387,9 +1355,6 @@ loadDraft();
         setTimeout(() => toast.classList.remove('show'), 2000);
       }
 
-      // =========================================================
-      // [3] 실시간 미리보기 & 템플릿 삽입 로직
-      // =========================================================
       function updatePreview() {
         const titleText = titleInput ? titleInput.value.trim() : '';
         const htmlText = getEditorValue();
@@ -1398,30 +1363,28 @@ loadDraft();
           pvTitle.textContent = titleText || '제목을 입력하면 여기에 나타납니다';
         }
 
-// [수정 후]
-if (pvBody) {
-  if (htmlText.trim() === '') {
-    pvBody.innerHTML = `
-      <p style="color: #94a3b8; text-align: center; margin-top: 4rem;">
-        왼쪽 창에 HTML 및 본문을 입력하면 실시간으로 감각적인 스타일이 적용되어 보입니다.
-      </p>`;
-  } else {
-    // 💡 미리보기 화면에서 주석을 감각적인 광고 박스 안내판으로 임시 치환
-    const visualContent = htmlText.replace(
-  /<!--\s*ad\s*-->/g,
-  `<div style="background: rgba(34, 197, 94, 0.08); border: 1.5px dashed #22c55e; border-radius: 8px; padding: 1.25rem; margin: 1.5rem 0; text-align: center; color: #16a34a; font-weight: 700; font-size: 0.85rem; user-select: none;">
-    📢 [구글 애드센스 인피드 광고 영역]
-  </div>`
-);
+        if (pvBody) {
+          if (htmlText.trim() === '') {
+            pvBody.innerHTML = `
+              <p style="color: #94a3b8; text-align: center; margin-top: 4rem;">
+                왼쪽 창에 HTML 및 본문을 입력하면 실시간으로 감각적인 스타일이 적용되어 보입니다.
+              </p>`;
+          } else {
+            const visualContent = htmlText.replace(
+              /<!--\s*ad\s*-->/g,
+              `<div style="background: rgba(34, 197, 94, 0.08); border: 1.5px dashed #22c55e; border-radius: 8px; padding: 1.25rem; margin: 1.5rem 0; text-align: center; color: #16a34a; font-weight: 700; font-size: 0.85rem; user-select: none;">
+                📢 [구글 애드센스 인피드 광고 영역]
+              </div>`
+            );
 
-    pvBody.innerHTML = visualContent;
-    const fadeElements = pvBody.querySelectorAll('.fade-up');
-    fadeElements.forEach((el) => {
-      (el as HTMLElement).style.opacity = '1';
-      (el as HTMLElement).style.transform = 'none';
-    });
-  }
-}
+            pvBody.innerHTML = visualContent;
+            const fadeElements = pvBody.querySelectorAll('.fade-up');
+            fadeElements.forEach((el) => {
+              (el as HTMLElement).style.opacity = '1';
+              (el as HTMLElement).style.transform = 'none';
+            });
+          }
+        }
 
         const plainText = htmlText.replace(/<[^>]*>?/gm, '');
         const length = plainText.length;
@@ -1451,48 +1414,48 @@ if (pvBody) {
 
       titleInput?.addEventListener('input', updatePreview);
 
-toolButtons.forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const tag = btn.getAttribute('data-tag');
-    const action = btn.getAttribute('data-action');
+      toolButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const tag = btn.getAttribute('data-tag');
+          const action = btn.getAttribute('data-action');
 
-    if (tag) {
-      insertTag(tag);
-    } else if (action && monacoEditor) {
-      const selection = monacoEditor.getSelection();
-      const selectedText = monacoEditor.getModel().getValueInRange(selection);
+          if (tag) {
+            insertTag(tag);
+          } else if (action && monacoEditor) {
+            const selection = monacoEditor.getSelection();
+            const selectedText = monacoEditor.getModel().getValueInRange(selection);
 
-      let replacement = '';
-      if (action === 'bold') {
-        replacement = `<strong>${selectedText || '굵은 텍스트'}</strong>`;
-      } else if (action === 'italic') {
-        replacement = `<em>${selectedText || '기울임 텍스트'}</em>`;
-      } else if (action === 'quote') {
-        replacement = `<blockquote>${selectedText || '인용할 문장'}</blockquote>`;
-      } else if (action === 'codeblock') {
-        replacement = `<pre><code>${selectedText || '// 코드 입력'}</code></pre>`;
-      } else if (action === 'link') {
-        const url = prompt('연결할 링크 URL을 입력하세요:', 'https://');
-        if (url) {
-          replacement = `<a href="${url}" target="_blank" rel="noopener noreferrer">${selectedText || '링크 텍스트'}</a>`;
-        } else {
-          return;
-        }
-      }
+            let replacement = '';
+            if (action === 'bold') {
+              replacement = `<strong>${selectedText || '굵은 텍스트'}</strong>`;
+            } else if (action === 'italic') {
+              replacement = `<em>${selectedText || '기울임 텍스트'}</em>`;
+            } else if (action === 'quote') {
+              replacement = `<blockquote>${selectedText || '인용할 문장'}</blockquote>`;
+            } else if (action === 'codeblock') {
+              replacement = `<pre><code>${selectedText || '// 코드 입력'}</code></pre>`;
+            } else if (action === 'link') {
+              const url = prompt('연결할 링크 URL을 입력하세요:', 'https://');
+              if (url) {
+                replacement = `<a href="${url}" target="_blank" rel="noopener noreferrer">${selectedText || '링크 텍스트'}</a>`;
+              } else {
+                return;
+              }
+            }
 
-      if (replacement) {
-        monacoEditor.executeEdits('', [{
-          range: selection,
-          text: replacement,
-          forceMoveMarkers: true
-        }]);
-        monacoEditor.focus();
-        updatePreview();
-        saveDraft();
-      }
-    }
-  });
-});
+            if (replacement) {
+              monacoEditor.executeEdits('', [{
+                range: selection,
+                text: replacement,
+                forceMoveMarkers: true
+              }]);
+              monacoEditor.focus();
+              updatePreview();
+              saveDraft();
+            }
+          }
+        });
+      });
 
       document.getElementById('btn-tmpl-callout')?.addEventListener('click', () => {
         const calloutTmpl = `<div style="background: #0f172a; border-left: 4px solid #38bdf8; padding: 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0;">\n  💡 <strong>참고:</strong> 여기에 안내하고 싶은 핵심 내용을 적어주세요.\n</div>\n`;
@@ -1509,7 +1472,6 @@ toolButtons.forEach((btn) => {
         insertTag('', figureTmpl);
       });
 
-      // 💡 [추가] 📢 광고 삽입 버튼 클릭 시 <!-- ad --> 주석 삽입
       document.getElementById('btn-tmpl-ad')?.addEventListener('click', () => {
         const adTmpl = `\n<!-- ad -->\n`;
         insertTag('', adTmpl);
@@ -1521,7 +1483,6 @@ toolButtons.forEach((btn) => {
         btnTogglePvTheme.textContent = isDark ? '☀️ 라이트모드 보기' : '🌙 다크모드 보기';
       });
 
-      // 미리보기 클릭 시 에디터 커서 이동
       pvBody?.addEventListener('click', (e: MouseEvent) => {
         const target = e.target as HTMLElement;
         if (!target || !monacoEditor) return;
@@ -1551,25 +1512,20 @@ toolButtons.forEach((btn) => {
         const matches = model.findMatches(searchText, false, false, false, null, true);
         if (matches && matches.length > 0) {
           const matchRange = matches[0].range;
-
-          // 1️⃣ [바깥쪽 스크롤 완벽 해결]
           const editorElement = document.getElementById('monaco-editor');
           const leftCard = editorElement ? editorElement.closest('section.card') as HTMLElement : null;
 
           if (editorElement) {
             if (leftCard && leftCard.scrollHeight > leftCard.clientHeight) {
-              // PC 환경: 왼쪽 카드 내부 스크롤 컨테이너 이동
               const cardRect = leftCard.getBoundingClientRect();
               const editorRect = editorElement.getBoundingClientRect();
               const scrollOffset = editorRect.top - cardRect.top + leftCard.scrollTop - 40;
               leftCard.scrollTo({ top: scrollOffset, behavior: 'smooth' });
             } else {
-              // 모바일/전체 창 스크롤 환경: 화면 스크롤 이동
               editorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
           }
 
-          // 2️⃣ [안쪽 스크롤] Monaco 에디터 내부 커서 이동 및 포커스
           monacoEditor.setPosition({
             lineNumber: matchRange.startLineNumber,
             column: matchRange.startColumn
@@ -1581,33 +1537,28 @@ toolButtons.forEach((btn) => {
         }
       });
 
-      // =========================================================
-      // [4] Frontmatter 생성 및 단일/다중 로컬 임시저장
-      // =========================================================
-// [수정 후]
-function generateFrontmatter(isDraft: boolean = false): string {
-  const rawTitle = titleInput?.value.trim() || '제목 없음';
-  const rawDescription = descInput?.value.trim() || rawTitle;
-  const title = rawTitle.replace(/"/g, '\\"');
-  const description = rawDescription.replace(/"/g, '\\"');
+      function generateFrontmatter(isDraft: boolean = false): string {
+        const rawTitle = titleInput?.value.trim() || '제목 없음';
+        const rawDescription = descInput?.value.trim() || rawTitle;
+        const title = rawTitle.replace(/"/g, '\\"');
+        const description = rawDescription.replace(/"/g, '\\"');
 
-  // 💡 중복을 없애고 1줄로 통합
-  const rawHero = heroInput?.value.trim() || '';
-  const heroImage = rawHero.replace(/^["']|["']$/g, '');
+        const rawHero = heroInput?.value.trim() || '';
+        const heroImage = rawHero.replace(/^["']|["']$/g, '');
 
-  const slug = slugInput?.value.trim() || '';
-  const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
-  const categoriesFormatted = rawCategories.length > 0 
-    ? `\ncategories:\n${rawCategories.map(c => `  - "${c.replace(/"/g, '\\"')}"`).join('\n')}` 
-    : '';
+        const slug = slugInput?.value.trim() || '';
+        const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
+        const categoriesFormatted = rawCategories.length > 0 
+          ? `\ncategories:\n${rawCategories.map(c => `  - "${c.replace(/"/g, '\\"')}"`).join('\n')}` 
+          : '';
 
-  const now = new Date();
-  const offset = now.getTimezoneOffset() * 60000;
-  const localIso = new Date(now.getTime() - offset).toISOString().slice(0, 19);
-  const pubDateValue = currentPubDate ? currentPubDate : localIso;
-  const bodyContent = getEditorValue();
+        const now = new Date();
+        const offset = now.getTimezoneOffset() * 60000;
+        const localIso = new Date(now.getTime() - offset).toISOString().slice(0, 19);
+        const pubDateValue = currentPubDate ? currentPubDate : localIso;
+        const bodyContent = getEditorValue();
 
-  return `---
+        return `---
 title: "${title}"
 description: "${description}"
 pubDate: ${pubDateValue}
@@ -1616,7 +1567,7 @@ draft: ${isDraft}
 ---
 
 ${bodyContent}`;
-}
+      }
 
       function loadDraft() {
         const savedData = localStorage.getItem(DRAFT_KEY);
@@ -1676,7 +1627,6 @@ ${bodyContent}`;
       categoryInput?.addEventListener('input', saveDraft);
       heroInput?.addEventListener('input', saveDraft);
 
-      // 다중 임시저장 관리 함수들
       function getAllDrafts(): any[] {
         try {
           const raw = localStorage.getItem(MULTI_DRAFTS_KEY);
@@ -1810,10 +1760,10 @@ ${bodyContent}`;
       });
 
       draftsModal?.addEventListener('mousedown', (e) => {
-  if (e.target === draftsModal) {
-    draftsModal.style.display = 'none';
-  }
-});;
+        if (e.target === draftsModal) {
+          draftsModal.style.display = 'none';
+        }
+      });
 
       btnClearAllDrafts?.addEventListener('click', () => {
         if (confirm('보관함에 있는 모든 초안을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
@@ -1825,9 +1775,6 @@ ${bodyContent}`;
 
       updateDraftCount();
 
-      // =========================================================
-      // [5] 복사, 다운로드, 서버 게시/미리보기 API 통신
-      // =========================================================
       copyBtn?.addEventListener('click', () => {
         const fullPost = generateFrontmatter(false);
         navigator.clipboard.writeText(fullPost).then(() => {
@@ -1897,7 +1844,6 @@ ${bodyContent}`;
           const data = await res.json();
 
           if (res.ok && data.success) {
-            // 🌐 사이트별 도메인 동적 적용
             const domainMap: Record<string, string> = {
               blog: 'https://blog.lunasonata.com',
               info: 'https://info.lunasonata.com',
@@ -1936,48 +1882,41 @@ ${bodyContent}`;
         }
       });
 
-      // =========================================================
-      // [6] NAS 자산 갤러리 및 라이트박스 로직
-      // =========================================================
-// 💡 [추가] 모달 열림/닫힘 시 뒷배경 스크롤 잠금/해제 함수
-function lockBackgroundScroll() {
-  document.documentElement.style.overflow = 'hidden';
-  document.body.style.overflow = 'hidden';
-}
+      function lockBackgroundScroll() {
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+      }
 
-function unlockBackgroundScroll() {
-  // 현재 열려있는 팝업 모달이 있는지 확인
-  const modals = [modal, lbModal, postsModal, draftsModal, deleteModal];
-  const anyModalOpen = modals.some((m) => m && window.getComputedStyle(m).display === 'flex');
+      function unlockBackgroundScroll() {
+        const modals = [modal, lbModal, postsModal, draftsModal, deleteModal];
+        const anyModalOpen = modals.some((m) => m && window.getComputedStyle(m).display === 'flex');
 
-  // 열려있는 모달이 없으면 스크롤을 완전히 복구
-  if (!anyModalOpen) {
-    document.documentElement.style.overflow = 'auto';
-    document.body.style.overflow = 'auto';
-  }
-}   
+        if (!anyModalOpen) {
+          document.documentElement.style.overflow = 'auto';
+          document.body.style.overflow = 'auto';
+        }
+      }
+
       function closeModal() {
         if (modal) modal.style.display = 'none';
         unlockBackgroundScroll();
       }
 
       function openModal() {
-  if (modal) modal.style.display = 'flex';
-  lockBackgroundScroll();
-  
-  // 💡 모달을 열 때마다 검색창 및 필터를 깔끔하게 초기 상태로 리셋
-  if (gallerySearch) gallerySearch.value = '';
-  if (folderSelect) folderSelect.value = 'ALL';
-  currentUsageFilter = 'all';
-  
-  filterUsageAll?.classList.add('active');
-  filterUsageUsed?.classList.remove('active');
-  filterUsageUnused?.classList.remove('active');
+        if (modal) modal.style.display = 'flex';
+        lockBackgroundScroll();
+        
+        if (gallerySearch) gallerySearch.value = '';
+        if (folderSelect) folderSelect.value = 'ALL';
+        currentUsageFilter = 'all';
+        
+        filterUsageAll?.classList.add('active');
+        filterUsageUsed?.classList.remove('active');
+        filterUsageUnused?.classList.remove('active');
 
-  fetchGalleryData();
-}
+        fetchGalleryData();
+      }
 
-      // ✅ 수정 코드
       btnOpenGallery?.addEventListener('click', openModal);
       heroInput?.addEventListener('click', () => {
         openModal();
@@ -1985,10 +1924,10 @@ function unlockBackgroundScroll() {
       });
       btnCloseGallery?.addEventListener('click', closeModal);
       modal?.addEventListener('mousedown', (e) => {
-  if (e.target === modal) {
-    closeModal();
-  }
-});
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
 
       async function fetchGalleryData() {
         if (!galleryGrid) return;
@@ -2063,7 +2002,6 @@ function unlockBackgroundScroll() {
             ? `<span class="badge-selected-check">✓</span>`
             : '';
 
-          // ✅ 수정 코드
           card.innerHTML = `
             ${usageBadge}
             ${checkBadge}
@@ -2073,15 +2011,15 @@ function unlockBackgroundScroll() {
             <div class="modal-item-info">
               <div class="modal-item-name" title="${item.name}">${item.name}</div>
               <div class="modal-item-actions">
-  <button type="button" class="btn-card-mini btn-set-hero" style="background: #0284c7; color: #ffffff;" title="대표 이미지로 지정">🌟 대표</button>
-  <button type="button" class="btn-card-mini btn-view-big">🔍 크게</button>
-  <button type="button" class="btn-card-mini btn-copy-html">HTML</button>
-  <button type="button" class="btn-card-mini btn-copy-url" style="background: #334155;">URL</button>
-  <button type="button" class="btn-card-mini-danger btn-del">삭제</button>
-</div>
+                <button type="button" class="btn-card-mini btn-set-hero" style="background: #0284c7; color: #ffffff;" title="대표 이미지로 지정">🌟 대표</button>
+                <button type="button" class="btn-card-mini btn-view-big">🔍 크게</button>
+                <button type="button" class="btn-card-mini btn-copy-html">HTML</button>
+                <button type="button" class="btn-card-mini btn-copy-url" style="background: #334155;">URL</button>
+                <button type="button" class="btn-card-mini-danger btn-del">삭제</button>
+              </div>
+            </div>
           `;
 
-          // 💡 [🌟 대표] 버튼 클릭 시 대표 이미지 URL 자동 입력 및 모달 닫기
           card.querySelector('.btn-set-hero')?.addEventListener('click', (e) => {
             e.stopPropagation();
             if (heroInput) {
@@ -2120,13 +2058,13 @@ function unlockBackgroundScroll() {
           });
 
           card.querySelector('.btn-copy-url')?.addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (item.url) {
-    navigator.clipboard.writeText(item.url).then(() => {
-      showToast(`🔗 이미지 URL 복사 완료!`);
-    });
-  }
-});
+            e.stopPropagation();
+            if (item.url) {
+              navigator.clipboard.writeText(item.url).then(() => {
+                showToast(`🔗 이미지 URL 복사 완료!`);
+              });
+            }
+          });
 
           card.querySelector('.btn-del')?.addEventListener('click', async (e) => {
             e.stopPropagation();
@@ -2163,67 +2101,63 @@ function unlockBackgroundScroll() {
       }
 
       lbModal?.addEventListener('mousedown', (e) => {
-  if (e.target === lbModal) {
-    closeLightbox();
-  }
-});
+        if (e.target === lbModal) {
+          closeLightbox();
+        }
+      });
       lbClose?.addEventListener('click', closeLightbox);
       lbPrev?.addEventListener('click', () => navigateLightbox(-1));
       lbNext?.addEventListener('click', () => navigateLightbox(1));
 
       lbCopyHtml?.addEventListener('click', () => {
-  const item = currentFilteredItems[currentLbIndex];
-  if (item) {
-    const altValue = lbAltInput.value.trim() || item.name;
-    const imgTag = `<img src="${item.url}" alt="${altValue}" />`;
-    navigator.clipboard.writeText(imgTag).then(() => {
-      showToast(`📋 HTML 복사 완료! (alt: "${altValue}")`);
-    });
-  }
-});
+        const item = currentFilteredItems[currentLbIndex];
+        if (item) {
+          const altValue = lbAltInput.value.trim() || item.name;
+          const imgTag = `<img src="${item.url}" alt="${altValue}" />`;
+          navigator.clipboard.writeText(imgTag).then(() => {
+            showToast(`📋 HTML 복사 완료! (alt: "${altValue}")`);
+          });
+        }
+      });
 
-// 💡 [추가] 라이트박스 팝업에서 URL 단독 복사 기능 연결
-lbCopyUrl?.addEventListener('click', () => {
-  const item = currentFilteredItems[currentLbIndex];
-  if (item && item.url) {
-    navigator.clipboard.writeText(item.url).then(() => {
-      showToast(`🔗 이미지 URL이 클립보드에 복사되었습니다!`);
-    });
-  }
-});
+      lbCopyUrl?.addEventListener('click', () => {
+        const item = currentFilteredItems[currentLbIndex];
+        if (item && item.url) {
+          navigator.clipboard.writeText(item.url).then(() => {
+            showToast(`🔗 이미지 URL이 클립보드에 복사되었습니다!`);
+          });
+        }
+      });
 
-      // ✅ 수정 코드
       document.addEventListener('keydown', (e) => {
-  // 💡 ESC 키는 어디서든 모달 닫기로 동작
-  if (e.key === 'Escape') {
-    if (lbModal && lbModal.style.display === 'flex') {
-      closeLightbox();
-    } else if (modal && modal.style.display === 'flex') {
-      closeModal();
-    } else if (postsModal && postsModal.style.display === 'flex') {
-      closePostsModal();
-    } else if (draftsModal && draftsModal.style.display === 'flex') {
-      draftsModal.style.display = 'none';
-    } else if (deleteModal && deleteModal.style.display === 'flex') {
-      closeDeleteModal();
-    }
-    return;
-  }
+        if (e.key === 'Escape') {
+          if (lbModal && lbModal.style.display === 'flex') {
+            closeLightbox();
+          } else if (modal && modal.style.display === 'flex') {
+            closeModal();
+          } else if (postsModal && postsModal.style.display === 'flex') {
+            closePostsModal();
+          } else if (draftsModal && draftsModal.style.display === 'flex') {
+            draftsModal.style.display = 'none';
+          } else if (deleteModal && deleteModal.style.display === 'flex') {
+            closeDeleteModal();
+          }
+          return;
+        }
 
-  // 💡 라이트박스가 열려있을 때 좌우 화살표로 사진 이동 (단, 텍스트 입력창 작성 중일 때는 제외)
-  if (lbModal && lbModal.style.display === 'flex') {
-    const isInputFocused = document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA';
-    if (!isInputFocused) {
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        navigateLightbox(-1);
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        navigateLightbox(1);
-      }
-    }
-  }
-});
+        if (lbModal && lbModal.style.display === 'flex') {
+          const isInputFocused = document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA';
+          if (!isInputFocused) {
+            if (e.key === 'ArrowLeft') {
+              e.preventDefault();
+              navigateLightbox(-1);
+            } else if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              navigateLightbox(1);
+            }
+          }
+        }
+      });
 
       folderSelect?.addEventListener('change', renderFilteredGallery);
       gallerySearch?.addEventListener('input', renderFilteredGallery);
@@ -2292,9 +2226,6 @@ lbCopyUrl?.addEventListener('click', () => {
         }
       });
 
-      // =========================================================
-      // [7] 기존 글 목록 불러오기 / 수정 / 삭제 모달 로직
-      // =========================================================
       function openPostsModal() {
         if (postsModal) postsModal.style.display = 'flex';
         lockBackgroundScroll();
@@ -2309,12 +2240,13 @@ lbCopyUrl?.addEventListener('click', () => {
       btnOpenPosts?.addEventListener('click', openPostsModal);
       btnClosePosts?.addEventListener('click', closePostsModal);
       postsModal?.addEventListener('mousedown', (e) => {
-  if (e.target === postsModal) {
-    closePostsModal();
-  }
-});
+        if (e.target === postsModal) {
+          closePostsModal();
+        }
+      });
       postsSearch?.addEventListener('input', renderPostsList);
       modalSiteFilter?.addEventListener('change', fetchPostsList);
+
       async function fetchPostsList() {
         if (!postsContainer) return;
         const targetSite = modalSiteFilter?.value || siteSelect?.value || 'blog';
@@ -2346,31 +2278,27 @@ lbCopyUrl?.addEventListener('click', () => {
             const slugMatch = rawContent.match(/^slug:\s*["']?(.*?)["']?$/m);
             if (slugInput) slugInput.value = slugMatch ? slugMatch[1].trim() : result.slug;
 
-            // [수정 후]
-const titleMatch = rawContent.match(/^title:\s*(.*)$/m);
-if (titleMatch && titleInput) {
-  titleInput.value = titleMatch[1].trim().replace(/^["']|["']$/g, '').replace(/\\"/g, '"');
-}
+            const titleMatch = rawContent.match(/^title:\s*(.*)$/m);
+            if (titleMatch && titleInput) {
+              titleInput.value = titleMatch[1].trim().replace(/^["']|["']$/g, '').replace(/\\"/g, '"');
+            }
 
-const descMatch = rawContent.match(/^description:\s*(.*)$/m);
-if (descMatch && descInput) {
-  descInput.value = descMatch[1].trim().replace(/^["']|["']$/g, '').replace(/\\"/g, '"');
-}
+            const descMatch = rawContent.match(/^description:\s*(.*)$/m);
+            if (descMatch && descInput) {
+              descInput.value = descMatch[1].trim().replace(/^["']|["']$/g, '').replace(/\\"/g, '"');
+            }
 
-const heroMatch = rawContent.match(/^heroImage:\s*(.*)$/m);
-if (heroMatch && heroInput) {
-  heroInput.value = heroMatch[1].trim().replace(/^["']|["']$/g, '');
-}
+            const heroMatch = rawContent.match(/^heroImage:\s*(.*)$/m);
+            if (heroMatch && heroInput) {
+              heroInput.value = heroMatch[1].trim().replace(/^["']|["']$/g, '');
+            }
 
-            // ✅ [완벽 보완] 카테고리 자동 채우기 코드
-            // 1) allPostsData 목록 데이터에서 먼저 카테고리 가져오기
             const currentPostMeta = allPostsData.find(p => p.filename === identifier || p.slug === identifier || p.title === identifier);
             let loadedCategories: string[] = [];
 
             if (currentPostMeta && Array.isArray(currentPostMeta.categories) && currentPostMeta.categories.length > 0) {
               loadedCategories = currentPostMeta.categories;
             } else {
-              // 2) 파일 원문에서 모든 형태(줄바꿈 \r\n, 인라인 배열, 단수형) 파싱
               const inlineCatMatch = rawContent.match(/^categories:\s*\[(.*?)\]/m);
               if (inlineCatMatch) {
                 loadedCategories = inlineCatMatch[1].split(',').map(c => c.replace(/["'\s]/g, '')).filter(Boolean);
@@ -2419,16 +2347,15 @@ if (heroMatch && heroInput) {
       }
 
       function deletePostContent(slug: string) {
-  pendingDeleteSlug = slug;
-  if (deleteModalTitle) deleteModalTitle.textContent = `'${slug}' 글을 정말 삭제하시겠습니까?`;
-  
-  // 💡 세션에 저장된 관리자 비밀번호가 있으면 자동으로 입력
-  const savedPassword = sessionStorage.getItem('admin_password') || '';
-  if (deleteModalPassword) deleteModalPassword.value = savedPassword;
-  
-  if (deleteModal) deleteModal.style.display = 'flex';
-  deleteModalPassword?.focus();
-}
+        pendingDeleteSlug = slug;
+        if (deleteModalTitle) deleteModalTitle.textContent = `'${slug}' 글을 정말 삭제하시겠습니까?`;
+        
+        const savedPassword = sessionStorage.getItem('admin_password') || '';
+        if (deleteModalPassword) deleteModalPassword.value = savedPassword;
+        
+        if (deleteModal) deleteModal.style.display = 'flex';
+        deleteModalPassword?.focus();
+      }
 
       async function confirmDeletePost() {
         if (!pendingDeleteSlug) return;
@@ -2468,10 +2395,9 @@ if (heroMatch && heroInput) {
         if (e.key === 'Enter') confirmDeletePost();
       });
       deleteModal?.addEventListener('mousedown', (e) => {
-  if (e.target === deleteModal) closeDeleteModal();
-});
+        if (e.target === deleteModal) closeDeleteModal();
+      });
 
-      // ✅ 완성형 renderPostsList 함수
       function renderPostsList() {
         if (!postsContainer) return;
         const query = postsSearch?.value.toLowerCase().trim() || '';
@@ -2487,7 +2413,6 @@ if (heroMatch && heroInput) {
           return;
         }
 
-        // 🌐 사이트별 실제 도메인 매핑 테이블
         const domainMap: Record<string, string> = {
           blog: 'https://blog.lunasonata.com',
           info: 'https://info.lunasonata.com',
@@ -2510,17 +2435,13 @@ if (heroMatch && heroInput) {
           `;
 
           const targetName = post.filename || post.title || post.slug;
-          
-          // 현재 선택된 사이트에 맞는 도메인 가져오기
           const currentSite = post.site || modalSiteFilter?.value || 'blog';
           const targetBaseUrl = domainMap[currentSite] || domainMap['blog'];
           
-          // 💡 상태별 뱃지 생성 (발행됨 vs 비공개 Draft)
           const statusBadge = post.draft
             ? `<span style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.25rem;">🔒 비공개 (Draft)</span>`
             : `<span style="background: rgba(2, 132, 199, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.25rem;">🚀 발행됨 (Public)</span>`;
 
-          // 💡 카테고리 태그 뱃지 목록 생성
           const cats = Array.isArray(post.categories) ? post.categories : [];
           const categoriesHtml = cats.length > 0
             ? cats.map(c => `<span style="background: rgba(20, 184, 166, 0.15); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.3); font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.45rem; border-radius: 4px;">#${c}</span>`).join(' ')
@@ -2570,9 +2491,6 @@ if (heroMatch && heroInput) {
         });
       }
 
-      // =========================================================
-      // [8] 🔒 관리자 인증(로그인) 기능
-      // =========================================================
       function checkAdminAuth() {
         const isAuth = sessionStorage.getItem('admin_authenticated');
         if (isAuth === 'true') {
@@ -2602,13 +2520,13 @@ if (heroMatch && heroInput) {
           const result = await res.json();
 
           if (result.success) {
-  sessionStorage.setItem('admin_authenticated', 'true');
-  sessionStorage.setItem('admin_password', password);
-  if (authOverlay) authOverlay.style.display = 'none';
-  if (authErrorMsg) authErrorMsg.style.display = 'none';
-  unlockBackgroundScroll(); // 💡 로그인 성공 시 즉시 스크롤 복구
-  showToast('🔓 관리자 인증 성공!');
-} else {
+            sessionStorage.setItem('admin_authenticated', 'true');
+            sessionStorage.setItem('admin_password', password);
+            if (authOverlay) authOverlay.style.display = 'none';
+            if (authErrorMsg) authErrorMsg.style.display = 'none';
+            unlockBackgroundScroll();
+            showToast('🔓 관리자 인증 성공!');
+          } else {
             showAuthError('❌ 비밀번호가 올바르지 않습니다.');
           }
         } catch (err) {
@@ -2634,54 +2552,7 @@ if (heroMatch && heroInput) {
         handleAdminLogin();
       });
 
-      // 페이지 로드 시 즉시 인증 상태 확인
       checkAdminAuth();
     </script>
-
-    <div id="toast" class="toast">알림 메시지</div>
-
-    <!-- 🔒 글 삭제 확인 전용 모달 (비밀번호 마스킹) -->
-    <div id="delete-confirm-modal" class="modal-backdrop">
-      <div class="modal-box" style="max-width: 420px; height: auto; text-align: center; padding: 2rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🗑️</div>
-        <h3 style="color: #f8fafc; margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem;">글 삭제 확인</h3>
-        <p id="delete-modal-target-title" style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.25rem; word-break: break-all;"></p>
-        
-        <div class="form-group" style="margin-bottom: 1.25rem;">
-          <input 
-            type="password" 
-            id="delete-modal-password" 
-            placeholder="관리자 비밀번호 입력..." 
-            style="width: 100%; box-sizing: border-box; text-align: center;"
-          />
-        </div>
-
-        <div style="display: flex; gap: 0.75rem;">
-          <button type="button" id="btn-delete-modal-cancel" class="tool-btn" style="flex: 1; padding: 0.7rem;">취소</button>
-          <button type="button" id="btn-delete-modal-confirm" class="btn-card-mini-danger" style="flex: 1; padding: 0.7rem; font-size: 0.85rem;">삭제하기</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 📁 다중 임시저장(초안) 보관함 모달 -->
-    <div id="drafts-modal" class="modal-backdrop">
-      <div class="modal-box" style="max-width: 800px;">
-        <div class="modal-header">
-          <h3 style="margin:0; color:#818cf8; display: flex; align-items: center; gap: 0.5rem;">
-            📁 로컬 임시저장 초안 보관함
-          </h3>
-          <button type="button" id="btn-close-drafts" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;" title="닫기 (Esc)">✕</button>
-        </div>
-
-        <div style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 0.85rem; color: var(--text-muted);">브라우저에 보관된 작성 중인 글 목록입니다. 언제든 다시 불러올 수 있습니다.</span>
-          <button type="button" id="btn-clear-all-drafts" class="tool-btn" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); font-size: 0.75rem; padding: 0.3rem 0.6rem;">전체 초안 삭제</button>
-        </div>
-
-        <div id="drafts-list-container" style="overflow-y: auto; flex: 1; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
-          <p style="color:var(--text-muted); text-align:center; padding:2rem;">보관된 초안 글이 없습니다.</p>
-        </div>
-      </div>
-    </div>
   </body>
 </html>
