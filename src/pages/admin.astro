@@ -1897,7 +1897,15 @@ ${bodyContent}`;
           const data = await res.json();
 
           if (res.ok && data.success) {
-            const previewUrl = `https://blog.lunasonata.com/${slug}/`;
+            // 🌐 사이트별 도메인 동적 적용
+            const domainMap: Record<string, string> = {
+              blog: 'https://blog.lunasonata.com',
+              info: 'https://info.lunasonata.com',
+              piano: 'https://piano.lunasonata.com',
+              sekwang: 'https://sekwang.lunasonata.com'
+            };
+            const previewUrl = `${domainMap[currentTargetSite] || domainMap['blog']}/${slug}/`;
+
             if (isDraft) {
               showToast('👀 비공개 초안 저장 완료 (빌드 진행 중)');
               alert(
@@ -2467,17 +2475,25 @@ if (heroMatch && heroInput) {
       function renderPostsList() {
         if (!postsContainer) return;
         const query = postsSearch?.value.toLowerCase().trim() || '';
-const filtered = allPostsData.filter((post) => {
-  const title = (post.title || '').toLowerCase();
-  const slug = (post.slug || '').toLowerCase();
-  const catsString = Array.isArray(post.categories) ? post.categories.join(' ').toLowerCase() : '';
-  return title.includes(query) || slug.includes(query) || catsString.includes(query);
-});
+        const filtered = allPostsData.filter((post) => {
+          const title = (post.title || '').toLowerCase();
+          const slug = (post.slug || '').toLowerCase();
+          const catsString = Array.isArray(post.categories) ? post.categories.join(' ').toLowerCase() : '';
+          return title.includes(query) || slug.includes(query) || catsString.includes(query);
+        });
 
         if (filtered.length === 0) {
           postsContainer.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:2rem;">작성된 글이 없거나 검색 결과가 없습니다.</p>`;
           return;
         }
+
+        // 🌐 사이트별 실제 도메인 매핑 테이블
+        const domainMap: Record<string, string> = {
+          blog: 'https://blog.lunasonata.com',
+          info: 'https://info.lunasonata.com',
+          piano: 'https://piano.lunasonata.com',
+          sekwang: 'https://sekwang.lunasonata.com'
+        };
 
         postsContainer.innerHTML = '';
         filtered.forEach((post) => {
@@ -2494,6 +2510,10 @@ const filtered = allPostsData.filter((post) => {
           `;
 
           const targetName = post.filename || post.title || post.slug;
+          
+          // 현재 선택된 사이트에 맞는 도메인 가져오기
+          const currentSite = post.site || modalSiteFilter?.value || 'blog';
+          const targetBaseUrl = domainMap[currentSite] || domainMap['blog'];
           
           // 💡 상태별 뱃지 생성 (발행됨 vs 비공개 Draft)
           const statusBadge = post.draft
@@ -2521,7 +2541,7 @@ const filtered = allPostsData.filter((post) => {
               </div>
             </div>
             <div style="display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0;">
-              <a href="https://blog.lunasonata.com/${post.slug}/" target="_blank" rel="noopener noreferrer" class="tool-btn" style="font-size: 0.8rem; height: 32px; padding: 0 0.75rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; background: #0f766e; border-color: #14b8a6; color: #ffffff; box-sizing: border-box; border-radius: 7px; line-height: 1;">
+              <a href="${targetBaseUrl}/${post.slug}/" target="_blank" rel="noopener noreferrer" class="tool-btn" style="font-size: 0.8rem; height: 32px; padding: 0 0.75rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; background: #0f766e; border-color: #14b8a6; color: #ffffff; box-sizing: border-box; border-radius: 7px; line-height: 1;">
                 🔗 보기
               </a>
               <button type="button" class="tool-btn highlight btn-load-post" style="font-size: 0.8rem; height: 32px; padding: 0 0.75rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; box-sizing: border-box; border-radius: 7px; line-height: 1;">
