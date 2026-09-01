@@ -1540,27 +1540,29 @@ import BaseHead from '../components/BaseHead.astro';
       });
 
       function generateFrontmatter(isDraft: boolean = false): string {
-        const rawTitle = titleInput?.value.trim() || '제목 없음';
-        const rawDescription = descInput?.value.trim() || rawTitle;
-        const title = rawTitle.replace(/"/g, '\\"');
-        const description = rawDescription.replace(/"/g, '\\"');
+  const rawTitle = titleInput?.value.trim() || '제목 없음';
+  const rawDescription = descInput?.value.trim() || rawTitle;
+  const title = rawTitle.replace(/"/g, '\\"');
+  const description = rawDescription.replace(/"/g, '\\"');
 
-        const rawHero = heroInput?.value.trim() || '';
-        const heroImage = rawHero.replace(/^["']|["']$/g, '');
+  const rawHero = heroInput?.value.trim() || '';
+  const heroImage = rawHero.replace(/^["']|["']$/g, '');
 
-        const slug = slugInput?.value.trim() || '';
-        const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
-        const categoriesFormatted = rawCategories.length > 0 
-          ? `\ncategories:\n${rawCategories.map(c => `  - "${c.replace(/"/g, '\\"')}"`).join('\n')}` 
-          : '';
+  const slug = slugInput?.value.trim() || '';
+  const rawCategories = categoryInput?.value.split(',').map(c => c.trim()).filter(Boolean) || [];
+  const categoriesFormatted = rawCategories.length > 0 
+    ? `\ncategories:\n${rawCategories.map(c => `  - "${c.replace(/"/g, '\\"')}"`).join('\n')}` 
+    : '';
 
-        const now = new Date();
-        const offset = now.getTimezoneOffset() * 60000;
-        const localIso = new Date(now.getTime() - offset).toISOString().slice(0, 19);
-        const pubDateValue = currentPubDate ? currentPubDate : localIso;
-        const bodyContent = getEditorValue();
+  const now = new Date();
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  // 끝에 +09:00 명시
+  const localIso = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}+09:00`;
+  
+  const pubDateValue = currentPubDate ? currentPubDate : localIso;
+  const bodyContent = getEditorValue();
 
-        return `---
+  return `---
 title: "${title}"
 description: "${description}"
 pubDate: ${pubDateValue}
@@ -1569,7 +1571,7 @@ draft: ${isDraft}
 ---
 
 ${bodyContent}`;
-      }
+}
 
       function loadDraft() {
         const savedData = localStorage.getItem(DRAFT_KEY);
