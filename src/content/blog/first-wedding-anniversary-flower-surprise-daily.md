@@ -1,24 +1,12 @@
 ---
 title: "결혼 1주년 당일 서프라이즈 꽃배달 대소동"
 description: "연애 4개월 만에 결혼해 맞이한 대망의 첫 결혼기념일. 무드 없는 남편의 옥정 중심상가 당일 꽃다발 픽업 첩보 작전부터 낮잠, 아웃백 코스까지 솔직담백한 현실 부부의 우당탕탕 1주년 회고록."
-pubDate: 2026-09-07T11:33:47+09:00
+pubDate: 2026-09-07T11:40:41+09:00
 slug: "first-wedding-anniversary-flower-surprise-daily"
 heroImage: "https://image.lunasonata.com/2026/09/IMG_8844.webp"
 
 categories:
   - "에피소드"
-draft: false
----
-
----
-title: "결혼 1주년 당일 서프라이즈 꽃배달 대소동"
-description: "연애 4개월 만에 결혼해 맞이한 대망의 첫 결혼기념일. 무드 없는 남편의 옥정 중심상가 당일 꽃다발 픽업 첩보 작전부터 낮잠, 아웃백 코스까지 솔직담백한 현실 부부의 우당탕탕 1주년 회고록."
-pubDate: 2026-09-07T11:31:51+09:00
-slug: "first-wedding-anniversary-flower-surprise-daily"
-heroImage: "https://image.lunasonata.com/2026/09/IMG_8844.webp"
-
-categories:
-- "에피소드"
 draft: false
 ---
 
