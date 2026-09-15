@@ -59,7 +59,7 @@ draft: false
             <span style="font-size: clamp(18px, 4vw, 21px); font-weight: 700; color: #0f172a; margin-left: 3px; line-height: 1;">원이 발생합니다.</span>
           </div>
         </div>
-        <div style="padding-top: 14px; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; gap: 8px;">
+        <div style="padding-top: 14px; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
           <span style="font-size: 12px; font-weight: 600; color: #64748b;">해지희망일</span>
           <div style="display: inline-flex; align-items: center; gap: 6px; background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 4px 8px;">
             <span style="font-size: 12px; font-weight: 600; color: #1e293b;">2026.09.11</span>
@@ -81,7 +81,7 @@ draft: false
             <span style="font-size: clamp(18px, 4vw, 21px); font-weight: 700; color: #0f172a; margin-left: 3px; line-height: 1;">원이 발생합니다.</span>
           </div>
         </div>
-        <div style="padding-top: 14px; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; gap: 8px;">
+        <div style="padding-top: 14px; border-top: 1px dashed #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
           <span style="font-size: 12px; font-weight: 600; color: #64748b;">해지희망일</span>
           <div style="display: inline-flex; align-items: center; gap: 6px; background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 4px 8px;">
             <span style="font-size: 12px; font-weight: 600; color: #1e293b;">2026.09.11</span>
@@ -92,7 +92,7 @@ draft: false
     </div>
   </div>
   <p class="sk-p" style="margin: 0 0 20px; font-size: 1.05rem; color: #1e293b; line-height: 1.85;">
-    생각지도 못한 21만 원의 지출이 눈앞에 어른거리자 갈등이 시작되었다. 약정이 완전히 끝날 때까지 수개월을 버텨야 할지, 아니면 위약금을 물더라도 지금 갈아타는 게 이득일지 확인이 필요했다. 곧바로 전날 실장님이 강조했던 아정당 대표번호(1833-3504)로 전화를 걸었다[cite: 1].
+    생각지도 못한 21만 원의 지출이 눈앞에 어른거리자 갈등이 시작되었다. 약정이 완전히 끝날 때까지 수개월을 버텨야 할지, 아니면 위약금을 물더라도 지금 갈아타는 게 이득일지 확인이 필요했다. 곧바로 전날 실장님이 강조했던 아정당 대표번호(1833-3504)로 전화를 걸었다.
   </p>
   <div id="sk-ajd-official-cta-card" class="sk-cta-wrapper" style="width: 100%; max-width: 680px; margin: 36px auto; padding: 30px 24px; background: linear-gradient(135deg, #1e6beb 0%, #0d4bc3 100%); border-radius: 20px; box-shadow: 0 12px 32px -4px rgba(30, 107, 235, 0.28), 0 4px 12px -2px rgba(0, 0, 0, 0.08); font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif; color: #ffffff; box-sizing: border-box; overflow: hidden; position: relative;">
     <div class="sk-content-group" style="text-align: left; box-sizing: border-box;">
@@ -164,7 +164,7 @@ draft: false
   <!-- ad -->
 
   <h2 class="sk-h2" style="font-size: clamp(1.2rem, 4vw, 1.45rem); font-weight: 700; color: #0f172a; margin: 44px 0 18px; padding-bottom: 8px; border-bottom: 2px solid #bae6fd; letter-spacing: -0.02em;">
-    설치 당일 19시 정각 우리은행 120만 원 입금 완료
+    설치 당일 저녁 우리은행 120만 원 입금 완료
   </h2>
   <p class="sk-p" style="margin: 0 0 20px; font-size: 1.05rem; color: #1e293b; line-height: 1.85;">
     약속된 날짜에 기사님이 방문하여 두 집의 모뎀과 셋톱박스 교체 설치를 매끄럽게 마쳤다. 설치 완료 직후 안내받은 번호로 아정당 측에 '설치 완료' 확인 문자를 보냈다. 불과 몇 분 지나지 않아 확인 전화가 걸려왔고, 금일 오후 18시에서 20시 사이에 약속된 현금 지원금이 분할 입금 처리될 것이라는 안내를 받았다.
@@ -214,17 +214,13 @@ draft: false
           <span style="display: inline; line-height: 1.6;">화면에 도달하면 자동으로 입금 모션이 시작됩니다.</span>
         </div>
       </div>
-      <!-- <button id="sk-replay-btn" class="sk-action-btn" onclick="window.skTriggerDepositAnimation()" style="width: 100%; min-height: 48px; margin-top: 14px; border: none; outline: none; border-radius: 12px; background-color: #0b50a2; color: #ffffff; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(11, 80, 162, 0.25); transition: background-color 0.2s ease; box-sizing: border-box;">
-        <svg style="display: inline-block; vertical-align: -2px; margin-left: 2px; width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        <span>입금 애니메이션 재생</span>
-      </button>
-    </div> -->
+    </div>
   </div>
   <p class="sk-p" style="margin: 0 0 20px; font-size: 1.05rem; color: #1e293b; line-height: 1.85;">
-    정확히 18시 50분부터 우리은행 입금 알림이 연이어 울리기 시작하더니, 19시 02분 총 6차례에 나누어 <mark style="background: linear-gradient(120deg, rgba(186, 230, 253, 0.45) 0%, rgba(186, 230, 253, 0.9) 100%); padding: 2px 6px; border-radius: 4px; color: inherit; font-weight: 600;">합산 120만 원이 계좌로 즉각 입금 완료</mark>되었다[cite: 3]. 인터넷 설치 당일에 한 푼의 오차도 없이 약속된 현금이 그대로 꽂히는 경험은 꽤나 신선하고 통쾌한 충격이었다.
+    정확히 18시 50분부터 우리은행 입금 알림이 연이어 울리기 시작하더니, 19시 02분 총 6차례에 나누어 <mark style="background: linear-gradient(120deg, rgba(186, 230, 253, 0.45) 0%, rgba(186, 230, 253, 0.9) 100%); padding: 2px 6px; border-radius: 4px; color: inherit; font-weight: 600;">합산 120만 원이 계좌로 즉각 입금 완료</mark>되었다. 인터넷 설치 당일에 한 푼의 오차도 없이 약속된 현금이 그대로 꽂히는 경험은 꽤나 신선하고 통쾌한 충격이었다.
   </p>
   <p class="sk-p" style="margin: 0 0 20px; font-size: 1.05rem; color: #1e293b; line-height: 1.85;">
-    막연한 관성 때문에 한 통신사만을 오래 유지하는 것은 통신사만 배불리는 일일 뿐, 소비자에게 돌아오는 실질적 실익은 전무하다. 잔여 위약금이 남아 있더라도 신규 가입 지원금과의 격차를 면밀히 계산해 본다면 번호이동이 훨씬 압도적인 경제적 이득을 안겨준다. 3년 약정 주기가 돌아왔다면 가만히 앉아 재약정 사은품을 수동적으로 기다리기보다 적극적으로 갈아타는 지혜가 필요한 시점이다.
+    막연한 관성 때문에 한 통신사만을 오래 유지하는 것은 통신사만 배불리는 일일 뿐, 소비자에게 돌아오는 실질적 실익은 전무하다. 잔여 위약금이 남아 있더라도 신규 가입 지원금과의 격차를 면밀히 계산해 본다면 통신사 이동이 훨씬 압도적인 경제적 이득을 안겨준다. 3년 약정 주기가 돌아왔다면 가만히 앉아 재약정 사은품을 수동적으로 기다리기보다 적극적으로 갈아타는 지혜가 필요한 시점이다.
   </p>
 </div>
 
@@ -335,11 +331,10 @@ draft: false
         } catch (e) {}
       };
 
-      window.skTriggerDepositAnimation = () => {
+      const runDepositFlow = () => {
         if (isProcessing) return;
         isProcessing = true;
 
-        const btn = document.getElementById('sk-replay-btn');
         const badge = document.getElementById('sk-status-badge');
         const balanceText = document.getElementById('sk-current-balance');
         const listContainer = document.getElementById('sk-history-list');
@@ -348,19 +343,16 @@ draft: false
         const alertTime = document.getElementById('sk-alert-time');
         const counterText = document.getElementById('sk-counter-text');
 
-        if (!btn || !balanceText || !listContainer) return;
+        if (!balanceText || !listContainer) return;
 
-        btn.disabled = true;
-        btn.style.backgroundColor = '#94a3b8';
-        btn.style.cursor = 'not-allowed';
-        btn.innerHTML = '입금 진행 중...';
-
-        badge.innerText = '입금 수신 중';
-        badge.style.backgroundColor = '#0284c7';
+        if (badge) {
+          badge.innerText = '입금 수신 중';
+          badge.style.backgroundColor = '#0284c7';
+        }
 
         listContainer.innerHTML = '';
         balanceText.innerText = '0';
-        counterText.innerText = '0건 처리됨';
+        if (counterText) counterText.innerText = '0건 처리됨';
 
         let step = 0;
 
@@ -373,16 +365,11 @@ draft: false
               }
             }, 1200);
 
-            badge.innerText = '입금 완료';
-            badge.style.backgroundColor = '#059669';
+            if (badge) {
+              badge.innerText = '입금 완료';
+              badge.style.backgroundColor = '#059669';
+            }
 
-            btn.disabled = false;
-            btn.style.backgroundColor = '#0b50a2';
-            btn.style.cursor = 'pointer';
-            btn.innerHTML = `
-              <svg style="display: inline-block; vertical-align: -2px; margin-left: 2px; width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8;" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-              <span>다시 확인하기</span>
-            `;
             isProcessing = false;
             return;
           }
@@ -391,12 +378,14 @@ draft: false
           playDepositChime();
 
           balanceText.innerText = cur.balance.toLocaleString();
-          counterText.innerText = (step + 1) + '건 완료';
+          if (counterText) counterText.innerText = (step + 1) + '건 완료';
 
-          alertBox.style.display = 'block';
-          alertBox.style.opacity = '1';
-          alertTime.innerText = cur.time;
-          alertMsg.innerHTML = '<span style="color: #0b50a2;">' + cur.sender + '</span>님으로부터 <span style="color: #0284c7;">' + cur.amount.toLocaleString() + '원</span>이 입금되었습니다.';
+          if (alertBox && alertTime && alertMsg) {
+            alertBox.style.display = 'block';
+            alertBox.style.opacity = '1';
+            alertTime.innerText = cur.time;
+            alertMsg.innerHTML = '<span style="color: #0b50a2;">' + cur.sender + '</span>님으로부터 <span style="color: #0284c7;">' + cur.amount.toLocaleString() + '원</span>이 입금되었습니다.';
+          }
 
           const card = document.createElement('div');
           card.className = 'sk-item-card';
@@ -428,7 +417,7 @@ draft: false
         entries.forEach((entry) => {
           if (entry.isIntersecting && !hasAutoStarted) {
             hasAutoStarted = true;
-            window.skTriggerDepositAnimation();
+            runDepositFlow();
             depositObserver.unobserve(depositTarget);
           }
         });
